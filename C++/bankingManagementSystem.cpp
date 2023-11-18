@@ -278,7 +278,6 @@ int loginAsManager()
         }
         if (choice == 2)
         {
-            header();
             viewRecords();
         }   
         else if (choice == 3)
@@ -311,7 +310,6 @@ int loginAsManager()
         }
         else if (choice == 10)
         {   
-            header();
             del = 1;
             viewRecords();
             deleteUser();
@@ -327,6 +325,23 @@ int loginAsManager()
             return 0;
         }
     }
+}
+
+void managerMenu()
+{
+    cout << "\t\t\t\t\t\t\t\t\t\t   1. Add a New User" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   2. View All Records" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   3. View Single Record" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   4. Interest Calculator" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   5. Set Interest Rate" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   6. Loan Calculator" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   7. Give Loan" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   8. Update Information" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   9. Reset Passwords" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete a User" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t  11. Back" << endl;
+    cout << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
 }
 
 void deleteUser()
@@ -345,23 +360,6 @@ void deleteUser()
     viewRecords();
 }
 
-void managerMenu()
-{
-    cout << "\t\t\t\t\t\t\t\t\t\t   1. Add a New User" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   2. View All Records" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   3. View Single Record" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   4. Interest Calculator" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   5. Set Interest Rate" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   6. Loan Calculator" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   7. Give Loan" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   8. Update Information" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   9. Reset Passwords" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete a User" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t  11. Back" << endl;
-    cout << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
-
-}
 
 void depositMoney()
 {
@@ -490,15 +488,15 @@ void loginAsUser(string userName)
     }
     else if (choice == 5)
     {
-        applyLoan();
+        applyLoan();             /// not complete
     }
     else if (choice == 6)
     {
-        viewTransactions();
+        viewTransactions();      /// not complete
     }
     else if (choice == 7)
     {
-        blockTransactions();
+        blockTransactions();     /// not complete
     }
     else if (choice == 8)
     {
@@ -530,6 +528,7 @@ void userMenu()
     cout << "\t\t\t\t\t\t\t\t\t\t   6. View Transaction's" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   7. Block Transaction's" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   8. Modify Information" << endl;
+    // cout << "\t\t\t\t\t\t\t\t\t\t   8. Change Name" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   9. Change Password" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete Account" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t  11. Back" << endl;
@@ -537,7 +536,6 @@ void userMenu()
     cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
 
 }
-
 
 void greetUser(string userName)
 {
@@ -653,6 +651,7 @@ void deleteAccount()
 
 void viewRecords()
 {
+    header();
     cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
     cout << "\t\t\t\t\t\t\t\t\t    Sr No\t NAME \t    ID - No. \t Balance($)" << endl;
     cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
