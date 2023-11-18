@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 //headers
 void header();
 int loginAsManager();
@@ -20,6 +19,12 @@ void depositMoney();
 void checkMoney();
 void transferMoney();
 void withdrawMoney();
+void applyLoan();
+void viewTransactions();
+void blockTransactions();
+void modifyInformation();
+void changePassword();
+void deleteAccount();
 
 /// menus
 void mainMenu();
@@ -278,12 +283,40 @@ int loginAsManager()
         }   
         else if (choice == 3)
         {   
+            
+        }
+        else if (choice == 4)
+        {   
+            
+        }
+        else if (choice == 5)
+        {  
+
+        }
+        else if (choice == 6)
+        {   
+
+        }
+        else if (choice == 7)
+        {   
+                        
+        }
+        else if (choice == 8)
+        {   
+                
+        }
+        else if (choice == 9)
+        {   
+        
+        }
+        else if (choice == 10)
+        {   
             header();
             del = 1;
             viewRecords();
             deleteUser();
         }
-        else if (choice == 4)
+        else if (choice == 11)
         {
             mainMenu();
             return 0;
@@ -295,8 +328,6 @@ int loginAsManager()
         }
     }
 }
-
-
 
 void deleteUser()
 {
@@ -317,9 +348,16 @@ void deleteUser()
 void managerMenu()
 {
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Add a New User" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   2. View Record of Users" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   3. Delete a User" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   4. Back" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   2. View All Records" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   3. View Single Record" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   4. Interest Calculator" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   5. Set Interest Rate" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   6. Loan Calculator" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   7. Give Loan" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   8. Update Information" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   9. Reset Passwords" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete a User" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t  11. Back" << endl;
     cout << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
 
@@ -452,13 +490,32 @@ void loginAsUser(string userName)
     }
     else if (choice == 5)
     {
+        applyLoan();
+    }
+    else if (choice == 6)
+    {
+        viewTransactions();
+    }
+    else if (choice == 7)
+    {
+        blockTransactions();
+    }
+    else if (choice == 8)
+    {
+        modifyInformation();
+    }
+    else if (choice == 9)
+    {
+        changePassword();
+    }
+    else if (choice == 10)
+    {
+        deleteAccount();
+    }
+    else if (choice == 11)
+    {
         mainMenu();
     }
-}
-
-void greetUser(string userName)
-{
-    cout << "\t\t\t\t\t\t\t\t\t\t   Welcome Back " << userName << endl;
 }
 
 void userMenu()
@@ -466,11 +523,113 @@ void userMenu()
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Check Balance" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. Deposit Money" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   3. With-Draw Money" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   4. Transfer Money" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   5. Back" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   4. Transfer Money To Another Account" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   5. Apply for a Loan" << endl;
+    // cout << "\t\t\t\t\t\t\t\t\t\t   5. Verify Account" << endl;
+    // cout << "\t\t\t\t\t\t\t\t\t\t   5. View Account Information" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   6. View Transaction's" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   7. Block Transaction's" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   8. Modify Information" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   9. Change Password" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete Account" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t  11. Back" << endl;
     cout << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
 
+}
+
+
+void greetUser(string userName)
+{
+    cout << "\t\t\t\t\t\t\t\t\t\t   Welcome Back " << userName << endl;
+}
+
+void applyLoan()
+{
+
+}
+
+void viewTransactions()
+{
+
+}
+
+void blockTransactions()
+{
+    
+}
+
+void modifyInformation()
+{
+    header();
+    
+    string currentPass;
+    cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
+    cin >> currentPass;
+    
+    cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+    Sleep(1000);
+    
+    if(currentPass == userPasswords[currentIndex])
+    {
+       ///// modify recordss now
+    }
+    else
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
+    
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+    loginAsUser(userNames[currentIndex]);
+}
+
+void changePassword()
+{
+    header();
+    
+    string currentPass;
+    cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
+    cin >> currentPass;
+    
+    cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+    Sleep(1000);
+    
+    if(currentPass == userPasswords[currentIndex])
+    {
+        string newPass;
+        cout << "\n\t\t\t\t\t\t\t\t\t\tEnter New Password: ";
+        cin >> newPass;
+        userPasswords[currentIndex] = newPass;
+        cout << "\n\t\t\t\t\t\t\t\t\t\tPassword Successfully changed..";
+    }
+    else
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
+    
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+    loginAsUser(userNames[currentIndex]);
+}
+
+void deleteAccount()
+{
+    header();
+    
+    string currentPass;
+    cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
+    cin >> currentPass;
+    
+    cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+    Sleep(1000);
+    
+    if(currentPass == userPasswords[currentIndex])
+    {
+       ///// delete recordss now
+    }
+    else
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
+    
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+    loginAsUser(userNames[currentIndex]);
 }
 
 void viewRecords()
@@ -482,9 +641,7 @@ void viewRecords()
     for (int i = 0; i < index; i++)
     {
         if (userNames[i] != "")
-        {
             cout << "\t\t\t\t\t\t\t\t\t      " << i << " \t " << userNames[i] << "\t      " << userID[i] << "\t   " << userBalance[i] << endl;
-        }
         else   
             continue;
     }
