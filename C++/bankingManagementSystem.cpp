@@ -564,7 +564,7 @@ void modifyInformation()
     header();
     
     string currentPass;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
+    cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
     cin >> currentPass;
     
     cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
@@ -572,7 +572,21 @@ void modifyInformation()
     
     if(currentPass == userPasswords[currentIndex])
     {
-       ///// modify recordss now
+        string newName;
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tEnter new Name: ";
+        cin >> newName;
+
+        cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+        Sleep(1000);
+    
+        if(!userExist(newName))                    /// does'nt exist
+        {
+            string oldName = userNames[currentIndex];         //// optional for output :]
+            userNames[currentIndex] = newName;
+            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're name was successfully changed from \"" << oldName << "\" to " << "\"" << newName << "\"";
+        }
+        else
+            cout << "\n\t\t\t\t\t\t\t\t\t\tUser Already Exists..";
     }
     else
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
@@ -614,7 +628,7 @@ void deleteAccount()
     header();
     
     string currentPass;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
+    cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
     cin >> currentPass;
     
     cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
@@ -622,7 +636,12 @@ void deleteAccount()
     
     if(currentPass == userPasswords[currentIndex])
     {
-       ///// delete recordss now
+        userNames[currentIndex] = "";         /// deleting name so can't access this account now     ;}
+        
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour account has been removed.";
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+        getch();
+        mainMenu();
     }
     else
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
