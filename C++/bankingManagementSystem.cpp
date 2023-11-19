@@ -13,10 +13,12 @@ void loginAsUser(string);
 void viewRecords();
 void addNewUser();
 void deleteUser();
+void setGoldRate();
+
 
 /// user functions
 void depositMoney();
-void checkMoney();
+void checkPortfolio();
 void transferMoney();
 void withdrawMoney();
 void investGold();
@@ -44,6 +46,7 @@ void accountNotExists();
 void passNotCorrect();
 
 //// Global Variables
+float goldRate = 63.69;               
 
 /// managers pass
 string managerPassword = "admin";
@@ -55,8 +58,10 @@ int currentIndex = 0;      /// to check currently user's index
 //// arrays for data
 string userNames[100] = {"moon", "ateeb", "ali", "sheri"};        /// already registered user's       ;}
 string userPasswords[100] = {"admin", "admin", "admin", "admin"};         /// default passwords
-float userBalances[100] = {100,200,400,800};
 string userIDs[100] = {"0001","0002","0003","0004"};
+
+float userBalances[100] = {100,200,400,800};
+float userInvestments[100] = {0};
 
 float transactions[100] = {0};           //// transactions history :|
 string transactionsTypes[100];
@@ -69,8 +74,8 @@ bool blockTransactions = false;       /// for blocking transactions
 main()
 {
     ////  ;)
-    // mainMenu();
-    loginAsUser("moon");         /// debugging purpose
+    mainMenu();
+    // loginAsUsser("moon");         /// debugging purpose
 }
 
 void mainMenu()
@@ -298,7 +303,7 @@ int loginAsManager()
         }
         else if (choice == 5)
         {  
-
+            setGoldRate();
         }
         else if (choice == 6)
         {   
@@ -341,7 +346,7 @@ void managerMenu()
     cout << "\t\t\t\t\t\t\t\t\t\t   2. View All Records" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   3. View Single Record" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   4. Interest Calculator" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   5. Set Interest Rate" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   5. Set Gold Rate" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   6. Loan Calculator" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   7. Give Loan" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   8. Update Information" << endl;
@@ -350,6 +355,22 @@ void managerMenu()
     cout << "\t\t\t\t\t\t\t\t\t\t  11. Back" << endl;
     cout << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
+}
+
+void setGoldRate()
+{
+    header();
+    cout << "\t\t\t\t\t\t\t\t\t\tCurrent Rate of Gold per gram: " << goldRate;
+    
+    float newGoldRate;
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\tNew Gold Rate: ";
+    cin >> newGoldRate;
+
+    goldRate = newGoldRate;
+
+    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+    loginAsManager();
 }
 
 void deleteUser()
@@ -486,10 +507,16 @@ void withdrawMoney()
     loginAsUser(userNames[currentIndex]);
 }
 
-void checkMoney()
+void checkPortfolio()
 {
     header();
-    cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\tCash: $" << userBalances[currentIndex] << endl;
+    if (userInvestments[currentIndex] != 0)
+    {
+        cout << "\n\t\t\t\t\t\t\t\t\t\tGold(in grams): " << userInvestments[currentIndex];
+        cout << "\n\t\t\t\t\t\t\t\t\t\tGold(in Dollars): " << userInvestments[currentIndex] * goldRate << endl;
+    }
+    
     cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
     getch();
     loginAsUser(userNames[currentIndex]);
@@ -506,7 +533,7 @@ void loginAsUser(string userName)
     cin >> choice;
     if (choice == 1)
     {
-        checkMoney();
+        checkPortfolio();
     }
     else if(choice == 2)
     {
@@ -576,14 +603,15 @@ void greetUser(string userName)
     cout << "\t\t\t\t\t\t\t\t\t\t   Welcome Back " << userName << endl;
 }
 
-float goldRate = 63.69;
 
 void investGold()
 {
     header();
-    if (!blockOrUnblockTransactions)
+    if (!blockTransactions)
     {
-        cout << "\t\t\t\t\t\t\t\t\t\t1-Gram of Gold = $" << goldRate << endl << endl;
+        cout << "\t\t\t\t\t\t\t\t\t\tYour Balance: $" << userBalances[currentIndex] << endl << endl;
+        cout << "\t\t\t\t\t\t\t\t\t\t1-Gram of Gold = $" << goldRate << endl  << endl;
+        
         float investment;
         cout << "\t\t\t\t\t\t\t\t\t\tEnter amount you want to invest in Gold: $";
         cin >> investment;
@@ -598,9 +626,10 @@ void investGold()
         {
             cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
             Sleep(1000);
-            if (investment <= userBalances[currentIndex])
+            if (investment <= userBalances[currentIndex] )
             {
                 userBalances[currentIndex] -= investment;
+                userInvestments[currentIndex] += goldinGrams;
                 cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully invested \"$" << investment << "\" into " << goldinGrams << "-Gram of gold..";
                 cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: " << userBalances[currentIndex];
 
