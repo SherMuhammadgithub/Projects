@@ -21,7 +21,7 @@ void transferMoney();
 void withdrawMoney();
 void applyLoan();
 void viewTransactions();
-void blockTransactions();
+void blockORunblockTransactions();
 void modifyInformation();
 void changePassword();
 void deleteAccount();
@@ -51,13 +51,16 @@ string managerPassword = "admin";
 /// counter for index of arrays
 int index = 4;
 int currentIndex = 0;      /// to check currently user's index
-int transferIndex = 0;    /// for transfer of cash b/w users
 
 //// arrays for data
 string userNames[100] = {"moon", "ateeb", "ali", "sheri"};        /// already registered user's       ;}
 string userPasswords[100] = {"admin", "admin", "admin", "admin"};         /// default passwords
 float userBalance[100] = {100,200,400,800};
 string userID[100] = {"0001","0002","0003","0004"};
+
+////
+int transferIndex = 0;    /// for transfer of cash b/w users
+bool blockTransactions = false;       /// for blocking transactions
 
 main()
 {
@@ -496,7 +499,7 @@ void loginAsUser(string userName)
     }
     else if (choice == 7)
     {
-        blockTransactions();     /// not complete
+        blockORunblockTransactions();     /// not complete
     }
     else if (choice == 8)
     {
@@ -526,7 +529,7 @@ void userMenu()
     // cout << "\t\t\t\t\t\t\t\t\t\t   5. Verify Account" << endl;
     // cout << "\t\t\t\t\t\t\t\t\t\t   5. View Account Information" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   6. View Transaction's" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   7. Block Transaction's" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   7. Block/Unblock Transaction's" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   8. Modify Information" << endl;
     // cout << "\t\t\t\t\t\t\t\t\t\t   8. Change Name" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   9. Change Password" << endl;
@@ -552,9 +555,12 @@ void viewTransactions()
 
 }
 
-void blockTransactions()
+void blockORunblockTransactions()
 {
-    
+    if (blockTransactions == false)
+        blockTransactions = true;
+    else
+        blockTransactions = false;    
 }
 
 void modifyInformation()
