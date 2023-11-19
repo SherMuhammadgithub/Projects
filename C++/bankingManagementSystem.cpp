@@ -19,9 +19,9 @@ void depositMoney();
 void checkMoney();
 void transferMoney();
 void withdrawMoney();
-void applyLoan();
+void investGold();
 void viewTransactions();
-void blockORunblockTransactions();
+void blockOrUnblockTransactions();
 void modifyInformation();
 void changePassword();
 void deleteAccount();
@@ -69,8 +69,8 @@ bool blockTransactions = false;       /// for blocking transactions
 main()
 {
     ////  ;)
-    mainMenu();
-    // loginAsUser("moon");         /// debugging purpose
+    // mainMenu();
+    loginAsUser("moon");         /// debugging purpose
 }
 
 void mainMenu()
@@ -522,7 +522,7 @@ void loginAsUser(string userName)
     }
     else if (choice == 5)
     {
-        applyLoan();             /// not complete
+        investGold();             /// not complete
     }
     else if (choice == 6)
     {
@@ -530,7 +530,7 @@ void loginAsUser(string userName)
     }
     else if (choice == 7)
     {
-        blockORunblockTransactions();     /// not complete
+        blockOrUnblockTransactions();     /// not complete
     }
     else if (choice == 8)
     {
@@ -552,11 +552,11 @@ void loginAsUser(string userName)
 
 void userMenu()
 {    
-    cout << "\t\t\t\t\t\t\t\t\t\t   1. Check Balance" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   1. Check Portfolio" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. Deposit Money" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   3. With-Draw Money" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   4. Transfer Money To Another Account" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   5. Apply for a Loan" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   5. Invest in Gold" << endl;
     // cout << "\t\t\t\t\t\t\t\t\t\t   5. Verify Account" << endl;
     // cout << "\t\t\t\t\t\t\t\t\t\t   5. View Account Information" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   6. View Transaction's" << endl;
@@ -565,7 +565,7 @@ void userMenu()
     // cout << "\t\t\t\t\t\t\t\t\t\t   8. Change Name" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   9. Change Password" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete Account" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t  11. Back" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t  11. Log Out" << endl;
     cout << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
 
@@ -576,14 +576,63 @@ void greetUser(string userName)
     cout << "\t\t\t\t\t\t\t\t\t\t   Welcome Back " << userName << endl;
 }
 
-void applyLoan()
+float goldRate = 63.69;
+
+void investGold()
 {
-    if (userBalances[currentIndex] > 100)
+    header();
+    if (!blockOrUnblockTransactions)
     {
-        float loan;
-        cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount you want as a Loan: ";
-        cin >> loan;
+        cout << "\t\t\t\t\t\t\t\t\t\t1-Gram of Gold = $" << goldRate << endl << endl;
+        float investment;
+        cout << "\t\t\t\t\t\t\t\t\t\tEnter amount you want to invest in Gold: $";
+        cin >> investment;
+
+        float goldinGrams = investment / goldRate;
+        cout << "\n\t\t\t\t\t\t\t\t\t\tYou will get " << goldinGrams << "-Gram of Gold.";
+
+        int proceed;
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tDo you want to proceed\n\t\t\t\t\t\t\t\t\t\t1...YES\n\t\t\t\t\t\t\t\t\t\t2... NO: ";
+        cin >> proceed;
+        if (proceed == 1)
+        {
+            cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+            Sleep(1000);
+            if (investment <= userBalances[currentIndex])
+            {
+                userBalances[currentIndex] -= investment;
+                cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully invested \"$" << investment << "\" into " << goldinGrams << "-Gram of gold..";
+                cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: " << userBalances[currentIndex];
+
+                //// storing the transaction history
+                transactions[transactionsIndex] = investment;
+                transactionsTypes[transactionsIndex] = "Investment";
+                transactionsIndex++;
+            }
+            else if (investment > userBalances[currentIndex])
+                cout << "\n\n\t\t\t\t\t\t\t\t\t\tBalance is Low.";
+            else
+                cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn Error occured.. :/";
+
+            cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+            getch();
+            loginAsUser(userNames[currentIndex]);
+        }
+        else if (proceed == 2)
+        {
+            cout << "\t\t\t\t\t\t\t\t\t\tPress any key to continue";
+            getch();
+            loginAsUser(userNames[currentIndex]);
+        }
+        else
+            cout << "\t\t\t\t\t\t\t\t\t\tInvalid input.";
     }
+    else
+        cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
+    
+    cout << "\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+    loginAsUser(userNames[currentIndex]);
 }
 
 void viewTransactions()
@@ -607,7 +656,7 @@ void viewTransactions()
     loginAsUser(userNames[currentIndex]);
 }
 
-void blockORunblockTransactions()
+void blockOrUnblockTransactions()
 {
     header();
     cout << "\t\t\t\t\t\t\t\t\t\tPlease wait...";
