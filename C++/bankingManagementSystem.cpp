@@ -55,17 +55,22 @@ int currentIndex = 0;      /// to check currently user's index
 //// arrays for data
 string userNames[100] = {"moon", "ateeb", "ali", "sheri"};        /// already registered user's       ;}
 string userPasswords[100] = {"admin", "admin", "admin", "admin"};         /// default passwords
-float userBalance[100] = {100,200,400,800};
-string userID[100] = {"0001","0002","0003","0004"};
+float userBalances[100] = {100,200,400,800};
+string userIDs[100] = {"0001","0002","0003","0004"};
+
+float transactions[100] = {0};           //// transactions history :|
+string transactionsTypes[100];
 
 ////
 int transferIndex = 0;    /// for transfer of cash b/w users
+int transactionsIndex = 0;       /// displaying transactions
 bool blockTransactions = false;       /// for blocking transactions
 
 main()
 {
     ////  ;)
     mainMenu();
+    // loginAsUser("moon");         /// debugging purpose
 }
 
 void mainMenu()
@@ -224,9 +229,9 @@ void signUpMainMenu()
         /// assigning values
         userNames[index] = name;
         userPasswords[index] = pass;
-        userBalance[index] = 0;
-        userID[index] = "000"; 
-        userID[index] += to_string(index+1);
+        userBalances[index] = 0;
+        userIDs[index] = "000"; 
+        userIDs[index] += to_string(index+1);
 
         index++;      /// changing global index to new value
         
@@ -363,22 +368,30 @@ void deleteUser()
     viewRecords();
 }
 
-
 void depositMoney()
 {
     header();
+    if (!blockTransactions)
+    {
+        float deposit;
+        cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Deposit: $";
+        cin >> deposit;
 
-    float deposit;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Deposit: $";
-    cin >> deposit;
-    
-    userBalance[currentIndex] += deposit;
-    
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
-    Sleep(1000);
+        userBalances[currentIndex] += deposit;
 
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully deposited \"$" << deposit << "\" into you're account." << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalance[currentIndex] << endl;
+        cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
+        Sleep(1000);
+
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully deposited \"$" << deposit << "\" into you're account." << endl;
+        cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
+        
+        //// storing the transaction history
+        transactions[transactionsIndex] = deposit;
+        transactionsTypes[transactionsIndex] = "Deposit";
+        transactionsIndex++;
+    }
+    else
+        cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
 
     cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
     getch();
@@ -388,38 +401,47 @@ void depositMoney()
 void transferMoney()
 {
     header();
-    
-    cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalance[currentIndex] << endl << endl;
-    
-    float transfer;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Transfer: $";
-    cin >> transfer;
-
-    string name;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter name of the reciever: ";
-    cin >> name;
-    
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
-    Sleep(1000);
-    
-    bool recieverExists = userExist(name);
-    if (recieverExists)
+    if (!blockTransactions)
     {
-        if (transfer <= userBalance[currentIndex])
-        {                                                       //// transfered
-            userBalance[currentIndex] -= transfer;               //  from user1
-            userBalance[transferIndex] += transfer;              //   to user2
+        cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
 
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully Transfered \"$" << transfer << "\" from you're account to the account of \"" << userNames[transferIndex] << "\"" << endl;
-            cout << "\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalance[currentIndex] << endl;
+        float transfer;
+        cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Transfer: $";
+        cin >> transfer;
+
+        string name;
+        cout << "\t\t\t\t\t\t\t\t\t\tEnter name of the reciever: ";
+        cin >> name;
+
+        cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
+        Sleep(1000);
+
+        bool recieverExists = userExist(name);
+        if (recieverExists)
+        {
+            if (transfer <= userBalances[currentIndex])
+            {                                                       //// transfered
+                userBalances[currentIndex] -= transfer;               //  from user1
+                userBalances[transferIndex] += transfer;              //   to user2
+
+                cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully Transfered \"$" << transfer << "\" from you're account to the account of \"" << userNames[transferIndex] << "\"" << endl;
+                cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
+                
+                //// storing the transaction history
+                transactions[transactionsIndex] = transfer;
+                transactionsTypes[transactionsIndex] = "Transfer";
+                transactionsIndex++;
+            }
+            else if (transfer > userBalances[currentIndex]) 
+                cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're Balance is low." << endl;
+            else
+                cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn error occured." << endl;          /// any error case
         }
-        else if (transfer > userBalance[currentIndex]) 
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're Balance is low." << endl;
         else
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn error occured." << endl;          /// any error case
+            cout << "\n\n\t\t\t\t\t\t\t\t\t\tNo such user exists in our database ;(" << endl;
     }
     else
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tNo such user exists in our database ;(" << endl;
+        cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
     
     cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
     getch();
@@ -429,27 +451,36 @@ void transferMoney()
 void withdrawMoney()
 {
     header();
-    
-    cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalance[currentIndex] << endl << endl;
-    
-    float withdraw;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to With-Draw: $";
-    cin >> withdraw;
-    
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
-    Sleep(1000);
-
-    if (withdraw <= userBalance[currentIndex])
+    if (!blockTransactions)
     {
-        userBalance[currentIndex] -= withdraw;
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully With-Drawn \"$" << withdraw << "\" from you're account." << endl;
-        cout << "\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalance[currentIndex] << endl;
-    }
-    else if (withdraw > userBalance[currentIndex]) 
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're Balance is low." << endl;
-    else
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn error occured." << endl;          /// any error case
+        cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
 
+        float withdraw;
+        cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to With-Draw: $";
+        cin >> withdraw;
+
+        cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
+        Sleep(1000);
+
+        if (withdraw <= userBalances[currentIndex])
+        {
+            userBalances[currentIndex] -= withdraw;
+            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully With-Drawn \"$" << withdraw << "\" from you're account." << endl;
+            cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
+            
+            //// storing the transaction history
+            transactions[transactionsIndex] = withdraw;
+            transactionsTypes[transactionsIndex] = "Withdraw";
+            transactionsIndex++;
+        }
+        else if (withdraw > userBalances[currentIndex]) 
+            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're Balance is low." << endl;
+        else
+            cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn error occured." << endl;          /// any error case
+    }
+    else
+        cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
+    
     cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
     getch();
     loginAsUser(userNames[currentIndex]);
@@ -458,7 +489,7 @@ void withdrawMoney()
 void checkMoney()
 {
     header();
-    cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalance[currentIndex] << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl;
     cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
     getch();
     loginAsUser(userNames[currentIndex]);
@@ -547,20 +578,53 @@ void greetUser(string userName)
 
 void applyLoan()
 {
-
+    if (userBalances[currentIndex] > 100)
+    {
+        float loan;
+        cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount you want as a Loan: ";
+        cin >> loan;
+    }
 }
 
 void viewTransactions()
 {
-
+    header();
+    if (transactions[0] != 0)
+    {
+        cout << "\t\t\t\t\t\t\t\t       #################################################" << endl;
+        cout << "\t\t\t\t\t\t\t\t\t  Transaction Type\t     Amount($)" << endl;
+        cout << "\t\t\t\t\t\t\t\t       #################################################" << endl << endl;
+        for (int i = 0; i < transactionsIndex; i++ )
+        {
+            cout << "\t\t\t\t\t\t\t\t\t     " << transactionsTypes[i] << "\t\t\t" << transactions[i] << endl;
+        }
+    }
+    else
+        cout << "\n\t\t\t\t\t\t\t\t\t\tNo Transactions for Now..";
+    
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+    loginAsUser(userNames[currentIndex]);
 }
 
 void blockORunblockTransactions()
 {
+    header();
+    cout << "\t\t\t\t\t\t\t\t\t\tPlease wait...";
+    Sleep(1000);
     if (blockTransactions == false)
+    {
         blockTransactions = true;
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Blocked.";
+    }
     else
-        blockTransactions = false;    
+    {   
+        blockTransactions = false;     
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Unblocked.";
+    }
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+    loginAsUser(userNames[currentIndex]);
 }
 
 void modifyInformation()
@@ -665,7 +729,7 @@ void viewRecords()
     for (int i = 0; i < index; i++)
     {
         if (userNames[i] != "")
-            cout << "\t\t\t\t\t\t\t\t\t      " << i << " \t " << userNames[i] << "\t      " << userID[i] << "\t   " << userBalance[i] << endl;
+            cout << "\t\t\t\t\t\t\t\t\t      " << i << " \t " << userNames[i] << "\t      " << userIDs[i] << "\t   " << userBalances[i] << endl;
         else   
             continue;
     }
