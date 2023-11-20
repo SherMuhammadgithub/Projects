@@ -1,21 +1,20 @@
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
-
 using namespace std;
 
-//headers
 void header();
+/// manager
 int loginAsManager();
-void loginAsUser(string);
-
+void managerLoginMenu();
 /// manager functions
 void viewRecords();
 void addNewUser();
 void deleteUser();
 void setGoldRate();
-
-
+/// user
+void loginAsUser(string);
+void greetUser(string);   
 /// user functions
 void depositMoney();
 void checkPortfolio();
@@ -27,60 +26,52 @@ void blockOrUnblockTransactions();
 void modifyInformation();
 void changePassword();
 void deleteAccount();
-
 /// menus
 void mainMenu();
-void signUpMainMenu();
-void signInMainMenu();
+void signUpMenu();
+void signInMenu();
 void managerMenu();
-void managerMainMenu();
 void userMenu();
-
+/// data Verification
 bool uniqueUser(string);   /// sign up
 bool userExist(string);     /// sign in
 bool checkUserValidity(string, string);  /// pass checker
-void greetUser(string);   
-
-///// errors handling
+///// error handling
 void accountNotExists();
 void passNotCorrect();
 
-//// Global Variables
-float goldRate = 63.69;               
-
+///// Global Variables
 /// managers pass
 string managerPassword = "admin";
-
+// gold rate
+float goldRate = 63.69;               
 /// counter for index of arrays
 int index = 4;
 int currentIndex = 0;      /// to check currently user's index
-
-//// arrays for data
+//// arrays for user data
 string userNames[100] = {"moon", "ateeb", "ali", "sheri"};        /// already registered user's       ;}
 string userPasswords[100] = {"admin", "admin", "admin", "admin"};         /// default passwords
 string userIDs[100] = {"0001","0002","0003","0004"};
-
 float userBalances[100] = {100,200,400,800};
 float userInvestments[100] = {0};
-
 float transactions[100] = {0};           //// transactions history :|
 string transactionsTypes[100];
-
-////
-int transferIndex = 0;    /// for transfer of cash b/w users
+/////////////////////////////
+int transferIndex = 0;         /// for transfer of cash b/w users
 int transactionsIndex = 0;       /// displaying transactions
 bool blockTransactions = false;       /// for blocking transactions
+int del = 0;    //// for deleting user info
 
+////////////////////////////////////////////////////////////////////////////////////////// Start of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 main()
 {
     ////  ;)
     mainMenu();
-    // loginAsUsser("moon");         /// debugging purpose
+    // loginAsUser("moon");         /// debugging purpose
 }
 
 void mainMenu()
 {
-    
     header();
     int choice;
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Login as Manager" << endl;
@@ -94,22 +85,16 @@ void mainMenu()
     cin >> choice;
 
     if (choice == 1)
-    {
-        managerMainMenu();
-    }
+        managerLoginMenu();
     else if (choice == 2)
-    {
-        signInMainMenu();
-    }
+        signInMenu();
     else if (choice == 3)
     {
-        signUpMainMenu();
+        signUpMenu();
         mainMenu();
     }
     else if (choice == 4)
-    {
         return;  /// end program
-    }
     else             /// error case
     { 
         cout << "\n\t\t\t\t\t\t\t\t\t\t   Invalid choice....";
@@ -118,104 +103,9 @@ void mainMenu()
     }
 }
 
-void managerMainMenu()
+//////////////////////////////////////////////////////////////////////////////////////// start of signUp/signIn //////////////////////////////////////////////////////////////////////////////////////////////////////////
+void signUpMenu()
 {
-    header();
-
-    string password;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Enter the Password: ";
-    cin >> password;
-    
-    if (password == managerPassword)
-    {
-        
-        header();
-        loginAsManager();
-    }
-    else{
-        cout << "\n\t\t\t\t\t\t\t\t\t\t   Access Denied.." << endl;
-        cout << "\t\t\t\t\t\t\t\t\t\t   press any key to continue....";
-        getch();
-        mainMenu();
-    }
-}
-
-void signInMainMenu()
-{
-    
-    header();
-    string password, userName;
-
-    cout << "\t\t\t\t\t\t\t\t\t\t   Enter your User Name: ";
-    cin >> userName;
-    
-    cout << "\t\t\t\t\t\t\t\t\t\t   Enter your Password: ";
-    cin >> password;
-    
-    if (userExist(userName))
-    {
-        if (checkUserValidity(userName, password))
-            loginAsUser(userName);
-        else
-            passNotCorrect();
-    }
-    else
-        accountNotExists();
-}
-
-void passNotCorrect()
-{
-    cout << "\n\t\t\t\t\t\t\t\t\t\t   Invalid Password" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
-    getch();
-    mainMenu();
-}
-
-void accountNotExists()
-{
-    cout << "\n\t\t\t\t\t\t\t\t\t\t   Account does'nt Exist" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
-    getch();
-    mainMenu();
-}
-
-bool checkUserValidity(string name, string pass)
-{
-    bool validPass = true;
-    for (int i = 0; i < index; i++)
-    {
-        if (name == userNames[i] && pass == userPasswords[i])
-        {
-            validPass = true;
-            currentIndex = i;
-            break;
-        }
-        else
-            validPass = false;    
-    }
-    return validPass;
-}
-
-bool userExist(string name)
-{
-    bool exists = true;
-    for (int i = 0; i < index; i++)
-    {
-        if (name == userNames[i])
-        {
-            exists = true;    
-            transferIndex = i;       // for transfer of cash  
-            break;
-        }
-        else
-            exists = false;
-    }
-    return exists;
-}
-
-void signUpMainMenu()
-{
-    
     header();
     
     string name;
@@ -254,92 +144,52 @@ void signUpMainMenu()
         getch();
     }
 }
-
-bool uniqueUser(string name)
+void signInMenu()
 {
-    bool unique = true;     
-    for (int i = 0; i < index; i++)    // looping through names array to check if new user 
-    {
-        if (name == userNames[i])
-            unique = false;
-    }
-    return unique;
-}
+    
+    header();
+    string password, userName;
 
-void addNewUser()
+    cout << "\t\t\t\t\t\t\t\t\t\t   Enter your User Name: ";
+    cin >> userName;
+    
+    cout << "\t\t\t\t\t\t\t\t\t\t   Enter your Password: ";
+    cin >> password;
+    
+    if (userExist(userName))
+    {
+        if (checkUserValidity(userName, password))
+            loginAsUser(userName);
+        else
+            passNotCorrect();
+    }
+    else
+        accountNotExists();
+}
+void managerLoginMenu()
 {
     header();
-    signUpMainMenu();
-    loginAsManager();
-}
 
-int del = 0;
-int loginAsManager()
-{
-    while(true)
+    string password;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Enter the Password: ";
+    cin >> password;
+    
+    if (password == managerPassword)
     {
+        
         header();
-        
-        managerMenu();
-        
-        int choice;
-        cin >> choice;
-
-        if (choice == 1)
-        {
-            addNewUser();
-        }
-        if (choice == 2)
-        {
-            viewRecords();
-        }   
-        else if (choice == 3)
-        {   
-            
-        }
-        else if (choice == 4)
-        {   
-            
-        }
-        else if (choice == 5)
-        {  
-            setGoldRate();
-        }
-        else if (choice == 6)
-        {   
-
-        }
-        else if (choice == 7)
-        {   
-                        
-        }
-        else if (choice == 8)
-        {   
-                
-        }
-        else if (choice == 9)
-        {   
-        
-        }
-        else if (choice == 10)
-        {   
-            del = 1;
-            viewRecords();
-            deleteUser();
-        }
-        else if (choice == 11)
-        {
-            mainMenu();
-            return 0;
-        }
-        else
-        {
-            cout << "Invalid";
-            return 0;
-        }
+        loginAsManager();
+    }
+    else{
+        cout << "\n\t\t\t\t\t\t\t\t\t\t   Access Denied.." << endl;
+        cout << "\t\t\t\t\t\t\t\t\t\t   press any key to continue....";
+        getch();
+        mainMenu();
     }
 }
+/////////////////////////////////////////////////////////////////////////////////////// end of signUp/SignIn /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////////// manager loggedIn start ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void managerMenu()
 {
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Add a New User" << endl;
@@ -352,11 +202,73 @@ void managerMenu()
     cout << "\t\t\t\t\t\t\t\t\t\t   8. Update Information" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   9. Reset Passwords" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete a User" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t  11. Back" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t  11. Log Out" << endl;
     cout << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
 }
+int loginAsManager()
+{
+    header();
 
+    managerMenu();
+    int choice;
+    cin >> choice;
+
+    if (choice == 1)
+        addNewUser();
+    if (choice == 2)
+        viewRecords();
+    else if (choice == 3)
+    {   
+        //// not complete
+    }
+    else if (choice == 4)
+    {   
+        //// not complete
+    }
+    else if (choice == 5)
+        setGoldRate();
+    else if (choice == 6)
+    {   
+        //// not complete
+    }
+    else if (choice == 7)
+    {   
+        //// not complete
+    }
+    else if (choice == 8)
+    {   
+        //// not complete
+    }
+    else if (choice == 9)
+    {   
+        //// not complete
+    }
+    else if (choice == 10)
+    {   
+        del = 1;
+        viewRecords();
+        deleteUser();
+    }
+    else if (choice == 11)
+    {
+        mainMenu();
+        return 0;
+    }
+    else
+    {
+        cout << "Invalid";
+        return 0;
+    }
+}
+
+/// manager functions defination
+void addNewUser()
+{
+    header();
+    signUpMenu();
+    loginAsManager();
+}
 void setGoldRate()
 {
     header();
@@ -372,7 +284,6 @@ void setGoldRate()
     getch();
     loginAsManager();
 }
-
 void deleteUser()
 {
     int choice;
@@ -388,7 +299,68 @@ void deleteUser()
     header();
     viewRecords();
 }
+////////////////////////////////////////////////////////////////////////////////////// manager loggedIn end ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////////////// user loggedIn Start ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+void greetUser(string userName)
+{
+    cout << "\t\t\t\t\t\t\t\t\t\t   Welcome Back " << userName << endl;
+}
+void userMenu()
+{    
+    cout << "\t\t\t\t\t\t\t\t\t\t   1. Check Portfolio" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   2. Deposit Money" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   3. With-Draw Money" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   4. Transfer Money To Another Account" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   5. Invest in Gold" << endl;
+    // cout << "\t\t\t\t\t\t\t\t\t\t   5. Verify Account" << endl;
+    // cout << "\t\t\t\t\t\t\t\t\t\t   5. View Account Information" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   6. View Transaction's" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   7. Block/Unblock Transaction's" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   8. Modify Information" << endl;
+    // cout << "\t\t\t\t\t\t\t\t\t\t   8. Change Name" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   9. Change Password" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete Account" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t  11. Log Out" << endl;
+    cout << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
+
+}
+void loginAsUser(string userName)
+{
+    header();   
+    greetUser(userName);
+    cout << endl;
+
+    userMenu();
+    int choice;
+    cin >> choice;
+    if (choice == 1)
+        checkPortfolio();
+    else if(choice == 2)
+        depositMoney();
+    else if (choice == 3)
+        withdrawMoney();
+    else if (choice == 4)
+        transferMoney();
+    else if (choice == 5)
+        investGold();             
+    else if (choice == 6)
+        viewTransactions();      
+    else if (choice == 7)
+        blockOrUnblockTransactions();
+    else if (choice == 8)
+        modifyInformation();
+    else if (choice == 9)
+        changePassword();
+    else if (choice == 10)
+        deleteAccount();
+    else if (choice == 11)
+        mainMenu();
+    else 
+        loginAsUser(userNames[currentIndex]);   /// error case again start ;}
+}
+/// user functions defination
 void depositMoney()
 {
     header();
@@ -418,7 +390,6 @@ void depositMoney()
     getch();
     loginAsUser(userNames[currentIndex]);
 }
-
 void transferMoney()
 {
     header();
@@ -468,7 +439,6 @@ void transferMoney()
     getch();
     loginAsUser(userNames[currentIndex]);
 }
-
 void withdrawMoney()
 {
     header();
@@ -506,7 +476,6 @@ void withdrawMoney()
     getch();
     loginAsUser(userNames[currentIndex]);
 }
-
 void checkPortfolio()
 {
     header();
@@ -521,89 +490,6 @@ void checkPortfolio()
     getch();
     loginAsUser(userNames[currentIndex]);
 }
-
-void loginAsUser(string userName)
-{
-    header();   
-    greetUser(userName);
-    cout << endl;
-
-    userMenu();
-    int choice;
-    cin >> choice;
-    if (choice == 1)
-    {
-        checkPortfolio();
-    }
-    else if(choice == 2)
-    {
-        depositMoney();
-    }
-    else if (choice == 3)
-    {
-        withdrawMoney();
-    }
-    else if (choice == 4)
-    {
-        transferMoney();
-    }
-    else if (choice == 5)
-    {
-        investGold();             /// not complete
-    }
-    else if (choice == 6)
-    {
-        viewTransactions();      /// not complete
-    }
-    else if (choice == 7)
-    {
-        blockOrUnblockTransactions();     /// not complete
-    }
-    else if (choice == 8)
-    {
-        modifyInformation();
-    }
-    else if (choice == 9)
-    {
-        changePassword();
-    }
-    else if (choice == 10)
-    {
-        deleteAccount();
-    }
-    else if (choice == 11)
-    {
-        mainMenu();
-    }
-}
-
-void userMenu()
-{    
-    cout << "\t\t\t\t\t\t\t\t\t\t   1. Check Portfolio" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   2. Deposit Money" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   3. With-Draw Money" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   4. Transfer Money To Another Account" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   5. Invest in Gold" << endl;
-    // cout << "\t\t\t\t\t\t\t\t\t\t   5. Verify Account" << endl;
-    // cout << "\t\t\t\t\t\t\t\t\t\t   5. View Account Information" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   6. View Transaction's" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   7. Block/Unblock Transaction's" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   8. Modify Information" << endl;
-    // cout << "\t\t\t\t\t\t\t\t\t\t   8. Change Name" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   9. Change Password" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete Account" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t  11. Log Out" << endl;
-    cout << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
-
-}
-
-void greetUser(string userName)
-{
-    cout << "\t\t\t\t\t\t\t\t\t\t   Welcome Back " << userName << endl;
-}
-
-
 void investGold()
 {
     header();
@@ -663,7 +549,6 @@ void investGold()
     getch();
     loginAsUser(userNames[currentIndex]);
 }
-
 void viewTransactions()
 {
     header();
@@ -684,7 +569,6 @@ void viewTransactions()
     getch();
     loginAsUser(userNames[currentIndex]);
 }
-
 void blockOrUnblockTransactions()
 {
     header();
@@ -704,7 +588,6 @@ void blockOrUnblockTransactions()
     getch();
     loginAsUser(userNames[currentIndex]);
 }
-
 void modifyInformation()
 {
     header();
@@ -741,7 +624,6 @@ void modifyInformation()
     getch();
     loginAsUser(userNames[currentIndex]);
 }
-
 void changePassword()
 {
     header();
@@ -768,7 +650,6 @@ void changePassword()
     getch();
     loginAsUser(userNames[currentIndex]);
 }
-
 void deleteAccount()
 {
     header();
@@ -796,7 +677,6 @@ void deleteAccount()
     getch();
     loginAsUser(userNames[currentIndex]);
 }
-
 void viewRecords()
 {
     header();
@@ -817,6 +697,66 @@ void viewRecords()
         getch();
     }
 }
+//////////////////////////////////////////////////////////////////////////////////////////////// user loggedIn End ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// input validations start
+void passNotCorrect()
+{
+    cout << "\n\t\t\t\t\t\t\t\t\t\t   Invalid Password" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
+    getch();
+    mainMenu();
+}
+void accountNotExists()
+{
+    cout << "\n\t\t\t\t\t\t\t\t\t\t   Account does'nt Exist" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
+    getch();
+    mainMenu();
+}
+bool checkUserValidity(string name, string pass)
+{
+    bool validPass = true;
+    for (int i = 0; i < index; i++)
+    {
+        if (name == userNames[i] && pass == userPasswords[i])
+        {
+            validPass = true;
+            currentIndex = i;
+            break;
+        }
+        else
+            validPass = false;    
+    }
+    return validPass;
+}
+bool userExist(string name)
+{
+    bool exists = true;
+    for (int i = 0; i < index; i++)
+    {
+        if (name == userNames[i])
+        {
+            exists = true;    
+            transferIndex = i;       // for transfer of cash  
+            break;
+        }
+        else
+            exists = false;
+    }
+    return exists;
+}
+bool uniqueUser(string name)
+{
+    bool unique = true;     
+    for (int i = 0; i < index; i++)    // looping through names array to check if new user 
+    {
+        if (name == userNames[i])
+            unique = false;
+    }
+    return unique;
+}
+/// input validation end
 
 void header()
 {
@@ -849,29 +789,4 @@ void header()
     cout << "                                                                  ############################################################             " << endl; 
     cout << endl;
 }
-
-/////old header
-    // cout << "                                                               ######       ####     ###    ##   ##   ##                                     " << endl;
-    // cout << "                                                               ##    ##   ##    ##   ## #   ##   ##  ##                                      " << endl;
-    // cout << "                                                               ######     ## ## ##   ##  #  ##   ####                                        " << endl;
-    // cout << "                                                               ##    ##   ##    ##   ##   # ##   ##  ##                                      " << endl;
-    // cout << "                                                               ######     ##    ##   ##    ###   ##   ##                                     " << endl;
-    
-    // cout << endl;
-                
-    // cout << "                                ###   ###     ####     ###    ##     ####      ######     #####   ###   ###    #####   ###    ##   ########  " << endl; 
-    // cout << "                                ## # # ##   ##    ##   ## #   ##   ##    ##   ##         ##       ## # # ##   ##       ## #   ##      ##     " << endl; 
-    // cout << "                                ##  #  ##   ## ## ##   ##  #  ##   ## ## ##   ##  ###    ####     ##  #  ##   ####     ##  #  ##      ##     " << endl; 
-    // cout << "                                ##     ##   ##    ##   ##   # ##   ##    ##   ##    ##   ##       ##     ##   ##       ##   # ##      ##     " << endl; 
-    // cout << "                                ##     ##   ##    ##   ##    ###   ##    ##    ######     #####   ##     ##    #####   ##    ###      ##     " << endl;
-
-    // cout << endl; 
-    
-    // cout << "                                                         #####   ##    ##    #####   ########    #####   ###   ###                           " << endl; 
-    // cout << "                                                        #         ##  ##    #           ##      ##       ## # # ##                           " << endl; 
-    // cout << "                                                         ####       ##       ####       ##      ####     ##  #  ##                           " << endl; 
-    // cout << "                                                             #      ##           #      ##      ##       ##     ##                           " << endl; 
-    // cout << "                                                        #####       ##      #####       ##       #####   ##     ##                           " << endl;
-    // cout                                                                                                                                                    << endl;
-    // cout                                                                                                                                                    << endl;
-    // cout                                                                                                                                                    << endl;
+////////////////////////////////////////////////////////////////////////////////////////// End of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
