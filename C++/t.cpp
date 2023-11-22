@@ -33,42 +33,42 @@ void deleteAccount();
 /// menus
 int mainMenu();
 void signUpCheck();
-void signInMenu();
+bool signInValidate(string [], string [], int, string, string);
 void managerMenu();
 void userMenu();
 /// sign up
 void createUser(string userNames[], string userPasswords[], int &index, string name, string pass);
 /// data Verification
 bool uniqueUser(string[], int &, string);   /// sign up
-bool userExist(string);     /// sign in
-bool checkUserValidity(string, string);  /// pass checker
+bool userExist(string[], string, int);     /// sign in
+bool checkUserValidity(string [], string [], int , string, string);  /// pass checker
 ///// error handling
 void accountNotExists();
 void passNotCorrect();
 
 ///// Global Variables
 /// managers pass
-string adminPassword = "admin";             ////////////// remove
-// gold rate
-float goldRate = 63.69;               ////////////////// remove
-/// counter for index of arrays
-int index = 4;       //////////////////////////////////////////////// remove
+// string adminPassword = "admin";             ////////////// remove
+// // gold rate
+// float goldRate = 63.69;               ////////////////// remove
+// /// counter for index of arrays
+// int index = 4;       //////////////////////////////////////////////// remove
 
-int currentIndex = 0;      /// to check currently user's index               //////////////// remove
+// int currentIndex = 0;      /// to check currently user's index               //////////////// remove
 
-//// arrays for user data (remove after impletmenting in main)
-string userNames[100] = {"moon", "ateeb", "ali", "sheri"};        /// already registered user's       ;}   //// remove                                                                                                     
-string userPasswords[100] = {"admin", "admin", "admin", "admin"};         /// default passwords            //// remove                                                                                         
-string userIDs[100] = {"0001","0002","0003","0004"};                                                       //// remove                                                 
-float userBalances[100] = {100,200,400,800};                                                               //// remove                                         
-float userInvestments[100] = {0};                                                                          //// remove                              
-float transactions[100] = {0};           //// transactions history :|                                      //// remove                                                                 
-string transactionsTypes[100];                                                                             //// remove                          
-/////////////////////////////
-int transferIndex = 0;         /// for transfer of cash b/w users           ////////////////////// remove       
-int transactionsIndex = 0;       /// displaying transactions                ////////////////////// remove  
-bool blockTransactions = false;       /// for blocking transactions         ////////////////////// remove           
-int del = 0;    //// for deleting user info            //// don't remove this           
+// //// arrays for user data (remove after impletmenting in main)
+// string userNames[100] = {"moon", "ateeb", "ali", "sheri"};        /// already registered user's       ;}   //// remove                                                                                                     
+// string userPasswords[100] = {"admin", "admin", "admin", "admin"};         /// default passwords            //// remove                                                                                         
+// string userIDs[100] = {"0001","0002","0003","0004"};                                                       //// remove                                                 
+// float userBalances[100] = {100,200,400,800};                                                               //// remove                                         
+// float userInvestments[100] = {0};                                                                          //// remove                              
+// float transactions[100] = {0};           //// transactions history :|                                      //// remove                                                                 
+// string transactionsTypes[100];                                                                             //// remove                          
+// /////////////////////////////
+// int transferIndex = 0;         /// for transfer of cash b/w users           ////////////////////// remove       
+// int transactionsIndex = 0;       /// displaying transactions                ////////////////////// remove  
+// bool blockTransactions = false;       /// for blocking transactions         ////////////////////// remove           
+// int del = 0;    //// for deleting user info            //// don't remove this           
 
 ////////////////////////////////////////////////////////////////////////////////////////// Start of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
@@ -93,60 +93,138 @@ int main()
     string adminPassword = "admin";
     float goldRate = 63.69;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    int choice = mainMenu();         //// menu bar option select
-    cout << index << endl;
-    if (choice == 1)
+    int choice;
+    while(choice != 3)
     {
-        adminLoginHeader();
-        string userEnterAdminPass;
-        cout << "\t\t\t\t\t\t\t\t\t\t   Enter the Password: ";
-        cin >> userEnterAdminPass;
-        bool login =  adminLoginCheck(userEnterAdminPass, adminPassword);
-        if (login)
-            loginAsManager();
-        else 
+        choice = mainMenu();         //// menu bar option select
+        if (choice == 1)             /// admin login
+        { 
+            adminLoginHeader();
+            string userEnterAdminPass;
+            cout << "\t\t\t\t\t\t\t\t\t\t   Enter the Password: ";
+            cin >> userEnterAdminPass;
+            bool login =  adminLoginCheck(userEnterAdminPass, adminPassword);
+            if (login)
+                loginAsManager();
+            else 
+            {
+                cout << "\n\t\t\t\t\t\t\t\t\t\t   Access Denied.............." << endl;
+                cout << "\n\t\t\t\t\t\t\t\t\t\t   Press any key to continue..";
+                getch();
+            }
+            // cout << login;
+        }   
+        else if (choice == 2)      /////sig in user
         {
-            cout << "\n\t\t\t\t\t\t\t\t\t\t   Access Denied.............." << endl;
-            cout << "\n\t\t\t\t\t\t\t\t\t\t   Press any key to continue..";
-            getch();
-            main();
+            signInHeader();
+            string userEnteredPassword, userEnteredName;
+            cout << "\t\t\t\t\t\t\t\t\t\t   Enter your User Name: ";
+            cin >> userEnteredName;
+            cout << "\t\t\t\t\t\t\t\t\t\t   Enter your Password: ";
+            cin >> userEnteredPassword;
+            bool login = signInValidate(userNames, userPasswords, index, userEnteredName, userEnteredPassword);
+            if (login)
+                loginAsUser(userEnteredName);
         }
-        // cout << login;
-    }   
-    else if (choice == 2)
-    {
-        signInHeader();
-        signInMenu();
-    }
-    else if (choice == 3)
-    {
-        signUpHeader();
-        string name;
-        cout << "\t\t\t\t\t\t\t\t\t\t   Enter your name: ";
-        cin >> name;
+        else if (choice == 3)   //// sign up user
+        {
+            signUpHeader();
+            string name;
+            cout << "\t\t\t\t\t\t\t\t\t\t   Enter your name: ";
+            cin >> name;
 
-        string pass;
-        cout << "\t\t\t\t\t\t\t\t\t\t   Enter password: ";
-        cin >> pass;
+            string pass;
+            cout << "\t\t\t\t\t\t\t\t\t\t   Enter password: ";
+            cin >> pass;
 
-        if (uniqueUser(userNames, index ,name))         /// User created
-            createUser(userNames, userPasswords, index, name, pass);
-        else
-            cout << "\t\t\t\t\t\t\t\t\t\t User already exists..................";
-        
-        cout << "\n\t\t\t\t\t\t\t\t\t\t   Press any key to continue....";
-        getch();
-        main();
-    }
-    else if (choice == 4)
-        return 0;                         /// end program
-    else             /// for error cases
-    { 
-        cout << "\n\t\t\t\t\t\t\t\t\t\t   Invalid choice....";
-        Sleep(500);
-        main();
-    }
+            if (uniqueUser(userNames, index ,name))         /// User created
+                createUser(userNames, userPasswords, index, name, pass);
+            else
+                cout << "\n\t\t\t\t\t\t\t\t\t\t   User already exists..........";
+
+            cout << "\n\t\t\t\t\t\t\t\t\t\t   Press any key to continue....";
+            getch();
+        }
+        else if (choice == 4)
+            return 0;                         /// end program
+        else             /// for error cases
+        { 
+            cout << "\t\t\t\t\t\t\t\t\t\t   Invalid choice....";
+            Sleep(500);
+        }
+}
     // loginAsUser("moon");         /// debugging purpose
+}
+
+/// input validations start
+void passNotCorrect()
+{
+    cout << "\n\t\t\t\t\t\t\t\t\t\t   Invalid Password" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
+    getch();
+    mainMenu();
+}
+void accountNotExists()
+{
+    cout << "\n\t\t\t\t\t\t\t\t\t\t   Account does'nt Exist" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
+    getch();
+    mainMenu();
+}
+bool checkUserValidity(string userNames[], string userPasswords[], int index, string name, string pass)
+{
+    bool validPass = false;
+    for (int i = 0; i < index; i++)
+    {
+        if (name == userNames[i] && pass == userPasswords[i])
+        {
+            validPass = true;
+            // currentIndex = i;
+            break;
+        }    
+    }
+    return validPass;
+}
+bool userExist(string userNames[], string name, int index)
+{
+    bool exists = false;
+    for (int i = 0; i < index; i++)
+    {
+        if (name == userNames[i])
+        {
+            exists = true;    
+            // transferIndex = i;       // for transfer of cash  
+            break;
+        }
+    }
+    return exists;
+}
+bool uniqueUser(string userNames[], int &index, string name)
+{
+    bool unique = true;     
+    for (int i = 0; i < index; i++)    // looping through names array to check if new user 
+    {
+        if (name == userNames[i])
+        {
+            unique = false;
+            break;
+        }
+    }
+    return unique;
+}
+/// input validation end
+int mainMenu()             ///// complete
+{
+    header();
+    int option;
+    cout << "\t\t\t\t\t\t\t\t\t\t   1. Login as Manager" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   2. Login as User" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   3. Sign up as User" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   4. End" << endl;
+    cout << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
+    cin >> option;
+    return option;
 }
 
 void createUser(string userNames[], string userPasswords[], int &index, string name, string pass)
@@ -163,56 +241,31 @@ void createUser(string userNames[], string userPasswords[], int &index, string n
     index++;  
     // cout << index << endl;
     cout << endl << endl << "\t\t\t\t\t\t\t\t\t\t   Successfully created new user" << endl;
-    for (int i =0; i < index; i++)
-        cout << userNames[i] <<endl;
-}
-int mainMenu()             ///// complete
-{
-    header();
-    int option;
-    cout << "\t\t\t\t\t\t\t\t\t\t   1. Login as Manager" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   2. Login as User" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   3. Sign up as User" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   4. End" << endl;
-    cout << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
-    cin >> option;
-    return option;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////// start of signUp/signIn //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void signUpCheck()
 {
-    // else          /// user not created
-    // {
-        cout << "\n\t\t\t\t\t\t\t\t\t\t   Please wait Creating new user....";
-        Sleep(1000);
-
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\t   User already exists" << endl;
-        cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue....";
-        getch();
-    // }
+    cout << "\n\t\t\t\t\t\t\t\t\t\t   Please wait Creating new user....";
+    Sleep(1000);
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\t   User already exists" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue....";
+    getch();
 }
-void signInMenu()
+bool signInValidate(string userNames[], string userPasswords[], int index , string name, string pass)
 {
-    signInHeader();
-    string password, userName;
-
-    cout << "\t\t\t\t\t\t\t\t\t\t   Enter your User Name: ";
-    cin >> userName;
-    
-    cout << "\t\t\t\t\t\t\t\t\t\t   Enter your Password: ";
-    cin >> password;
-    
-    if (userExist(userName))
+    bool allowLogin = false;
+    if (userExist(userNames, name, index))
     {
-        if (checkUserValidity(userName, password))
-            loginAsUser(userName);
+        if (checkUserValidity(userNames, userPasswords, index, name, pass))
+            allowLogin = true;
+            // loginAsUser(name);
         else
             passNotCorrect();
     }
     else
         accountNotExists();
+    return allowLogin;
 }
 bool adminLoginCheck(string pass, string &adminPassword)
 {
@@ -281,7 +334,7 @@ int loginAsManager()
     }
     else if (choice == 10)
     {   
-        del = 1;
+        // del = 1;
         viewRecords();
         deleteUser();
     }
@@ -306,18 +359,18 @@ void addNewUser()
 }
 void setGoldRate()
 {
-    header();
-    cout << "\t\t\t\t\t\t\t\t\t\tCurrent Rate of Gold per gram: " << goldRate;
+    // header();
+    // cout << "\t\t\t\t\t\t\t\t\t\tCurrent Rate of Gold per gram: " << goldRate;
     
-    float newGoldRate;
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tNew Gold Rate: ";
-    cin >> newGoldRate;
+    // float newGoldRate;
+    // cout << "\n\n\t\t\t\t\t\t\t\t\t\tNew Gold Rate: ";
+    // cin >> newGoldRate;
 
-    goldRate = newGoldRate;
+    // // goldRate = newGoldRate;
 
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsManager();
+    // cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsManager();
 }
 void deleteUser()
 {
@@ -328,8 +381,8 @@ void deleteUser()
     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait deleting the records...";
     Sleep(1000);
     
-    userNames[choice] = "";  /// just setting name to empty and not displaying it's all records on view record  ;}   
-    del = 0;
+    // userNames[choice] = "";  /// just setting name to empty and not displaying it's all records on view record  ;}   
+    // del = 0;
     
     header();
     viewRecords();
@@ -393,408 +446,346 @@ void loginAsUser(string userName)
     else if (choice == 11)
         mainMenu();
     else 
-        loginAsUser(userNames[currentIndex]);   /// error case again start ;}
+        cout << "bue";// loginAsUser(userNames[currentIndex]);   /// error case again start ;}
 }
 /// user functions defination
 void depositMoney()
 {
     header();
-    if (!blockTransactions)
-    {
-        float deposit;
-        cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Deposit: $";
-        cin >> deposit;
+    // if (!blockTransactions)
+    // {
+    //     float deposit;
+    //     cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Deposit: $";
+    //     cin >> deposit;
 
-        userBalances[currentIndex] += deposit;
+    //     userBalances[currentIndex] += deposit;
 
-        cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
-        Sleep(1000);
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
+    //     Sleep(1000);
 
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully deposited \"$" << deposit << "\" into you're account." << endl;
-        cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
+    //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully deposited \"$" << deposit << "\" into you're account." << endl;
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
         
-        //// storing the transaction history
-        transactions[transactionsIndex] = deposit;
-        transactionsTypes[transactionsIndex] = "Deposit";
-        transactionsIndex++;
-    }
-    else
-        cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
+    //     //// storing the transaction history
+    //     transactions[transactionsIndex] = deposit;
+    //     transactionsTypes[transactionsIndex] = "Deposit";
+    //     transactionsIndex++;
+    // }
+    // else
+    //     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
 
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsUser(userNames[currentIndex]);
+    // cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsUser(userNames[currentIndex]);
 }
 void transferMoney()
 {
     header();
-    if (!blockTransactions)
-    {
-        cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
+    // if (!blockTransactions)
+    // {
+    //     cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
 
-        float transfer;
-        cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Transfer: $";
-        cin >> transfer;
+    //     float transfer;
+    //     cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Transfer: $";
+    //     cin >> transfer;
 
-        string name;
-        cout << "\t\t\t\t\t\t\t\t\t\tEnter name of the reciever: ";
-        cin >> name;
+    //     string name;
+    //     cout << "\t\t\t\t\t\t\t\t\t\tEnter name of the reciever: ";
+    //     cin >> name;
 
-        cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
-        Sleep(1000);
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
+    //     Sleep(1000);
 
-        bool recieverExists = userExist(name);
-        if (recieverExists)
-        {
-            if (transfer <= userBalances[currentIndex])
-            {                                                       //// transfered
-                userBalances[currentIndex] -= transfer;               //  from user1
-                userBalances[transferIndex] += transfer;              //   to user2
+    //     bool recieverExists = false;//false not here ---> oG code remove false after removing error //userExist(name);
+    //     if (recieverExists)
+    //     {
+    //         if (transfer <= userBalances[currentIndex])
+    //         {                                                       //// transfered
+    //             userBalances[currentIndex] -= transfer;               //  from user1
+    //             userBalances[transferIndex] += transfer;              //   to user2
 
-                cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully Transfered \"$" << transfer << "\" from you're account to the account of \"" << userNames[transferIndex] << "\"" << endl;
-                cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
+    //             cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully Transfered \"$" << transfer << "\" from you're account to the account of \"" << userNames[transferIndex] << "\"" << endl;
+    //             cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
                 
-                //// storing the transaction history
-                transactions[transactionsIndex] = transfer;
-                transactionsTypes[transactionsIndex] = "Transfer";
-                transactionsIndex++;
-            }
-            else if (transfer > userBalances[currentIndex]) 
-                cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're Balance is low." << endl;
-            else
-                cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn error occured." << endl;          /// any error case
-        }
-        else
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tNo such user exists in our database ;(" << endl;
-    }
-    else
-        cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
+    //             //// storing the transaction history
+    //             transactions[transactionsIndex] = transfer;
+    //             transactionsTypes[transactionsIndex] = "Transfer";
+    //             transactionsIndex++;
+    //         }
+    //         else if (transfer > userBalances[currentIndex]) 
+    //             cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're Balance is low." << endl;
+    //         else
+    //             cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn error occured." << endl;          /// any error case
+    //     }
+    //     else
+    //         cout << "\n\n\t\t\t\t\t\t\t\t\t\tNo such user exists in our database ;(" << endl;
+    // }
+    // else
+    //     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
     
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsUser(userNames[currentIndex]);
+    // cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsUser(userNames[currentIndex]);
 }
 void withdrawMoney()
 {
     header();
-    if (!blockTransactions)
-    {
-        cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
+    // if (!blockTransactions)
+    // {
+    //     cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
 
-        float withdraw;
-        cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to With-Draw: $";
-        cin >> withdraw;
+    //     float withdraw;
+    //     cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to With-Draw: $";
+    //     cin >> withdraw;
 
-        cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
-        Sleep(1000);
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
+    //     Sleep(1000);
 
-        if (withdraw <= userBalances[currentIndex])
-        {
-            userBalances[currentIndex] -= withdraw;
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully With-Drawn \"$" << withdraw << "\" from you're account." << endl;
-            cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
+    //     if (withdraw <= userBalances[currentIndex])
+    //     {
+    //         userBalances[currentIndex] -= withdraw;
+    //         cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully With-Drawn \"$" << withdraw << "\" from you're account." << endl;
+    //         cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
             
-            //// storing the transaction history
-            transactions[transactionsIndex] = withdraw;
-            transactionsTypes[transactionsIndex] = "Withdraw";
-            transactionsIndex++;
-        }
-        else if (withdraw > userBalances[currentIndex]) 
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're Balance is low." << endl;
-        else
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn error occured." << endl;          /// any error case
-    }
-    else
-        cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
+    //         //// storing the transaction history
+    //         transactions[transactionsIndex] = withdraw;
+    //         transactionsTypes[transactionsIndex] = "Withdraw";
+    //         transactionsIndex++;
+    //     }
+    //     else if (withdraw > userBalances[currentIndex]) 
+    //         cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're Balance is low." << endl;
+    //     else
+    //         cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn error occured." << endl;          /// any error case
+    // }
+    // else
+    //     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
     
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsUser(userNames[currentIndex]);
+    // cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsUser(userNames[currentIndex]);
 }
 void checkPortfolio()
 {
     header();
-    cout << "\t\t\t\t\t\t\t\t\t\tCash: $" << userBalances[currentIndex] << endl;
-    if (userInvestments[currentIndex] != 0)
-    {
-        cout << "\n\t\t\t\t\t\t\t\t\t\tGold(in grams): " << userInvestments[currentIndex];
-        cout << "\n\t\t\t\t\t\t\t\t\t\tGold(in Dollars): " << userInvestments[currentIndex] * goldRate << endl;
-    }
+    // cout << "\t\t\t\t\t\t\t\t\t\tCash: $" << userBalances[currentIndex] << endl;
+    // if (userInvestments[currentIndex] != 0)
+    // {
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tGold(in grams): " << userInvestments[currentIndex];
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tGold(in Dollars): " << userInvestments[currentIndex] * goldRate << endl;
+    // }
     
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsUser(userNames[currentIndex]);
+    // cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsUser(userNames[currentIndex]);
 }
 void investGold()
 {
     header();
-    if (!blockTransactions)
-    {
-        cout << "\t\t\t\t\t\t\t\t\t\tYour Balance: $" << userBalances[currentIndex] << endl << endl;
-        cout << "\t\t\t\t\t\t\t\t\t\t1-Gram of Gold = $" << goldRate << endl  << endl;
+    // if (!blockTransactions)
+    // {
+    //     cout << "\t\t\t\t\t\t\t\t\t\tYour Balance: $" << userBalances[currentIndex] << endl << endl;
+    //     cout << "\t\t\t\t\t\t\t\t\t\t1-Gram of Gold = $" << goldRate << endl  << endl;
         
-        float investment;
-        cout << "\t\t\t\t\t\t\t\t\t\tEnter amount you want to invest in Gold: $";
-        cin >> investment;
+    //     float investment;
+    //     cout << "\t\t\t\t\t\t\t\t\t\tEnter amount you want to invest in Gold: $";
+    //     cin >> investment;
 
-        float goldinGrams = investment / goldRate;
-        cout << "\n\t\t\t\t\t\t\t\t\t\tYou will get " << goldinGrams << "-Gram of Gold.";
+    //     float goldinGrams = investment / goldRate;
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tYou will get " << goldinGrams << "-Gram of Gold.";
 
-        int proceed;
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tDo you want to proceed\n\t\t\t\t\t\t\t\t\t\t1...YES\n\t\t\t\t\t\t\t\t\t\t2... NO: ";
-        cin >> proceed;
-        if (proceed == 1)
-        {
-            cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
-            Sleep(1000);
-            if (investment <= userBalances[currentIndex] )
-            {
-                userBalances[currentIndex] -= investment;
-                userInvestments[currentIndex] += goldinGrams;
-                cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully invested \"$" << investment << "\" into " << goldinGrams << "-Gram of gold..";
-                cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: " << userBalances[currentIndex];
+    //     int proceed;
+    //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tDo you want to proceed\n\t\t\t\t\t\t\t\t\t\t1...YES\n\t\t\t\t\t\t\t\t\t\t2... NO: ";
+    //     cin >> proceed;
+    //     if (proceed == 1)
+    //     {
+    //         cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+    //         Sleep(1000);
+    //         if (investment <= userBalances[currentIndex] )
+    //         {
+    //             userBalances[currentIndex] -= investment;
+    //             userInvestments[currentIndex] += goldinGrams;
+    //             cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully invested \"$" << investment << "\" into " << goldinGrams << "-Gram of gold..";
+    //             cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: " << userBalances[currentIndex];
 
-                //// storing the transaction history
-                transactions[transactionsIndex] = investment;
-                transactionsTypes[transactionsIndex] = "Investment";
-                transactionsIndex++;
-            }
-            else if (investment > userBalances[currentIndex])
-                cout << "\n\n\t\t\t\t\t\t\t\t\t\tBalance is Low.";
-            else
-                cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn Error occured.. :/";
+    //             //// storing the transaction history
+    //             transactions[transactionsIndex] = investment;
+    //             transactionsTypes[transactionsIndex] = "Investment";
+    //             transactionsIndex++;
+    //         }
+    //         else if (investment > userBalances[currentIndex])
+    //             cout << "\n\n\t\t\t\t\t\t\t\t\t\tBalance is Low.";
+    //         else
+    //             cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn Error occured.. :/";
 
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-            getch();
-            loginAsUser(userNames[currentIndex]);
-        }
-        else if (proceed == 2)
-        {
-            cout << "\t\t\t\t\t\t\t\t\t\tPress any key to continue";
-            getch();
-            loginAsUser(userNames[currentIndex]);
-        }
-        else
-            cout << "\t\t\t\t\t\t\t\t\t\tInvalid input.";
-    }
-    else
-        cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
+    //         cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    //         getch();
+    //         loginAsUser(userNames[currentIndex]);
+    //     }
+    //     else if (proceed == 2)
+    //     {
+    //         cout << "\t\t\t\t\t\t\t\t\t\tPress any key to continue";
+    //         getch();
+    //         loginAsUser(userNames[currentIndex]);
+    //     }
+    //     else
+    //         cout << "\t\t\t\t\t\t\t\t\t\tInvalid input.";
+    // }
+    // else
+    //     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
     
-    cout << "\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsUser(userNames[currentIndex]);
+    // cout << "\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsUser(userNames[currentIndex]);
 }
 void viewTransactions()
 {
-    header();
-    if (transactions[0] != 0)
-    {
-        cout << "\t\t\t\t\t\t\t\t       #################################################" << endl;
-        cout << "\t\t\t\t\t\t\t\t\t  Transaction Type\t     Amount($)" << endl;
-        cout << "\t\t\t\t\t\t\t\t       #################################################" << endl << endl;
-        for (int i = 0; i < transactionsIndex; i++ )
-        {
-            cout << "\t\t\t\t\t\t\t\t\t     " << transactionsTypes[i] << "\t\t\t" << transactions[i] << endl;
-        }
-    }
-    else
-        cout << "\n\t\t\t\t\t\t\t\t\t\tNo Transactions for Now..";
+    // header();
+    // if (transactions[0] != 0)
+    // {
+    //     cout << "\t\t\t\t\t\t\t\t       #################################################" << endl;
+    //     cout << "\t\t\t\t\t\t\t\t\t  Transaction Type\t     Amount($)" << endl;
+    //     cout << "\t\t\t\t\t\t\t\t       #################################################" << endl << endl;
+    //     for (int i = 0; i < transactionsIndex; i++ )
+    //     {
+    //         cout << "\t\t\t\t\t\t\t\t\t     " << transactionsTypes[i] << "\t\t\t" << transactions[i] << endl;
+    //     }
+    // }
+    // else
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tNo Transactions for Now..";
     
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsUser(userNames[currentIndex]);
+    // cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsUser(userNames[currentIndex]);
 }
 void blockOrUnblockTransactions()
 {
-    header();
-    cout << "\t\t\t\t\t\t\t\t\t\tPlease wait...";
-    Sleep(1000);
-    if (blockTransactions == false)
-    {
-        blockTransactions = true;
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Blocked.";
-    }
-    else
-    {   
-        blockTransactions = false;     
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Unblocked.";
-    }
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsUser(userNames[currentIndex]);
+    // header();
+    // cout << "\t\t\t\t\t\t\t\t\t\tPlease wait...";
+    // Sleep(1000);
+    // if (blockTransactions == false)
+    // {
+    //     blockTransactions = true;
+    //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Blocked.";
+    // }
+    // else
+    // {   
+    //     blockTransactions = false;     
+    //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Unblocked.";
+    // }
+    // cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsUser(userNames[currentIndex]);
 }
 void modifyInformation()
 {
-    header();
+    // header();
     
-    string currentPass;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
-    cin >> currentPass;
+    // string currentPass;
+    // cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
+    // cin >> currentPass;
     
-    cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
-    Sleep(1000);
+    // cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+    // Sleep(1000);
     
-    if(currentPass == userPasswords[currentIndex])
-    {
-        string newName;
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tEnter new Name: ";
-        cin >> newName;
+    // if(currentPass == userPasswords[currentIndex])
+    // {
+    //     string newName;
+    //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tEnter new Name: ";
+    //     cin >> newName;
 
-        cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
-        Sleep(1000);
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+    //     Sleep(1000);
     
-        if(!userExist(newName))                    /// does'nt exist
-        {
-            string oldName = userNames[currentIndex];         //// optional for output :]
-            userNames[currentIndex] = newName;
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're name was successfully changed from \"" << oldName << "\" to " << "\"" << newName << "\"";
-        }
-        else
-            cout << "\n\t\t\t\t\t\t\t\t\t\tUser Already Exists..";
-    }
-    else
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
+  ///error here so commented      // if(!userExist(newName))                    /// does'nt exist
+        // {
+        //     string oldName = userNames[currentIndex];         //// optional for output :]
+        //     userNames[currentIndex] = newName;
+        //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're name was successfully changed from \"" << oldName << "\" to " << "\"" << newName << "\"";
+        // }
+        // else
+        //     cout << "\n\t\t\t\t\t\t\t\t\t\tUser Already Exists..";
+    // }
+    // else
+    //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
     
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsUser(userNames[currentIndex]);
+    // cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsUser(userNames[currentIndex]);
 }
 void changePassword()
 {
     header();
     
-    string currentPass;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
-    cin >> currentPass;
+    // string currentPass;
+    // cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
+    // cin >> currentPass;
     
-    cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
-    Sleep(1000);
+    // cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+    // Sleep(1000);
     
-    if(currentPass == userPasswords[currentIndex])
-    {
-        string newPass;
-        cout << "\n\t\t\t\t\t\t\t\t\t\tEnter New Password: ";
-        cin >> newPass;
-        userPasswords[currentIndex] = newPass;
-        cout << "\n\t\t\t\t\t\t\t\t\t\tPassword Successfully changed..";
-    }
-    else
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
+    // if(currentPass == userPasswords[currentIndex])
+    // {
+    //     string newPass;
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tEnter New Password: ";
+    //     cin >> newPass;
+    //     userPasswords[currentIndex] = newPass;
+    //     cout << "\n\t\t\t\t\t\t\t\t\t\tPassword Successfully changed..";
+    // }
+    // else
+    //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
     
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsUser(userNames[currentIndex]);
+    // cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsUser(userNames[currentIndex]);
 }
 void deleteAccount()
 {
     header();
     
-    string currentPass;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
-    cin >> currentPass;
+    // string currentPass;
+    // cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
+    // cin >> currentPass;
     
-    cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
-    Sleep(1000);
+    // cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+    // Sleep(1000);
     
-    if(currentPass == userPasswords[currentIndex])
-    {
-        userNames[currentIndex] = "";         /// deleting name so can't access this account now     ;}
+    // if(currentPass == userPasswords[currentIndex])
+    // {
+    //     userNames[currentIndex] = "";         /// deleting name so can't access this account now     ;}
         
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour account has been removed.";
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-        getch();
-        mainMenu();
-    }
-    else
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
+    //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour account has been removed.";
+    //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    //     getch();
+    //     mainMenu();
+    // }
+    // else
+    //     cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
     
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
-    loginAsUser(userNames[currentIndex]);
+    // cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    // getch();
+    // loginAsUser(userNames[currentIndex]);
 }
 void viewRecords()
 {
-    header();
-    cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t    Sr No\t NAME \t    ID - No. \t Balance($)" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
-    cout << endl;
-    for (int i = 0; i < index; i++)
-    {
-        if (userNames[i] != "")
-            cout << "\t\t\t\t\t\t\t\t\t      " << i << " \t " << userNames[i] << "\t      " << userIDs[i] << "\t   " << userBalances[i] << endl;
-        else   
-            continue;
-    }
-    if (del==0)
-    {
-        cout << "\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
-        getch();
-    }
+    // header();
+    // cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
+    // cout << "\t\t\t\t\t\t\t\t\t    Sr No\t NAME \t    ID - No. \t Balance($)" << endl;
+    // cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
+    // cout << endl;
+    // for (int i = 0; i < index; i++)
+    // {
+    //     if (userNames[i] != "")
+    //         cout << "\t\t\t\t\t\t\t\t\t      " << i << " \t " << userNames[i] << "\t      " << userIDs[i] << "\t   " << userBalances[i] << endl;
+    //     else   
+    //         continue;
+    // }
+    // if (del==0)
+    // {
+    //     cout << "\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    //     getch();
+    // }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////// user loggedIn End ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/// input validations start
-void passNotCorrect()
-{
-    cout << "\n\t\t\t\t\t\t\t\t\t\t   Invalid Password" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
-    getch();
-    mainMenu();
-}
-void accountNotExists()
-{
-    cout << "\n\t\t\t\t\t\t\t\t\t\t   Account does'nt Exist" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
-    getch();
-    mainMenu();
-}
-bool checkUserValidity(string name, string pass)
-{
-    bool validPass = true;
-    for (int i = 0; i < index; i++)
-    {
-        if (name == userNames[i] && pass == userPasswords[i])
-        {
-            validPass = true;
-            currentIndex = i;
-            break;
-        }
-        else
-            validPass = false;    
-    }
-    return validPass;
-}
-bool userExist(string name)
-{
-    bool exists = true;
-    for (int i = 0; i < index; i++)
-    {
-        if (name == userNames[i])
-        {
-            exists = true;    
-            transferIndex = i;       // for transfer of cash  
-            break;
-        }
-        else
-            exists = false;
-    }
-    return exists;
-}
-bool uniqueUser(string userNames[], int &index, string name)
-{
-    bool unique = true;     
-    for (int i = 0; i < index; i++)    // looping through names array to check if new user 
-    {
-        if (name == userNames[i])
-        {
-            unique = false;
-            break;
-        }
-    }
-    return unique;
-}
-/// input validation end
 
 void header()
 {
