@@ -11,15 +11,13 @@ void signInHeader();
 void managerHeader();
 void userHeader();
 /// manager
-int loginAsManager();
 bool adminLoginCheck(string, string &);         
 /// manager functions
-void viewRecords();
-void addNewUser();
-void deleteUser();
-void setGoldRate();
-/// user
-void loginAsUser(string);
+void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del);
+void addNewUser(string userNames[], string userPasswords[], int &index);
+void deleteUser(string []);
+void setGoldRate(float &);
+//////////////////////// user
 void greetUser(string);   
 /// user functions
 void checkPortfolio(float userInvestments[], float userBalances[], int currentIndex, float goldRate);
@@ -70,6 +68,7 @@ int main()
     /////// admins
     string adminPassword = "admin";
     float goldRate = 63.69;
+    int del = 0;     ////// for deletion of records
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     int choice = 0;
     string LogInTo = "null";
@@ -147,9 +146,9 @@ mainPage:       ///// for logging out of user's
         { 
             adminSelectedOption = managerMenu();
             if (adminSelectedOption == 1)
-                addNewUser();
-            if (adminSelectedOption == 2)
-                viewRecords();
+                addNewUser(userNames, userPasswords, index);    
+            else if (adminSelectedOption == 2)
+                viewRecords(userNames, userIDs, userBalances ,index , del);      
             else if (adminSelectedOption == 3)
             {   
                 //// not complete
@@ -159,7 +158,7 @@ mainPage:       ///// for logging out of user's
                 //// not complete
             }
             else if (adminSelectedOption == 5)
-                setGoldRate();
+                setGoldRate(goldRate);       
             else if (adminSelectedOption == 6)
             {   
                 //// not complete
@@ -178,9 +177,11 @@ mainPage:       ///// for logging out of user's
             }
             else if (adminSelectedOption == 10)
             {   
-                // del = 1;
-                viewRecords();
-                deleteUser();
+                del = 1;
+                viewRecords(userNames, userIDs, userBalances , index, del);
+                deleteUser(userNames);
+                del = 0;
+                viewRecords(userNames, userIDs, userBalances , index, del);
             }
             else if (adminSelectedOption == 11)
             {
@@ -244,85 +245,6 @@ mainPage:       ///// for logging out of user's
     }
 }
 
-void managerHeader()
-{
-    system("cls");
-    // Get the handle to the console
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    // Example: Set foreground color to green
-    SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-    cout << R"(                                                             /'\_/`\                                                   )" << endl;
-    cout << R"(                                                            /\      \     __      ___      __       __      __   _ __  )" << endl;
-    cout << R"(                                                            \ \ \__\ \  /'__`\  /' _ `\  /'__`\   /'_ `\  /'__`\/\`'__\)" << endl;
-    cout << R"(                                                             \ \ \_/\ \/\ \L\.\_/\ \/\ \/\ \L\.\_/\ \L\ \/\  __/\ \ \/ )" << endl;
-    cout << R"(                                                              \ \_\\ \_\ \__/.\_\ \_\ \_\ \__/.\_\ \____ \ \____\\ \_\ )" << endl;
-    cout << R"(                                                               \/_/ \/_/\/__/\/_/\/_/\/_/\/__/\/_/\/___L\ \/____/ \/_/ )" << endl;
-    cout << R"(                                                                                                    /\____/            )" << endl;
-    cout << R"(                                                                                                    \_/__/             )" << endl;
-    cout << endl;
-    cout << "                                                                ##########################################################" << endl;
-    cout << endl;
-    // Reset to default color
-    SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-}
-
-
-
-/// input validations start
-void passNotCorrect()
-{
-    cout << "\n\t\t\t\t\t\t\t\t\t\t   Invalid Password" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
-    getch();
-}
-void accountNotExists()
-{
-    cout << "\n\t\t\t\t\t\t\t\t\t\t   Account does'nt Exist" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
-    getch();
-}
-bool checkUserValidity(string userNames[], string userPasswords[], int index, int &currentIndex,  string name, string pass)
-{
-    bool validPass = false;
-    for (int i = 0; i < index; i++)
-    {
-        if (name == userNames[i] && pass == userPasswords[i])
-        {
-            validPass = true;
-            currentIndex = i;
-            break;
-        }    
-    }
-    return validPass;
-}
-bool userExist(string userNames[], string name, int index, int &transferIndex)
-{
-    bool exists = false;
-    for (int i = 0; i < index; i++)
-    {
-        if (name == userNames[i])
-        {
-            exists = true;    
-            transferIndex = i;       // for transfer of cash  
-            break;
-        }
-    }
-    return exists;
-}
-bool uniqueUser(string userNames[], int &index, string name)
-{
-    bool unique = true;     
-    for (int i = 0; i < index; i++)    // looping through names array to check if new user 
-    {
-        if (name == userNames[i])
-        {
-            unique = false;
-            break;
-        }
-    }
-    return unique;
-}
-/// input validation end
 int mainMenu()             ///// complete
 {
     header();
@@ -336,54 +258,6 @@ int mainMenu()             ///// complete
     cin >> option;
     return option;
 }
-
-void createUser(string userNames[], string userPasswords[], int &index, string name, string pass)
-{
-    cout << "\n\t\t\t\t\t\t\t\t\t\t   Please wait Creating new user....";
-    Sleep(1000);
-
-    /// assigning values
-    userNames[index] = name;
-    userPasswords[index] = pass;
-    // userBalances[index] = 0;
-    // userIDs[index] = "000"; 
-    // userIDs[index] += to_string(index+1);
-    index++;  
-    // cout << index << endl;
-    cout << endl << endl << "\t\t\t\t\t\t\t\t\t\t   Successfully created new user" << endl;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////// start of signUp/signIn //////////////////////////////////////////////////////////////////////////////////////////////////////////
-void signUpCheck()
-{
-    cout << "\n\t\t\t\t\t\t\t\t\t\t   Please wait Creating new user....";
-    Sleep(1000);
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\t   User already exists" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue....";
-    getch();
-}
-bool signInValidate(string userNames[], string userPasswords[], int index, int &currentIndex, int &transferIndex, string name, string pass)
-{
-    bool allowLogin = false;
-    if (userExist(userNames, name, index, transferIndex))
-    {
-        if (checkUserValidity(userNames, userPasswords, index, currentIndex, name, pass))
-            allowLogin = true;
-        else
-            passNotCorrect();
-    }
-    else
-        accountNotExists();
-    return allowLogin;
-}
-bool adminLoginCheck(string pass, string &adminPassword)
-{
-    bool login = false; 
-    if (pass == adminPassword)
-        login = true;
-    return login;
-}
-/////////////////////////////////////////////////////////////////////////////////////// end of signUp/SignIn /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////// manager loggedIn start ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int managerMenu()
@@ -407,34 +281,64 @@ int managerMenu()
     return adminSelectedOption;
 }
 
-int loginAsManager()
+void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del)
 {
-    
+    managerHeader();
+    cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t    Sr No\t NAME \t    ID - No. \t Balance($)" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
+    cout << endl;
+    for (int i = 0; i < index; i++)
+    {
+        if (userNames[i] != "")
+            cout << "\t\t\t\t\t\t\t\t\t      " << i << " \t " << userNames[i] << "\t      " << userIDs[i] << "\t   " << userBalances[i] << endl;
+        else   
+            continue;
+    }
+    if (del==0)
+    {
+        cout << "\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
+        getch();
+    }
 }
-
 /// manager functions defination
-void addNewUser()
+void addNewUser(string userNames[], string userPasswords[], int &index)
 {
-    header();
-    signUpCheck();
-    loginAsManager();
+again:     /// if want to add another one       ;}
+    managerHeader();
+    string name, pass;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Enter your name: ";
+    cin >> name;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Enter password: ";
+    cin >> pass;
+    if (uniqueUser(userNames, index, name))
+        createUser(userNames, userPasswords, index, name, pass);
+    else
+        cout << "\n\t\t\t\t\t\t\t\t\t\t   User already exists..........";
+    int choice;
+    cout << "\n\t\t\t\t\t\t\t\t\t\tDo you want to add another one 1(yes) or 2(no): ";
+    cin >> choice;
+    if (choice == 1)
+        goto again;
+    else
+        cout << "\n\t\t\t\t\t\t\t\t\t\t   Press any key to continue....";
+        getch();
 }
-void setGoldRate()
+void setGoldRate(float &goldRate)
 {
-    // header();
-    // cout << "\t\t\t\t\t\t\t\t\t\tCurrent Rate of Gold per gram: " << goldRate;
+    managerHeader();
+    cout << "\t\t\t\t\t\t\t\t\t\tCurrent Rate of Gold per gram: " << goldRate;
     
-    // float newGoldRate;
-    // cout << "\n\n\t\t\t\t\t\t\t\t\t\tNew Gold Rate: ";
-    // cin >> newGoldRate;
+    float newGoldRate;
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\tNew Gold Rate: ";
+    cin >> newGoldRate;
 
-    // // goldRate = newGoldRate;
+    goldRate = newGoldRate;
 
-    // cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    // getch();
-    // loginAsManager();
+    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
 }
-void deleteUser()
+void deleteUser(string userNames[])
 {
     int choice;
     cout << "\n\t\t\t\t\t\t\t\t\t\tEnter the Sr. No you want to remove: ";
@@ -443,11 +347,7 @@ void deleteUser()
     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait deleting the records...";
     Sleep(1000);
     
-    // userNames[choice] = "";  /// just setting name to empty and not displaying it's all records on view record  ;}   
-    // del = 0;
-    
-    header();
-    viewRecords();
+    userNames[choice] = "";  /// just setting name to empty and not displaying it's all records on view record  ;}   
 }
 ////////////////////////////////////////////////////////////////////////////////////// manager loggedIn end ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -478,30 +378,8 @@ int userMenu()
     cin >> userOption;
     return userOption;
 }
-void userHeader()
-{
-    system("cls");
-    // Get the handle to the console
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    // Example: Set foreground color to green
-    SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-    cout << R"(                                                                        __  __                          )" << endl;
-    cout << R"(                                                                       /\ \/\ \                         )" << endl;
-    cout << R"(                                                                       \ \ \ \ \    ____     __   _ __  )" << endl;
-    cout << R"(                                                                        \ \ \ \ \  /',__\  /'__`\/\`'__\)" << endl;
-    cout << R"(                                                                         \ \ \_\ \/\__, `\/\  __/\ \ \/ )" << endl;
-    cout << R"(                                                                          \ \_____\/\____/\ \____\\ \_\ )" << endl;
-    cout << R"(                                                                           \/_____/\/___/  \/____/ \/_/ )" << endl;
-    cout << endl;
-    cout << "                                                                             ##############################" << endl;
-    cout << endl;
-    // Reset to default color
-    SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-}
-void loginAsUser(string userName)
-{
-    
-}
+
+
 /// user functions defination
 void checkPortfolio(float userInvestments[], float userBalances[], int currentIndex, float goldRate)
 {
@@ -800,26 +678,107 @@ bool deleteAccount(string userNames[], string userPasswords[],int currentIndex)
     getch();
     return accountDeletion;
 }
-void viewRecords()
+/// input validations start
+void passNotCorrect()
 {
-    // header();
-    // cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
-    // cout << "\t\t\t\t\t\t\t\t\t    Sr No\t NAME \t    ID - No. \t Balance($)" << endl;
-    // cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
-    // cout << endl;
-    // for (int i = 0; i < index; i++)
-    // {
-    //     if (userNames[i] != "")
-    //         cout << "\t\t\t\t\t\t\t\t\t      " << i << " \t " << userNames[i] << "\t      " << userIDs[i] << "\t   " << userBalances[i] << endl;
-    //     else   
-    //         continue;
-    // }
-    // if (del==0)
-    // {
-    //     cout << "\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    //     getch();
-    // }
+    cout << "\n\t\t\t\t\t\t\t\t\t\t   Invalid Password" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
+    getch();
 }
+void accountNotExists()
+{
+    cout << "\n\t\t\t\t\t\t\t\t\t\t   Account does'nt Exist" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue...";
+    getch();
+}
+bool checkUserValidity(string userNames[], string userPasswords[], int index, int &currentIndex,  string name, string pass)
+{
+    bool validPass = false;
+    for (int i = 0; i < index; i++)
+    {
+        if (name == userNames[i] && pass == userPasswords[i])
+        {
+            validPass = true;
+            currentIndex = i;
+            break;
+        }    
+    }
+    return validPass;
+}
+bool userExist(string userNames[], string name, int index, int &transferIndex)
+{
+    bool exists = false;
+    for (int i = 0; i < index; i++)
+    {
+        if (name == userNames[i])
+        {
+            exists = true;    
+            transferIndex = i;       // for transfer of cash  
+            break;
+        }
+    }
+    return exists;
+}
+bool uniqueUser(string userNames[], int &index, string name)
+{
+    bool unique = true;     
+    for (int i = 0; i < index; i++)    // looping through names array to check if new user 
+    {
+        if (name == userNames[i])
+        {
+            unique = false;
+            break;
+        }
+    }
+    return unique;
+}
+//////////////////////////////////////////////////////////////////////////////////////// start of signUp/signIn //////////////////////////////////////////////////////////////////////////////////////////////////////////
+void signUpCheck()
+{
+    cout << "\n\t\t\t\t\t\t\t\t\t\t   Please wait Creating new user....";
+    Sleep(1000);
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\t   User already exists" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue....";
+    getch();
+}
+bool signInValidate(string userNames[], string userPasswords[], int index, int &currentIndex, int &transferIndex, string name, string pass)
+{
+    bool allowLogin = false;
+    if (userExist(userNames, name, index, transferIndex))
+    {
+        if (checkUserValidity(userNames, userPasswords, index, currentIndex, name, pass))
+            allowLogin = true;
+        else
+            passNotCorrect();
+    }
+    else
+        accountNotExists();
+    return allowLogin;
+}
+bool adminLoginCheck(string pass, string &adminPassword)
+{
+    bool login = false; 
+    if (pass == adminPassword)
+        login = true;
+    return login;
+}
+void createUser(string userNames[], string userPasswords[], int &index, string name, string pass)
+{
+    cout << "\n\t\t\t\t\t\t\t\t\t\t   Please wait Creating new user....";
+    Sleep(1000);
+
+    /// assigning values
+    userNames[index] = name;
+    userPasswords[index] = pass;
+    // userBalances[index] = 0;
+    // userIDs[index] = "000"; 
+    // userIDs[index] += to_string(index+1);
+    index++;  
+    // cout << index << endl;
+    cout << endl << endl << "\t\t\t\t\t\t\t\t\t\t   Successfully created new user" << endl;
+}
+/////////////////////////////////////////////////////////////////////////////////////// end of signUp/SignIn /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// input validation end
 //////////////////////////////////////////////////////////////////////////////////////////////// user loggedIn End ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void header()
@@ -951,6 +910,47 @@ void adminLoginHeader()
     cout << R"(                                                                                                \_/__/              )" << endl;
     cout << endl;
     cout << "                                                                              #########################################" << endl << endl;
+    // Reset to default color
+    SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+}
+void userHeader()
+{
+    system("cls");
+    // Get the handle to the console
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    // Example: Set foreground color to green
+    SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+    cout << R"(                                                                        __  __                          )" << endl;
+    cout << R"(                                                                       /\ \/\ \                         )" << endl;
+    cout << R"(                                                                       \ \ \ \ \    ____     __   _ __  )" << endl;
+    cout << R"(                                                                        \ \ \ \ \  /',__\  /'__`\/\`'__\)" << endl;
+    cout << R"(                                                                         \ \ \_\ \/\__, `\/\  __/\ \ \/ )" << endl;
+    cout << R"(                                                                          \ \_____\/\____/\ \____\\ \_\ )" << endl;
+    cout << R"(                                                                           \/_____/\/___/  \/____/ \/_/ )" << endl;
+    cout << endl;
+    cout << "                                                                             ##############################" << endl;
+    cout << endl;
+    // Reset to default color
+    SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+}
+void managerHeader()
+{
+    system("cls");
+    // Get the handle to the console
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    // Example: Set foreground color to green
+    SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+    cout << R"(                                                             /'\_/`\                                                   )" << endl;
+    cout << R"(                                                            /\      \     __      ___      __       __      __   _ __  )" << endl;
+    cout << R"(                                                            \ \ \__\ \  /'__`\  /' _ `\  /'__`\   /'_ `\  /'__`\/\`'__\)" << endl;
+    cout << R"(                                                             \ \ \_/\ \/\ \L\.\_/\ \/\ \/\ \L\.\_/\ \L\ \/\  __/\ \ \/ )" << endl;
+    cout << R"(                                                              \ \_\\ \_\ \__/.\_\ \_\ \_\ \__/.\_\ \____ \ \____\\ \_\ )" << endl;
+    cout << R"(                                                               \/_/ \/_/\/__/\/_/\/_/\/_/\/__/\/_/\/___L\ \/____/ \/_/ )" << endl;
+    cout << R"(                                                                                                    /\____/            )" << endl;
+    cout << R"(                                                                                                    \_/__/             )" << endl;
+    cout << endl;
+    cout << "                                                                ##########################################################" << endl;
+    cout << endl;
     // Reset to default color
     SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 }
