@@ -17,6 +17,7 @@ void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int
 void addNewUser(string userNames[], string userPasswords[], int &index);
 void deleteUser(string []);
 void setGoldRate(float &);
+void resetAdminPassword(string &adminPassword);
 //////////////////////// user
 void greetUser(string);   
 /// user functions
@@ -173,7 +174,7 @@ mainPage:       ///// for logging out of user's
             }
             else if (adminSelectedOption == 9)
             {   
-                //// not complete
+                resetAdminPassword(adminPassword);
             }
             else if (adminSelectedOption == 10)
             {   
@@ -244,7 +245,27 @@ mainPage:       ///// for logging out of user's
         return 0;
     }
 }
-
+void resetAdminPassword(string &adminPassword)
+{
+    managerHeader();
+    string pass;
+    cout << "\t\t\t\t\t\t\t\t\t\tEnter your current Password: ";
+    cin >> pass;
+    cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait processing...";
+    Sleep(500);
+    if (adminPassword == pass)
+    { 
+        string newPass;
+        cout << "\n\t\t\t\t\t\t\t\t\t\tSet new Password: ";
+        cin >> newPass;
+        adminPassword = newPass;
+        cout << "\n\t\t\t\t\t\t\t\t\t\tPassword Successfully changed\n";
+    }
+    else
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tIncorrect Password.";
+    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+}
 int mainMenu()             ///// complete
 {
     header();
@@ -272,7 +293,7 @@ int managerMenu()
     cout << "\t\t\t\t\t\t\t\t\t\t   6. Loan Calculator" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   7. Give Loan" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   8. Update Information" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   9. Reset Passwords" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   9. Reset Password" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete a User" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t  11. Log Out" << endl;
     cout << endl;
