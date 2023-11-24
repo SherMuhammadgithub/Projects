@@ -18,6 +18,7 @@ void addNewUser(string userNames[], string userPasswords[], int &index);
 void deleteUser(string []);
 void setGoldRate(float &);
 void resetAdminPassword(string &adminPassword);
+void modifyInfoAdmin(string userNames[], int index, int &transferIndex);
 //////////////////////// user
 void greetUser(string);   
 /// user functions
@@ -170,7 +171,11 @@ mainPage:       ///// for logging out of user's
             }
             else if (adminSelectedOption == 8)
             {   
-                //// not complete
+                del = 1;
+                viewRecords(userNames, userIDs, userBalances , index, del);
+                modifyInfoAdmin(userNames, index, transferIndex);
+                del = 0;
+                viewRecords(userNames, userIDs, userBalances , index, del);
             }
             else if (adminSelectedOption == 9)
             {   
@@ -301,7 +306,21 @@ int managerMenu()
     cin >> adminSelectedOption;
     return adminSelectedOption;
 }
+void modifyInfoAdmin(string userNames[], int index, int &transferIndex)
+{
+    int choice;
+    cout << "\n\t\t\t\t\t\t\t\t\t     Enter the Sr. No you want to change the info of: ";
+    cin >> choice;
+    
+    cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait...";
+    Sleep(800);
 
+    string newName;
+    cout << "\n\t\t\t\t\t\t\t\t\t\tEnter new Name: ";
+    cin >> newName;
+    if(!userExist(userNames, newName, index, transferIndex))
+        userNames[choice] = newName;
+}
 void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del)
 {
     managerHeader();
