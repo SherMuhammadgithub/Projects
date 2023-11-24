@@ -19,6 +19,7 @@ void deleteUser(string []);
 void setGoldRate(float &);
 void resetAdminPassword(string &adminPassword);
 void modifyInfoAdmin(string userNames[], int index, int &transferIndex);
+void giveLoan(string userNames[], float userBalances[],int index, int &transferIndex);
 //////////////////////// user
 void greetUser(string);   
 /// user functions
@@ -167,7 +168,11 @@ mainPage:       ///// for logging out of user's
             }
             else if (adminSelectedOption == 7)
             {   
-                //// not complete
+                del = 1;
+                viewRecords(userNames, userIDs, userBalances , index, del);
+                giveLoan(userNames, userBalances, index, transferIndex);
+                del = 0;
+                viewRecords(userNames, userIDs, userBalances , index, del);
             }
             else if (adminSelectedOption == 8)
             {   
@@ -306,18 +311,36 @@ int managerMenu()
     cin >> adminSelectedOption;
     return adminSelectedOption;
 }
-void modifyInfoAdmin(string userNames[], int index, int &transferIndex)
+
+void giveLoan(string userNames[], float userBalances[],int index, int &transferIndex)
 {
     int choice;
-    cout << "\n\t\t\t\t\t\t\t\t\t     Enter the Sr. No you want to change the info of: ";
+    cout << "\n\t\t\t\t\t\t\t\t\t     Enter the Sr.No you want to give loan to: ";
     cin >> choice;
     
+    float loan;
+    cout << "\n\t\t\t\t\t\t\t\t\t     Enter the amount of Loan you want to give: ";
+    cin >> loan;
+
     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait...";
     Sleep(800);
 
+    userBalances[choice] += loan; 
+}
+
+void modifyInfoAdmin(string userNames[], int index, int &transferIndex)
+{
+    int choice;
+    cout << "\n\t\t\t\t\t\t\t\t\t     Enter the Sr.No you want to change the info of: ";
+    cin >> choice;
+    
     string newName;
     cout << "\n\t\t\t\t\t\t\t\t\t\tEnter new Name: ";
     cin >> newName;
+    
+    cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait...";
+    Sleep(800);
+    
     if(!userExist(userNames, newName, index, transferIndex))
         userNames[choice] = newName;
 }
@@ -381,7 +404,7 @@ void setGoldRate(float &goldRate)
 void deleteUser(string userNames[])
 {
     int choice;
-    cout << "\n\t\t\t\t\t\t\t\t\t\tEnter the Sr. No you want to remove: ";
+    cout << "\n\t\t\t\t\t\t\t\t\t\tEnter the Sr.No you want to remove: ";
     cin >> choice;
     
     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait deleting the records...";
