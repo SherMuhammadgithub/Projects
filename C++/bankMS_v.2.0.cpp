@@ -1,5 +1,6 @@
 #include <iostream>
 #include <windows.h>
+#include <iomanip>
 #include <conio.h>
 using namespace std;
 
@@ -15,7 +16,10 @@ bool adminLoginCheck(string, string &);
 /// manager functions
 void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del);
 void addNewUser(string userNames[], string userPasswords[], int &index);
+void addAsset(string [], string [],int &);
 void deleteUser(string []);
+void liquidity(float userBalances[], int index);
+void viewAssets(string [], string [], int);
 void setGoldRate(float &);
 void resetAdminPassword(string &adminPassword);
 void modifyInfoAdmin(string userNames[], int index, int &transferIndex);
@@ -61,6 +65,10 @@ int main()
     float userInvestments[100] = {0};
     float transactions[100] = {0};           
     string transactionsTypes[100];
+    /////// bank assets
+    string bankAssets[100] = {"Real-Estate","BitCoin"};
+    string bankAssetsWorth[100] = {"500k","100k"};
+    int assetIndex = 2;
     /////////////////////////////////////////////////////////////
     ////// users 
     int currentIndex = 0;
@@ -154,17 +162,17 @@ mainPage:       ///// for logging out of user's
                 viewRecords(userNames, userIDs, userBalances ,index , del);      
             else if (adminSelectedOption == 3)
             {   
-                //// not complete
+                addAsset(bankAssets, bankAssetsWorth, assetIndex);
             }
             else if (adminSelectedOption == 4)
             {   
-                //// not complete
+                liquidity(userBalances, index);
             }
             else if (adminSelectedOption == 5)
                 setGoldRate(goldRate);       
             else if (adminSelectedOption == 6)
             {   
-                //// not complete
+                viewAssets(bankAssets, bankAssetsWorth, assetIndex);
             }
             else if (adminSelectedOption == 7)
             {   
@@ -305,10 +313,11 @@ int managerMenu()
     int adminSelectedOption;
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Add a New User" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. View All Records" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   3. View Single Record" << endl; // change
-    cout << "\t\t\t\t\t\t\t\t\t\t   4. Interest Calculator" << endl; // change
+    cout << "\t\t\t\t\t\t\t\t\t\t   3. Add an Asset" << endl; // change
+    // cout << "\t\t\t\t\t\t\t\t\t\t   3. View Single Record" << endl; // change
+    cout << "\t\t\t\t\t\t\t\t\t\t   4. View Bank's Liquidity" << endl; // change
     cout << "\t\t\t\t\t\t\t\t\t\t   5. Set Gold Rate" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   6. Loan Calculator" << endl;   // change
+    cout << "\t\t\t\t\t\t\t\t\t\t   6. View Asset's" << endl;   // change
     cout << "\t\t\t\t\t\t\t\t\t\t   7. Give Loan" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   8. Update Information" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   9. Reset Password" << endl;
@@ -319,7 +328,48 @@ int managerMenu()
     cin >> adminSelectedOption;
     return adminSelectedOption;
 }
+void viewAssets(string bankAssets[], string bankAssetsWorth[], int assetIndex)
+{
+    managerHeader();
+    cout << "\t\t\t\t\t\t\t\t\tAsset's Name\t\t\tAsset's Worth($)\n";
+    for (int i = 0; i < assetIndex; i++)
+    {
+        cout << "\t\t\t\t\t\t\t\t\t " << setw(8) << bankAssets[i] << "\t\t\t     " << bankAssetsWorth[i] << endl;
+    }
+    cout << "\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+}
 
+void addAsset(string bankAssets[], string bankAssetsWorth[], int &assetIndex)
+{
+    managerHeader();
+    string newAsset;
+    cout << "\t\t\t\t\t\t\t\t\tEnter the assest's name you want to add: ";
+    cin >> newAsset;
+
+    string assetWorth;
+    cout << "\t\t\t\t\t\t\t\t\tEnter the assest's worth you have added in (***k) format: ";
+    cin >> assetWorth;
+
+    bankAssets[assetIndex] = newAsset;
+    bankAssetsWorth[assetIndex] = assetWorth;
+    assetIndex++;
+    
+    cout << "\n\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+}
+void liquidity(float userBalances[], int index)
+{
+    managerHeader();
+    float cashHoldings;
+    for (int i = 0; i < index; i++)
+    {
+        cashHoldings += userBalances[i];
+    }
+    cout << "\t\t\t\t\t\t\t\t\tTotal Cash available in Liquid: " << cashHoldings;
+    cout << "\n\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();
+}
 void giveLoan(string userNames[], float userBalances[],int index, int &transferIndex)
 {
     int choice;
