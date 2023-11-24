@@ -241,7 +241,15 @@ mainPage:       ///// for logging out of user's
                     goto mainPage;
             }
             else if (userSelectedOption == 11)
+            {
+                blockTransactions = false;                         // reseting the 
+                for (int i = 0; i < transactionsIndex; i++)         //
+                {                                                    //
+                    transactionsTypes[i] = "";                        //
+                    transactions[i] = 0;                               //
+                }                                                        // values  ;}
                 goto mainPage;         // logout
+            }
             else 
             {
                 cout << "\t\t\t\t\t\t\t\t\t\t  Invalid Choice...";
@@ -297,10 +305,10 @@ int managerMenu()
     int adminSelectedOption;
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Add a New User" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. View All Records" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   3. View Single Record" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   4. Interest Calculator" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   3. View Single Record" << endl; // change
+    cout << "\t\t\t\t\t\t\t\t\t\t   4. Interest Calculator" << endl; // change
     cout << "\t\t\t\t\t\t\t\t\t\t   5. Set Gold Rate" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t\t   6. Loan Calculator" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t   6. Loan Calculator" << endl;   // change
     cout << "\t\t\t\t\t\t\t\t\t\t   7. Give Loan" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   8. Update Information" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   9. Reset Password" << endl;
