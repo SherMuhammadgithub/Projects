@@ -52,6 +52,8 @@ bool checkUserValidity(string [], string [], int , int &, string, string);  /// 
 ///// error handling
 void accountNotExists();
 void passNotCorrect();
+///// 
+string getAnonymousPass();
 
 ////////////////////////////////////////////////////////////////////////////////////////// Start of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
@@ -66,7 +68,7 @@ int main()
     float transactions[100] = {0};           
     string transactionsTypes[100];
     /////// bank assets
-    string bankAssets[100] = {"Real-Estate","BitCoin"};
+    string bankAssets[100] = {"Real-Estate","Bitcoin"};
     string bankAssetsWorth[100] = {"500k","100k"};
     int assetIndex = 2;
     /////////////////////////////////////////////////////////////
@@ -90,9 +92,10 @@ mainPage:       ///// for logging out of user's
         if (choice == 1)             /// admin login
         { 
             adminLoginHeader();
-            string userEnterAdminPass;
+            string userEnterAdminPass;    // pass
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter the Password: ";
-            cin >> userEnterAdminPass;
+            userEnterAdminPass = getAnonymousPass();       /// pass in  '***' format
+            // cin >> userEnterAdminPass;   //// pass
             bool login =  adminLoginCheck(userEnterAdminPass, adminPassword);
             if (login)
             {
@@ -114,7 +117,7 @@ mainPage:       ///// for logging out of user's
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter your User Name: ";
             cin >> userEnteredName;
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter your Password: ";
-            cin >> userEnteredPassword;
+            userEnteredPassword = getAnonymousPass();
             bool login = signInValidate(userNames, userPasswords, index, currentIndex, transferIndex,userEnteredName, userEnteredPassword);
             if (login)
             {
@@ -130,8 +133,8 @@ mainPage:       ///// for logging out of user's
             cin >> name;
 
             string pass;
-            cout << "\t\t\t\t\t\t\t\t\t\t   Enter password: ";
-            cin >> pass;
+            cout << "\t\t\t\t\t\t\t\t\t\t   Set password: ";
+            pass = getAnonymousPass();
 
             if (uniqueUser(userNames, index ,name))         /// User created
                 createUser(userNames, userPasswords, index, name, pass);
@@ -271,19 +274,34 @@ mainPage:       ///// for logging out of user's
         return 0;
     }
 }
+
+string getAnonymousPass()
+{
+    char singleLetter;
+    string completeWord;
+    while(true)
+    {
+        singleLetter = getch();
+        if (singleLetter == '\r')
+            break;
+        cout << "*";
+        completeWord += singleLetter;
+    }
+    return completeWord;
+}
 void resetAdminPassword(string &adminPassword)
 {
     managerHeader();
     string pass;
     cout << "\t\t\t\t\t\t\t\t\t\tEnter your current Password: ";
-    cin >> pass;
+    pass = getAnonymousPass();
     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait processing...";
     Sleep(500);
     if (adminPassword == pass)
     { 
         string newPass;
         cout << "\n\t\t\t\t\t\t\t\t\t\tSet new Password: ";
-        cin >> newPass;
+        newPass = getAnonymousPass();
         adminPassword = newPass;
         cout << "\n\t\t\t\t\t\t\t\t\t\tPassword Successfully changed\n";
     }
@@ -721,7 +739,7 @@ void modifyInformation(string userNames[], string userPasswords[], int currentIn
     userHeader();   
     string currentPass;
     cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
-    cin >> currentPass;
+    currentPass =  getAnonymousPass();
     
     cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
     Sleep(1000);
@@ -755,7 +773,7 @@ void changePassword(string userPasswords[], int currentIndex)
     
     string currentPass;
     cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
-    cin >> currentPass;
+    currentPass = getAnonymousPass();
     
     cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
     Sleep(1000);
@@ -763,8 +781,8 @@ void changePassword(string userPasswords[], int currentIndex)
     if(currentPass == userPasswords[currentIndex])
     {
         string newPass;
-        cout << "\n\t\t\t\t\t\t\t\t\t\tEnter New Password: ";
-        cin >> newPass;
+        cout << "\n\t\t\t\t\t\t\t\t\t\tSet New Password: ";
+        newPass = getAnonymousPass();
         userPasswords[currentIndex] = newPass;
         cout << "\n\t\t\t\t\t\t\t\t\t\tPassword Successfully changed..";
     }
@@ -780,7 +798,7 @@ bool deleteAccount(string userNames[], string userPasswords[],int currentIndex)
     userHeader();
     string currentPass;
     cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
-    cin >> currentPass;
+    currentPass = getAnonymousPass();
     
     cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
     Sleep(1000);
