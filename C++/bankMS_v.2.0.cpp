@@ -59,6 +59,7 @@ void adminPressAnyKey();
 void userPressAnyKey();
 void storeTransactionHistory(string transactionsTypes[], float transactions[], int &transactionsIndex, float deposit);
 void invest(float userBalances[], float userInvestments[], int currentIndex, float investment, float goldinGrams);
+void transferNow(string [], float userBalances[], int currentIndex, int transferIndex, float transfer);
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
@@ -87,7 +88,7 @@ int main()
     int del = 0;                                     ////// for deletion of records
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     int choice = 0;
-    string LogInTo = "null";
+    string LogInTo = "null"; 
 
 mainPage:       ///// for logging out of user's
     while(choice != 4)
@@ -311,6 +312,8 @@ mainPage:       ///// for logging out of user's
                     bool depositStatus = depositMoney(userBalances, currentIndex, deposit);
                     if (depositStatus == true)   // transaction successful then store the history
                         storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, deposit);
+                    else
+                        cout << "\n\t\t\t\t\t\t\t\t\t\tThe attempted transaction was not approved.\n";
                 }
                 else
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
@@ -342,12 +345,17 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
                     cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Transfer: $";
                     cin >> transfer;
-                    string receiverName;
-                    cout << "\t\t\t\t\t\t\t\t\t\tEnter name of the reciever: ";
-                    cin >> receiverName;
-                    bool transferStatus = transferMoney(userNames, userBalances, currentIndex, transferIndex, index, transfer, receiverName);            
-                    if (transferStatus)
-                        storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, transfer);
+                    if (transfer > 0)
+                    {
+                        string receiverName;
+                        cout << "\t\t\t\t\t\t\t\t\t\tEnter name of the reciever: ";
+                        cin >> receiverName;
+                        bool transferStatus = transferMoney(userNames, userBalances, currentIndex, transferIndex, index, transfer, receiverName);            
+                        if (transferStatus)
+                            storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, transfer);
+                    }
+                    else
+                        cout << "\n\t\t\t\t\t\t\t\t\t\tThe attempted transaction was not approved.\n";       /// any error case
                 }
                 else
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
@@ -363,9 +371,14 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\t1-Gram of Gold = $" << goldRate << endl  << endl;
                     cout << "\t\t\t\t\t\t\t\t\t\tEnter amount you want to invest in Gold: $";
                     cin >> investment;
-                    bool investmentStatus = investGold(userNames, userInvestments, userBalances, currentIndex, index, goldRate, investment);             
-                    if (investmentStatus)
-                        storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, investment);
+                    if (investment > 0)
+                    {
+                        bool investmentStatus = investGold(userNames, userInvestments, userBalances, currentIndex, index, goldRate, investment);             
+                        if (investmentStatus)
+                            storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, investment);
+                    }
+                    else
+                        cout << "\n\t\t\t\t\t\t\t\t\t\tThe attempted transaction was not approved.\n";       /// any error case
                 }   
                 else
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
@@ -661,10 +674,13 @@ bool depositMoney(float userBalances[], int currentIndex, float deposit)
     bool status = false;
     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait while you're transaction is in process";
     Sleep(1000);
-    userBalances[currentIndex] += deposit;
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully deposited \"$" << deposit << "\" into you're account." << endl;
-    cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
-    status = true;
+    if (deposit > 0)
+    {
+        userBalances[currentIndex] += deposit;
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully deposited \"$" << deposit << "\" into you're account." << endl;
+        cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
+        status = true;
+    }
     return status;
 }
 void storeTransactionHistory(string transactionsTypes[], float transactions[], int &transactionsIndex, float deposit)
@@ -687,8 +703,6 @@ bool withdrawMoney(float userBalances[], int currentIndex, float withdraw)
     }
     else if (withdraw > userBalances[currentIndex]) 
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're Balance is low." << endl;
-    else
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn error occured." << endl;          /// any error case
     return status;
 }
 bool transferMoney(string userNames[], float userBalances[], int currentIndex, int &transferIndex, int index, float transfer, string name)
@@ -699,20 +713,26 @@ bool transferMoney(string userNames[], float userBalances[], int currentIndex, i
     bool recieverExists = userExist(userNames, name, index, transferIndex);
     if (recieverExists)
     {
-        if (transfer <= userBalances[currentIndex])
-        {                                                       //// transfered
-            userBalances[currentIndex] -= transfer;               //  from user1
-            userBalances[transferIndex] += transfer;              //   to user2
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully Transfered \"$" << transfer << "\" from you're account to the account of \"" << userNames[transferIndex] << "\"" << endl;
-            cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
+        if (transfer <= userBalances[currentIndex] && transfer > 0)
+        {
+            transferNow(userNames, userBalances, currentIndex, transferIndex, transfer);
+            status = true;
         }
         else if (transfer > userBalances[currentIndex]) 
             cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're Balance is low." << endl;
         else
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tAn error occured." << endl;          /// any error case
+            cout << "\n\n\t\t\t\t\t\t\t\t\t\tThe attempted transaction was not approved.\n";
     }
     else
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tNo such user exists in our database ;(" << endl;
+    return status;
+}
+void transferNow(string userNames[], float userBalances[], int currentIndex, int transferIndex, float transfer)
+{
+    userBalances[currentIndex] -= transfer;               //  from user1
+    userBalances[transferIndex] += transfer;              //   to user2
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully Transfered \"$" << transfer << "\" from you're account to the account of \"" << userNames[transferIndex] << "\"" << endl;
+    cout << "\n\t\t\t\t\t\t\t\t\t\tNew Balance: $" << userBalances[currentIndex] << endl;
 }
 bool investGold(string userNames[],float userInvestments[], float userBalances[], int currentIndex, int index, float goldRate, float investment)
 {
