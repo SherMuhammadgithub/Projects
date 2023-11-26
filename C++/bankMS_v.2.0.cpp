@@ -14,29 +14,29 @@ void userHeader();
 /// manager
 bool adminLoginCheck(string, string &);         
 /// manager functions
-bool addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index, string, string);
-void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del);
 int addAsset(string [], string [],int, string, string);
-void deleteUser(string [], int);
 int liquidity(float userBalances[], int index);
-void viewAssets(string [], string [], int);
 int setNewGoldRate();
+bool addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index, string, string);
+bool modifyInfoAdmin(string userNames[], int index, int &transferIndex);
+bool deleteUser(string [], int);
+void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del);
+void viewAssets(string [], string [], int);
 string resetAdminPassword(string adminPassword, string);
-void modifyInfoAdmin(string userNames[], int index, int &transferIndex);
 float giveLoan(float userBalances[],int index);
 //////////////////////// user
 void greetUser(string);   
 /// user functions
-void checkPortfolio(float userInvestments[], float userBalances[], int currentIndex, float goldRate);
+bool blockOrUnblockTransactions(bool);
+bool modifyInformation(string userNames[], string userPasswords[], int currentIndex, int index, int &transferIndex, string);
+bool deleteAccount(string userNames[], string userPasswords[],int currentIndex);
+bool changePassword(string userPasswords[], int currentIndex, string);
 void depositMoney(float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex, bool blockTransactions);
 void withdrawMoney(float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex, bool blockTransactions);
 void transferMoney(string userNames[], float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex,int &transferIndex, bool blockTransactions, int index);
 void investGold(string userNames[],float userInvestments[], float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex, bool blockTransactions, int index, float goldRate);
 void viewTransactions(string transactionsTypes[], float transactions[], int transactionsIndex);
-bool blockOrUnblockTransactions(bool);
-void modifyInformation(string userNames[], string userPasswords[], int currentIndex, int index, int &transferIndex);
-void changePassword(string userPasswords[], int currentIndex);
-bool deleteAccount(string userNames[], string userPasswords[],int currentIndex);
+void checkPortfolio(float userInvestments[], float userBalances[], int currentIndex, float goldRate);
 /// menus
 int mainMenu();
 void signUpCheck();
@@ -239,7 +239,11 @@ mainPage:       ///// for logging out of user's
                 del = 1;
                 viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
-                modifyInfoAdmin(userNames, index, transferIndex);
+                bool modification = modifyInfoAdmin(userNames, index, transferIndex);
+                if (modification == true)
+                    cout << "\n\t\t\t\t\t\t\t\t\t     Modification was successful";
+                else
+                    cout << "\n\t\t\t\t\t\t\t\t\t     Modification was not successful";
                 del = 0;
                 viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
@@ -260,7 +264,11 @@ mainPage:       ///// for logging out of user's
                 int deletionIndex;
                 cout << "\n\t\t\t\t\t\t\t\t\t\tEnter the Sr.No you want to remove: ";
                 cin >> deletionIndex;
-                deleteUser(userNames, deletionIndex);
+                bool deletion = deleteUser(userNames, deletionIndex);
+                if (deletion)
+                    cout << "\n\t\t\t\t\t\t\t\t\t\tThe record was deleted successfully";
+                else
+                    cout << "\n\t\t\t\t\t\t\t\t\t\tThe record was not deleted";
                 del = 0;
                 viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
@@ -294,23 +302,33 @@ mainPage:       ///// for logging out of user's
             }
             else if(userSelectedOption == 2)
             {
+                userHeader();
                 depositMoney(userBalances, transactions, transactionsTypes, currentIndex, transactionsIndex, blockTransactions);
+                userPressAnyKey();
             }
             else if (userSelectedOption == 3)
             {
+                userHeader();
                 withdrawMoney(userBalances, transactions, transactionsTypes, currentIndex, transactionsIndex, blockTransactions);
+                userPressAnyKey();
             }
             else if (userSelectedOption == 4)
             {
+                userHeader();
                 transferMoney(userNames, userBalances, transactions, transactionsTypes, currentIndex, transactionsIndex, transferIndex, blockTransactions, index);            
+                userPressAnyKey();
             }
             else if (userSelectedOption == 5)
             {
+                userHeader();
                 investGold(userNames, userInvestments, userBalances, transactions, transactionsTypes, currentIndex, transactionsIndex, blockTransactions, index, goldRate);             
+                userPressAnyKey();
             }
             else if (userSelectedOption == 6)
             {
+                userHeader();
                 viewTransactions(transactionsTypes, transactions, transactionsIndex);
+                userPressAnyKey();
             }
             else if (userSelectedOption == 7)
             {
@@ -324,11 +342,29 @@ mainPage:       ///// for logging out of user's
             }
             else if (userSelectedOption == 8)
             {
-                modifyInformation(userNames, userPasswords, currentIndex, index, transferIndex);
+                userHeader();   
+                string userCurrentPassword;
+                cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
+                userCurrentPassword =  getAnonymousPass();
+                bool modified = modifyInformation(userNames, userPasswords, currentIndex, index, transferIndex, userCurrentPassword);
+                if (modified)
+                    cout << "\n\t\t\t\t\t\t\t\t\t\tName modified Successfully";
+                else
+                    cout << "\n\t\t\t\t\t\t\t\t\t\tName was not modified Successfully";
+                userPressAnyKey();
             }
             else if (userSelectedOption == 9)
             {
-                changePassword(userPasswords, currentIndex);
+                userHeader();
+                string userEnteredPassword;
+                cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
+                userEnteredPassword = getAnonymousPass();
+                bool modificationOfPassword = changePassword(userPasswords, currentIndex, userEnteredPassword);
+                if (modificationOfPassword)
+                    cout << "\n\t\t\t\t\t\t\t\t\t\tPassword was changed successfully";
+                else
+                    cout << "\n\t\t\t\t\t\t\t\t\t\tPassword was not changed";
+                userPressAnyKey();
             }
             else if (userSelectedOption == 10)
             {
@@ -449,21 +485,23 @@ float giveLoan(float userBalances[], int choice)
     float newAmount = userBalances[choice] + loan;
     return newAmount;
 }
-void modifyInfoAdmin(string userNames[], int index, int &transferIndex)
+bool modifyInfoAdmin(string userNames[], int index, int &transferIndex)
 {
+    bool modification = false;
     int choice;
     cout << "\n\t\t\t\t\t\t\t\t\t     Enter the Sr.No you want to change the info of: ";
     cin >> choice;
-    
     string newName;
     cout << "\n\t\t\t\t\t\t\t\t\t\tEnter new Name: ";
     cin >> newName;
-    
     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait...";
     Sleep(800);
-    
     if(!userExist(userNames, newName, index, transferIndex))
+    {
         userNames[choice] = newName;
+        modification = true;
+    }
+    return modification;
 }
 void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del)
 {
@@ -514,12 +552,12 @@ int setNewGoldRate()
     cin >> newGoldRate;
     return newGoldRate;
 }
-void deleteUser(string userNames[], int choice)
+bool deleteUser(string userNames[], int choice)
 {
     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait deleting the records...";
     Sleep(1000);
-    
     userNames[choice] = "";  /// just setting name to empty and not displaying it's all records on view record  ;}   
+    return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////// admin functions end ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -565,7 +603,6 @@ void checkPortfolio(float userInvestments[], float userBalances[], int currentIn
 }
 void depositMoney(float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex, bool blockTransactions)
 {
-    userHeader();
     if (!blockTransactions)
     {
         float deposit;
@@ -587,13 +624,9 @@ void depositMoney(float userBalances[], float transactions[], string transaction
     }
     else
         cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
-
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
 }
 void withdrawMoney(float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex, bool blockTransactions)
 {
-    userHeader();
     if (!blockTransactions)
     {
         cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
@@ -623,13 +656,9 @@ void withdrawMoney(float userBalances[], float transactions[], string transactio
     }
     else
         cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
-    
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
 }
 void transferMoney(string userNames[], float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex,int &transferIndex, bool blockTransactions, int index)
 {
-    userHeader();
     if (!blockTransactions)
     {
         cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
@@ -671,13 +700,9 @@ void transferMoney(string userNames[], float userBalances[], float transactions[
     }
     else
         cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
-    
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
 }
 void investGold(string userNames[],float userInvestments[], float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex, bool blockTransactions, int index, float goldRate)
 {
-    userHeader();
     if (!blockTransactions)
     {
         cout << "\t\t\t\t\t\t\t\t\t\tYour Balance: $" << userBalances[currentIndex] << endl << endl;
@@ -724,13 +749,9 @@ again: //// in case of in valid input start again and ask for correct input
     }
     else
         cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
-    
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
 }
 void viewTransactions(string transactionsTypes[], float transactions[], int transactionsIndex)
 {
-    userHeader();
     if (transactions[0] != 0)
     {
         cout << "\t\t\t\t\t\t\t\t       #################################################" << endl;
@@ -743,9 +764,6 @@ void viewTransactions(string transactionsTypes[], float transactions[], int tran
     }
     else
         cout << "\n\t\t\t\t\t\t\t\t\t\tNo Transactions for Now..";
-    
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
 }
 bool blockOrUnblockTransactions(bool blockTransactions)
 {
@@ -758,62 +776,48 @@ bool blockOrUnblockTransactions(bool blockTransactions)
         transactionStatus = false;        // true  ---> false
     return transactionStatus;
 }
-void modifyInformation(string userNames[], string userPasswords[], int currentIndex, int index, int &transferIndex)
+bool modifyInformation(string userNames[], string userPasswords[], int currentIndex, int index, int &transferIndex, string currentPass)
 {
-    userHeader();   
-    string currentPass;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
-    currentPass =  getAnonymousPass();
-    
+    bool modified = false;
     cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
     Sleep(1000);
-    
     if(currentPass == userPasswords[currentIndex])
     {
         string newName;
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tEnter new Name: ";
         cin >> newName;
-
         cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
         Sleep(1000);
         if(!userExist(userNames,newName, index, transferIndex))                    /// does'nt exist
         {
             string oldName = userNames[currentIndex];         //// optional for output :]
             userNames[currentIndex] = newName;
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're name was successfully changed from \"" << oldName << "\" to " << "\"" << newName << "\"";
+            cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou're name was successfully changed from \"" << oldName << "\" to " << "\"" << newName << "\"\n";
+            modified = true;
         }
         else
-            cout << "\n\t\t\t\t\t\t\t\t\t\tUser Already Exists..";
+            cout << "\n\t\t\t\t\t\t\t\t\t\tUser Already Exists..\n";
     }
     else
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
-    
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.\n";
+    return modified;
 }
-void changePassword(string userPasswords[], int currentIndex)
+bool changePassword(string userPasswords[], int currentIndex, string currentPass)
 {
-    userHeader();
-    string currentPass;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
-    currentPass = getAnonymousPass();
-    
+    bool passwordModification = false;
     cout << "\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
     Sleep(1000);
-    
     if(currentPass == userPasswords[currentIndex])
     {
         string newPass;
         cout << "\n\t\t\t\t\t\t\t\t\t\tSet New Password: ";
         newPass = getAnonymousPass();
         userPasswords[currentIndex] = newPass;
-        cout << "\n\t\t\t\t\t\t\t\t\t\tPassword Successfully changed..";
+        passwordModification = true;
     }
     else
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
-    
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
+    return passwordModification;
 }
 bool deleteAccount(string userNames[], string userPasswords[],int currentIndex)
 {
