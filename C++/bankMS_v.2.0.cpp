@@ -1,11 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////// Start of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 #include <iostream>
 #include <windows.h>
 #include <iomanip>
 #include <conio.h>
 using namespace std;
-
 // headers
 void header();
 void adminLoginHeader();
@@ -16,8 +14,8 @@ void userHeader();
 /// manager
 bool adminLoginCheck(string, string &);         
 /// manager functions
+bool addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index, string, string);
 void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del);
-void addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index);
 void addAsset(string [], string [],int &);
 void deleteUser(string []);
 void liquidity(float userBalances[], int index);
@@ -42,7 +40,6 @@ bool deleteAccount(string userNames[], string userPasswords[],int currentIndex);
 /// menus
 int mainMenu();
 void signUpCheck();
-bool signInValidate(string [], string [], int, int &, int &transferIndex, string, string);
 int managerMenu();
 int userMenu();
 /// sign up
@@ -56,6 +53,7 @@ void accountNotExists();
 void passNotCorrect();
 ///// 
 string getAnonymousPass();
+int againExecuteThisFunction();
 
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
@@ -118,12 +116,18 @@ mainPage:       ///// for logging out of user's
             cin >> userEnteredName;
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter your Password: ";
             userEnteredPassword = getAnonymousPass();
-            bool login = signInValidate(userNames, userPasswords, index, currentIndex, transferIndex,userEnteredName, userEnteredPassword);
-            if (login)
+            if (userExist(userNames, userEnteredName, index, transferIndex))
             {
-                LogInTo = "user"; 
-                break;
+                if (checkUserValidity(userNames, userPasswords, index, currentIndex, userEnteredName, userEnteredPassword))     /// password and name checking
+                {
+                    LogInTo = "user";       /// login successful
+                    break;
+                }
+                else
+                    passNotCorrect();
             }
+            else
+                accountNotExists();
         }
         else if (choice == 3)   //// sign up user
         {
@@ -165,7 +169,17 @@ mainPage:       ///// for logging out of user's
             adminSelectedOption = managerMenu();
             if (adminSelectedOption == 1)
             {
-                addNewUser(userNames, userPasswords, userIDs, index);    
+                bool again = true;
+                while (again)        /// loop is for the admin if he want to add more then "1" user
+                {
+                    managerHeader();
+                    string newUserName, newUserPass;
+                    cout << "\t\t\t\t\t\t\t\t\t\t   Enter the Name: ";
+                    cin >> newUserName;
+                    cout << "\t\t\t\t\t\t\t\t\t\t   Set Password: ";
+                    newUserPass =  getAnonymousPass();
+                    again = addNewUser(userNames, userPasswords, userIDs, index, newUserName, newUserPass);
+                }
             }
             else if (adminSelectedOption == 2)
                 viewRecords(userNames, userIDs, userBalances ,index , del);      
@@ -449,27 +463,24 @@ void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int
         getch();
     }
 }
-void addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index)
+bool addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index, string name, string pass)
 {
-again:     /// if want to add another one       ;}
-    managerHeader();
-    string name, pass;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Enter your name: ";
-    cin >> name;
-    cout << "\t\t\t\t\t\t\t\t\t\t   Enter password: ";
-    cin >> pass;
+    bool again = false;
     if (uniqueUser(userNames, index, name))
         createUser(userNames, userPasswords, userIDs, index, name, pass);
     else
         cout << "\n\t\t\t\t\t\t\t\t\t\t   User already exists..........";
-    int choice;
-    cout << "\n\t\t\t\t\t\t\t\t\t\tDo you want to add another one 1(yes) or 2(no): ";
-    cin >> choice;
+    int choice = againExecuteThisFunction();  /// if want to execute again
     if (choice == 1)
-        goto again;
-    else
-        cout << "\n\t\t\t\t\t\t\t\t\t\t   Press any key to continue....";
-        getch();
+        again = true;
+    return again;
+}
+int againExecuteThisFunction()
+{
+    int choice;
+    cout << "\n\t\t\t\t\t\t\t\t    Do you want to add another one press 1(yes) or 2(no): ";
+    cin >> choice;
+    return choice;
 }
 void setGoldRate(float &goldRate)
 {
@@ -902,20 +913,6 @@ void signUpCheck()
     cout << "\t\t\t\t\t\t\t\t\t\t   Press any key to continue....";
     getch();
 }
-bool signInValidate(string userNames[], string userPasswords[], int index, int &currentIndex, int &transferIndex, string name, string pass)
-{
-    bool allowLogin = false;
-    if (userExist(userNames, name, index, transferIndex))
-    {
-        if (checkUserValidity(userNames, userPasswords, index, currentIndex, name, pass))
-            allowLogin = true;
-        else
-            passNotCorrect();
-    }
-    else
-        accountNotExists();
-    return allowLogin;
-}
 bool adminLoginCheck(string pass, string &adminPassword)
 {
     bool login = false; 
@@ -927,15 +924,12 @@ void createUser(string userNames[], string userPasswords[], string userIDs[], in
 {
     cout << "\n\t\t\t\t\t\t\t\t\t\t   Please wait Creating new user....";
     Sleep(1000);
-
     /// assigning values
     userNames[index] = name;
     userPasswords[index] = pass;
-    // userBalances[index] = 0;
     userIDs[index] = "000"; 
     userIDs[index] += to_string(index+1);
     index++;  
-    // cout << index << endl;
     cout << endl << endl << "\t\t\t\t\t\t\t\t\t\t   Successfully created new user" << endl;
 }
 /////////////////////////////////////////////////////////////////////////////////////// end of signUp/SignIn /////////////////////////////////////////////////////////////////////////////////////////////////////////////
