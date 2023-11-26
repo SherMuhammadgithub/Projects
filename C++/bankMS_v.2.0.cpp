@@ -16,14 +16,14 @@ bool adminLoginCheck(string, string &);
 /// manager functions
 bool addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index, string, string);
 void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del);
-void addAsset(string [], string [],int &);
-void deleteUser(string []);
-void liquidity(float userBalances[], int index);
+int addAsset(string [], string [],int, string, string);
+void deleteUser(string [], int);
+int liquidity(float userBalances[], int index);
 void viewAssets(string [], string [], int);
-void setGoldRate(float &);
-void resetAdminPassword(string &adminPassword);
+int setNewGoldRate();
+string resetAdminPassword(string adminPassword, string);
 void modifyInfoAdmin(string userNames[], int index, int &transferIndex);
-void giveLoan(string userNames[], float userBalances[],int index, int &transferIndex);
+float giveLoan(float userBalances[],int index);
 //////////////////////// user
 void greetUser(string);   
 /// user functions
@@ -54,6 +54,8 @@ void passNotCorrect();
 ///// 
 string getAnonymousPass();
 int againExecuteThisFunction();
+void viewRecordHeader();
+void pressAnyKey();
 
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
@@ -182,47 +184,84 @@ mainPage:       ///// for logging out of user's
                 }
             }
             else if (adminSelectedOption == 2)
+            {
+                viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances ,index , del);      
+            }
             else if (adminSelectedOption == 3)
             {   
-                addAsset(bankAssets, bankAssetsWorth, assetIndex);
+                managerHeader();
+                string assetName;
+                cout << "\t\t\t\t\t\t\t\t\tEnter the assest's name you want to add: ";
+                cin >> assetName;
+                string assetWorth;
+                cout << "\t\t\t\t\t\t\t\t\tEnter the assest's worth you have added in (***k) format: ";
+                cin >> assetWorth;
+                assetIndex = addAsset(bankAssets, bankAssetsWorth, assetIndex, assetName, assetWorth);  // increasing the asset index by value return
             }
             else if (adminSelectedOption == 4)
             {   
-                liquidity(userBalances, index);
+                managerHeader();
+                int cashHoldings = liquidity(userBalances, index);
+                cout << "\t\t\t\t\t\t\t\t\tTotal Cash available in Liquid: " << cashHoldings << endl;
+                pressAnyKey();
             }
             else if (adminSelectedOption == 5)
-                setGoldRate(goldRate);       
+            {   
+                managerHeader();
+                cout << "\t\t\t\t\t\t\t\t\tCurrent Rate of Gold per gram: " << goldRate;
+                goldRate = setNewGoldRate();       
+                pressAnyKey();
+            }
             else if (adminSelectedOption == 6)
             {   
+                managerHeader();
+                cout << "\t\t\t\t\t\t\t\t\tAsset's Name\t\t\tAsset's Worth($)\n";
                 viewAssets(bankAssets, bankAssetsWorth, assetIndex);
+                pressAnyKey();
             }
             else if (adminSelectedOption == 7)
             {   
                 del = 1;
+                viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
-                giveLoan(userNames, userBalances, index, transferIndex);
+                int loanIndex;
+                cout << "\n\t\t\t\t\t\t\t\t\t     Enter the Sr.No you want to give loan to: ";
+                cin >> loanIndex;
+                userBalances[loanIndex] = giveLoan(userBalances, loanIndex);
                 del = 0;
+                viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
             }
             else if (adminSelectedOption == 8)
             {   
                 del = 1;
+                viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
                 modifyInfoAdmin(userNames, index, transferIndex);
                 del = 0;
+                viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
             }
             else if (adminSelectedOption == 9)
             {   
-                resetAdminPassword(adminPassword);
+                managerHeader();
+                string userEnteredAdminpass;
+                cout << "\t\t\t\t\t\t\t\t\tEnter your current Password: ";
+                userEnteredAdminpass = getAnonymousPass();
+                adminPassword = resetAdminPassword(adminPassword, userEnteredAdminpass);
             }
             else if (adminSelectedOption == 10)
             {   
                 del = 1;
+                viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
-                deleteUser(userNames);
+                int deletionIndex;
+                cout << "\n\t\t\t\t\t\t\t\t\t\tEnter the Sr.No you want to remove: ";
+                cin >> deletionIndex;
+                deleteUser(userNames, deletionIndex);
                 del = 0;
+                viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
             }
             else if (adminSelectedOption == 11)
@@ -350,82 +389,56 @@ int managerMenu()
     cin >> adminSelectedOption;
     return adminSelectedOption;
 }
-void resetAdminPassword(string &adminPassword)
+string resetAdminPassword(string adminPassword, string pass)
 {
-    managerHeader();
-    string pass;
-    cout << "\t\t\t\t\t\t\t\t\t\tEnter your current Password: ";
-    pass = getAnonymousPass();
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait processing...";
+    string newPass = adminPassword;
+    cout << "\n\t\t\t\t\t\t\t\t\tPlease wait processing...";
     Sleep(500);
     if (adminPassword == pass)
     { 
-        string newPass;
-        cout << "\n\t\t\t\t\t\t\t\t\t\tSet new Password: ";
+        cout << "\n\t\t\t\t\t\t\t\t\tSet new Password: ";
         newPass = getAnonymousPass();
-        adminPassword = newPass;
-        cout << "\n\t\t\t\t\t\t\t\t\t\tPassword Successfully changed\n";
+        cout << "\n\t\t\t\t\t\t\t\t\tPassword Successfully changed\n";
     }
     else
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tIncorrect Password.";
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
+        cout << "\n\n\t\t\t\t\t\t\t\t\tIncorrect Password.";
+    pressAnyKey();
+    return newPass;
 }
 void viewAssets(string bankAssets[], string bankAssetsWorth[], int assetIndex)
 {
-    managerHeader();
-    cout << "\t\t\t\t\t\t\t\t\tAsset's Name\t\t\tAsset's Worth($)\n";
     for (int i = 0; i < assetIndex; i++)
-    {
         cout << "\t\t\t\t\t\t\t\t\t " << setw(8) << bankAssets[i] << "\t\t\t     " << bankAssetsWorth[i] << endl;
-    }
-    cout << "\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
 }
-void addAsset(string bankAssets[], string bankAssetsWorth[], int &assetIndex)
+int addAsset(string bankAssets[], string bankAssetsWorth[], int assetIndex, string newAsset, string assetWorth)
 {
-    managerHeader();
-    string newAsset;
-    cout << "\t\t\t\t\t\t\t\t\tEnter the assest's name you want to add: ";
-    cin >> newAsset;
-
-    string assetWorth;
-    cout << "\t\t\t\t\t\t\t\t\tEnter the assest's worth you have added in (***k) format: ";
-    cin >> assetWorth;
-
     bankAssets[assetIndex] = newAsset;
     bankAssetsWorth[assetIndex] = assetWorth;
     assetIndex++;
-    
-    cout << "\n\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    pressAnyKey();
+    return assetIndex;
+}
+void pressAnyKey()
+{
+    cout << "\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
     getch();
 }
-void liquidity(float userBalances[], int index)
+int liquidity(float userBalances[], int index)
 {
-    managerHeader();
     float cashHoldings;
     for (int i = 0; i < index; i++)
-    {
         cashHoldings += userBalances[i];
-    }
-    cout << "\t\t\t\t\t\t\t\t\tTotal Cash available in Liquid: " << cashHoldings;
-    cout << "\n\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
+    return cashHoldings;
 }
-void giveLoan(string userNames[], float userBalances[],int index, int &transferIndex)
+float giveLoan(float userBalances[], int choice)
 {
-    int choice;
-    cout << "\n\t\t\t\t\t\t\t\t\t     Enter the Sr.No you want to give loan to: ";
-    cin >> choice;
-    
     float loan;
     cout << "\n\t\t\t\t\t\t\t\t\t     Enter the amount of Loan you want to give: ";
     cin >> loan;
-
     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait...";
     Sleep(800);
-
-    userBalances[choice] += loan; 
+    float newAmount = userBalances[choice] + loan;
+    return newAmount;
 }
 void modifyInfoAdmin(string userNames[], int index, int &transferIndex)
 {
@@ -445,11 +458,6 @@ void modifyInfoAdmin(string userNames[], int index, int &transferIndex)
 }
 void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del)
 {
-    managerHeader();
-    cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t    Sr No\t NAME \t    ID - No. \t Balance($)" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
-    cout << endl;
     for (int i = 0; i < index; i++)
     {
         if (userNames[i] != "")
@@ -462,6 +470,14 @@ void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int
         cout << "\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
         getch();
     }
+}
+void viewRecordHeader()
+{
+    managerHeader();
+    cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t    Sr No\t NAME \t    ID - No. \t Balance($)" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
+    cout << endl;
 }
 bool addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index, string name, string pass)
 {
@@ -482,26 +498,15 @@ int againExecuteThisFunction()
     cin >> choice;
     return choice;
 }
-void setGoldRate(float &goldRate)
+int setNewGoldRate()
 {
-    managerHeader();
-    cout << "\t\t\t\t\t\t\t\t\t\tCurrent Rate of Gold per gram: " << goldRate;
-    
     float newGoldRate;
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tNew Gold Rate: ";
+    cout << "\n\n\t\t\t\t\t\t\t\t\tNew Gold Rate: ";
     cin >> newGoldRate;
-
-    goldRate = newGoldRate;
-
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
+    return newGoldRate;
 }
-void deleteUser(string userNames[])
+void deleteUser(string userNames[], int choice)
 {
-    int choice;
-    cout << "\n\t\t\t\t\t\t\t\t\t\tEnter the Sr.No you want to remove: ";
-    cin >> choice;
-    
     cout << "\n\t\t\t\t\t\t\t\t\t\tPlease wait deleting the records...";
     Sleep(1000);
     
