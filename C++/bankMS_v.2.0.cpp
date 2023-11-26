@@ -33,7 +33,7 @@ void withdrawMoney(float userBalances[], float transactions[], string transactio
 void transferMoney(string userNames[], float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex,int &transferIndex, bool blockTransactions, int index);
 void investGold(string userNames[],float userInvestments[], float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex, bool blockTransactions, int index, float goldRate);
 void viewTransactions(string transactionsTypes[], float transactions[], int transactionsIndex);
-void blockOrUnblockTransactions(bool &);
+bool blockOrUnblockTransactions(bool);
 void modifyInformation(string userNames[], string userPasswords[], int currentIndex, int index, int &transferIndex);
 void changePassword(string userPasswords[], int currentIndex);
 bool deleteAccount(string userNames[], string userPasswords[],int currentIndex);
@@ -55,7 +55,8 @@ void passNotCorrect();
 string getAnonymousPass();
 int againExecuteThisFunction();
 void viewRecordHeader();
-void pressAnyKey();
+void adminPressAnyKey();
+void userPressAnyKey();
 
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
@@ -204,21 +205,21 @@ mainPage:       ///// for logging out of user's
                 managerHeader();
                 int cashHoldings = liquidity(userBalances, index);
                 cout << "\t\t\t\t\t\t\t\t\tTotal Cash available in Liquid: " << cashHoldings << endl;
-                pressAnyKey();
+                adminPressAnyKey();
             }
             else if (adminSelectedOption == 5)
             {   
                 managerHeader();
                 cout << "\t\t\t\t\t\t\t\t\tCurrent Rate of Gold per gram: " << goldRate;
                 goldRate = setNewGoldRate();       
-                pressAnyKey();
+                adminPressAnyKey();
             }
             else if (adminSelectedOption == 6)
             {   
                 managerHeader();
                 cout << "\t\t\t\t\t\t\t\t\tAsset's Name\t\t\tAsset's Worth($)\n";
                 viewAssets(bankAssets, bankAssetsWorth, assetIndex);
-                pressAnyKey();
+                adminPressAnyKey();
             }
             else if (adminSelectedOption == 7)
             {   
@@ -287,7 +288,9 @@ mainPage:       ///// for logging out of user's
             cout << endl;
             if (userSelectedOption == 1)
             {
+                userHeader();
                 checkPortfolio(userInvestments, userBalances, currentIndex, goldRate);
+                userPressAnyKey();
             }
             else if(userSelectedOption == 2)
             {
@@ -311,7 +314,13 @@ mainPage:       ///// for logging out of user's
             }
             else if (userSelectedOption == 7)
             {
-                blockOrUnblockTransactions(blockTransactions);
+                userHeader();
+                blockTransactions = blockOrUnblockTransactions(blockTransactions);
+                if(blockTransactions == true)
+                    cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Blocked.";
+                else
+                    cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Unblocked.";
+                userPressAnyKey();
             }
             else if (userSelectedOption == 8)
             {
@@ -402,7 +411,7 @@ string resetAdminPassword(string adminPassword, string pass)
     }
     else
         cout << "\n\n\t\t\t\t\t\t\t\t\tIncorrect Password.";
-    pressAnyKey();
+    adminPressAnyKey();
     return newPass;
 }
 void viewAssets(string bankAssets[], string bankAssetsWorth[], int assetIndex)
@@ -415,10 +424,10 @@ int addAsset(string bankAssets[], string bankAssetsWorth[], int assetIndex, stri
     bankAssets[assetIndex] = newAsset;
     bankAssetsWorth[assetIndex] = assetWorth;
     assetIndex++;
-    pressAnyKey();
+    adminPressAnyKey();
     return assetIndex;
 }
-void pressAnyKey()
+void adminPressAnyKey()
 {
     cout << "\n\t\t\t\t\t\t\t\t\tPress any key to continue...";
     getch();
@@ -515,6 +524,11 @@ void deleteUser(string userNames[], int choice)
 ////////////////////////////////////////////////////////////////////////////////////// admin functions end ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////// user functions Start ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+void userPressAnyKey()
+{
+    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
+    getch();   
+}
 int userMenu()
 {    
     int userOption;
@@ -542,15 +556,12 @@ void greetUser(string userName)
 }
 void checkPortfolio(float userInvestments[], float userBalances[], int currentIndex, float goldRate)
 {
-    userHeader();
     cout << "\t\t\t\t\t\t\t\t\t\tCash: $" << userBalances[currentIndex] << endl;
     if (userInvestments[currentIndex] != 0)
     {
         cout << "\n\t\t\t\t\t\t\t\t\t\tGold(in grams): " << userInvestments[currentIndex];
         cout << "\n\t\t\t\t\t\t\t\t\t\tGold(in Dollars): " << userInvestments[currentIndex] * goldRate << endl;
     }
-    cout << "\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
 }
 void depositMoney(float userBalances[], float transactions[], string transactionsTypes[], int currentIndex,  int &transactionsIndex, bool blockTransactions)
 {
@@ -736,23 +747,16 @@ void viewTransactions(string transactionsTypes[], float transactions[], int tran
     cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
     getch();
 }
-void blockOrUnblockTransactions(bool &blockTransactions)
+bool blockOrUnblockTransactions(bool blockTransactions)
 {
-    userHeader();
+    bool transactionStatus = blockTransactions;
     cout << "\t\t\t\t\t\t\t\t\t\tPlease wait...";
     Sleep(1000);
-    if (blockTransactions == false)
-    {
-        blockTransactions = true;
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Blocked.";
-    }
+    if (transactionStatus == false)         
+        transactionStatus = true;           // false ---> true
     else
-    {   
-        blockTransactions = false;     
-        cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Unblocked.";
-    }
-    cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
-    getch();
+        transactionStatus = false;        // true  ---> false
+    return transactionStatus;
 }
 void modifyInformation(string userNames[], string userPasswords[], int currentIndex, int index, int &transferIndex)
 {
@@ -790,7 +794,6 @@ void modifyInformation(string userNames[], string userPasswords[], int currentIn
 void changePassword(string userPasswords[], int currentIndex)
 {
     userHeader();
-    
     string currentPass;
     cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
     currentPass = getAnonymousPass();
