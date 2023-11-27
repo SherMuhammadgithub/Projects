@@ -454,24 +454,6 @@ mainPage:       ///// for logging out of user's
         }
     }
 }
-void viewTransactionsHeader()
-{
-    cout << "\t\t\t\t\t\t\t\t       #################################################" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t  Transaction Type\t     Amount($)" << endl;
-    cout << "\t\t\t\t\t\t\t\t       #################################################" << endl << endl;                
-}
-void showBalance(float userBalances[], int currentIndex)
-{
-    cout << "\t\t\t\t\t\t\t\t\t\tYour Balance: $" << userBalances[currentIndex] << endl << endl;
-}
-void goldHeader(float goldRate)
-{
-    cout << "\t\t\t\t\t\t\t\t\t\t1-Gram of Gold = $" << goldRate << endl  << endl;
-}
-void transactionError()
-{
-    cout << "\n\t\t\t\t\t\t\t\t\t\tThe attempted transaction was not approved.\n";
-}
 //////////////////////////////////////////////////////////////////////////////////////   main function end    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////// main menu
 int mainMenu()         
@@ -849,6 +831,24 @@ void invest(float userBalances[], float userInvestments[], int currentIndex, flo
 }
 ////////////////////////////////////////////////////////////////////////////////////////// user  functions  End  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////// input validation start //////////////////////////////////////////////////////////////////////////////////////////////////////////
+void viewTransactionsHeader()
+{
+    cout << "\t\t\t\t\t\t\t\t       #################################################" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t  Transaction Type\t     Amount($)" << endl;
+    cout << "\t\t\t\t\t\t\t\t       #################################################" << endl << endl;                
+}
+void showBalance(float userBalances[], int currentIndex)
+{
+    cout << "\t\t\t\t\t\t\t\t\t\tYour Balance: $" << userBalances[currentIndex] << endl << endl;
+}
+void goldHeader(float goldRate)
+{
+    cout << "\t\t\t\t\t\t\t\t\t\t1-Gram of Gold = $" << goldRate << endl  << endl;
+}
+void transactionError()
+{
+    cout << "\n\t\t\t\t\t\t\t\t\t\tThe attempted transaction was not approved.\n";
+}
 void passNotCorrect()
 {
     cout << "\n\t\t\t\t\t\t\t\t\t\t   Invalid Password" << endl;
