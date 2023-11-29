@@ -4,15 +4,17 @@ using namespace std;
 void printBoard(char[][21]);
 void fire(char[][21]);
 void moveFire(char[][21], int step);
-void movePlayerLeft(char[][21]);
-void movePlayerRight(char[][21]);
+void removeFire(char[][21]);
 void movePlayer(char[][21], char);
+void moveEnemy(char [][21], char, char);
+// void movePlayerLeft(char[][21]);
+// void movePlayerRight(char[][21]);
 int main()
 {
     char Board[10][21] = {"####################",
                           "#                  #", 
-                          "#    e   e         #", 
-                          "#                  #", 
+                          "#        e         #", 
+                          "#     x            #", 
                           "#                  #", 
                           "#                  #", 
                           "#        p         #", 
@@ -20,12 +22,75 @@ int main()
                           "####################"};
     // printBoard(Board);                                                                       
     // printBoard(Board);           
-    // movePlayer(Board, 'l');  /// left
-    // movePlayer(Board, 'r');  /// right
+    // moveEnemy(Board, 'e', 'r');  
+    // moveEnemy(Board, 'x', 'l');  
+    printBoard(Board); 
+    getch();        
+    movePlayer(Board, 'l');  
+    movePlayer(Board, 'l');  
+    movePlayer(Board, 'l');  
+    printBoard(Board);
+    getch();
     fire(Board);       
-    moveFire(Board, 4);
+    printBoard(Board);         
+    getch();
+    moveFire(Board, 1);
+    moveFire(Board, 1);
+    printBoard(Board);         
+    getch();
+    moveFire(Board, 1);
+    removeFire(Board);
+    moveFire(Board, 1);
+    printBoard(Board);
+    getch();
+    getch();
     printBoard(Board);         
     return 0;
+}
+void removeFire(char Board[][21])
+{
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 21; j++)
+        {
+            if (Board[i][j] == 'f')
+            {
+                Board[i][j] = ' ';
+                break;
+            }
+        }
+    }
+}
+void moveEnemy(char Board[][21], char enemyType, char move)
+{
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 21; j++)
+        {
+            if (Board[i][j] == enemyType)
+            {
+                Board[i][j] = ' ';
+                if (move == 'r')     /// right
+                {
+                    if (j + 1 < 21 && Board[i][j + 1] == ' ')     /// wall collision
+                    {
+                        Board[i][j] = ' ';
+                        Board[i][j + 1] = enemyType;
+                        break;
+                    }
+                }
+                else if (move == 'l')       /// left
+                {
+                    if (Board[i][j - 1] == ' ')
+                    {
+                        Board[i][j] = ' ';
+                        Board[i][j-1] = enemyType;
+                        break;
+                    }  
+                }
+            }
+        }
+    }
 }
 void movePlayer(char Board[][21], char position)
 {
@@ -58,7 +123,6 @@ void movePlayer(char Board[][21], char position)
         }
     }
 }
-
 void moveFire(char Board[][21], int step)
 {
     while(step != 0)
@@ -93,6 +157,7 @@ void fire(char Board[][21])
 }
 void printBoard(char Board[][21])
 {
+    system("cls");
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 21; j++)
