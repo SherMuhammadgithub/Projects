@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>
 using namespace std;
 int BOARD_L = 7;
 int BOARD_W = 8;
@@ -15,24 +16,28 @@ int main()
     "| | | |", 
     "-------"
     };
-    // cout << "Welcome to Tic Tac Toe!" << endl;
-    // int move;
-    // cout << "Enter Your Move: ";
-    // cin >> move;
-
-
+    cout << "Welcome to Tic Tac Toe!" << endl;
     displayBoard(board);
+    int move;
+    cout << "Enter Your Move: ";
+    cin >> move;
+
+    
     return 0;
 }
 void displayBoard(char board[][8]) 
 {
     cout << " A B C" << endl;  /// display's column letters
-    for (int i = 0; i < BOARD_L; ++i) {
-        for (int j = 0; j < BOARD_W; ++j) {
+    for (int i = 0; i < BOARD_L; ++i) 
+    {
+        for (int j = 0; j < BOARD_W; ++j)
+        {
             cout << board[i][j];
         }
         if (i%2 != 0)
-            cout << i/2 + 1;    /// display's row numbers
+        {
+            cout << " " << i/2 + 1;    /// display's row numbers
+        }
         cout << endl;
     }
 }
