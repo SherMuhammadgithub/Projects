@@ -22,7 +22,7 @@ int main()
                           "#        p         #", 
                           "#                  #",  
                           "####################"};
-    bool flag = false;
+    bool bulletFired = false;
     printBoard(Board);
     while(true)
     {
@@ -31,18 +31,21 @@ int main()
             movePlayer(Board, 'l');
             printBoard(Board);
         }
-        else if(GetAsyncKeyState(VK_RIGHT))
+        if(GetAsyncKeyState(VK_RIGHT))
         {
             movePlayer(Board, 'r');
             printBoard(Board);
         }
-        else if (GetAsyncKeyState(VK_SPACE))
+        if (GetAsyncKeyState(VK_SPACE))
         {
-            fire(Board);    
-            printBoard(Board);       
-            flag = true;
+            if(!bulletFired)
+            {
+                fire(Board);    
+                printBoard(Board);       
+                bulletFired = true;
+            }
         }
-        if (flag)  /// if true then move fire
+        if (bulletFired)  /// if true then move fire
         {
             if (wallNotDetected(Board))
             {
@@ -51,13 +54,9 @@ int main()
             }
             else
             {
-                flag = false;
+                bulletFired = false;
                 printBoard(Board);
             }
-        }
-        else if(GetAsyncKeyState(VK_ESCAPE))
-        {
-            break;
         }
         int a=random(0,1);
         if (a==0)
@@ -66,11 +65,15 @@ int main()
             moveEnemy(Board, 'x', 'l');
             printBoard(Board);
         }
-        else if (a==1)
+        else
         {
             moveEnemy(Board, 'e', 'l');
             moveEnemy(Board, 'x', 'r');
             printBoard(Board);
+        }
+        if(GetAsyncKeyState(VK_ESCAPE))
+        {
+            break;
         }
     }
     return 0;
