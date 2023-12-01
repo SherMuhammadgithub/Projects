@@ -1,30 +1,28 @@
 #include<iostream>
-#include<conio.h>
 #include <windows.h>
 using namespace std;
-void gotoxy(int x, int y);
 void printBoard(char[][21]);
 void printBorder(char[][21]);
 void fire(char[][21]);
-void moveFire(char[][21], int step);
+void moveFire(char[][21], int step); 
 void removeFire(char[][21]);
 void movePlayer(char[][21], char);
 void moveEnemy(char [][21], char, char);
-bool wallNotDetected(char[][21]);
+bool wallNotDetected(char[][21]); // for fire
 void moveFire(char Board[][21]);
-// void movePlayerLeft(char[][21]);
-// void movePlayerRight(char[][21]);
+int random(int min, int max);      /// for random enemy movement
 int main()
 {
     char Board[10][21] = {"####################",
+                          "#               x  #", 
+                          "#     e            #", 
                           "#                  #", 
-                          "#        e         #", 
-                          "#     x  e         #", 
                           "#                  #", 
                           "#                  #", 
                           "#        p         #", 
                           "#                  #",  
                           "####################"};
+    bool flag = false;
     printBoard(Board);
     while(true)
     {
@@ -38,40 +36,48 @@ int main()
             movePlayer(Board, 'r');
             printBoard(Board);
         }
-        // else if(GetAsyncKeyState(VK_SPACE))
-        // {
-        //     fire(Board);
-        //     moveFire(Board, 1);
-        //     printBoard(Board);
-        //     removeFire(Board);
-        //     printBoard(Board);
-        // }
         else if (GetAsyncKeyState(VK_SPACE))
         {
             fire(Board);    
             printBoard(Board);       
-            bool flag = true;
-            while (flag)
+            flag = true;
+        }
+        if (flag)  /// if true then move fire
+        {
+            if (wallNotDetected(Board))
             {
-
-                if (wallNotDetected(Board))
-                {
-                    moveFire(Board);
-                    printBoard(Board);
-                }
-                else
-                {
-                    flag = false;
-                    printBoard(Board);
-                }
+                moveFire(Board);
+                printBoard(Board);
+            }
+            else
+            {
+                flag = false;
+                printBoard(Board);
             }
         }
         else if(GetAsyncKeyState(VK_ESCAPE))
         {
             break;
         }
+        int a=random(0,1);
+        if (a==0)
+        {
+            moveEnemy(Board, 'e', 'r');
+            moveEnemy(Board, 'x', 'l');
+            printBoard(Board);
+        }
+        else if (a==1)
+        {
+            moveEnemy(Board, 'e', 'l');
+            moveEnemy(Board, 'x', 'r');
+            printBoard(Board);
+        }
     }
     return 0;
+}
+int random(int min, int max)
+{
+    return rand() % (max - min + 1) + min;
 }
 void removeFire(char Board[][21])
 {
@@ -79,7 +85,7 @@ void removeFire(char Board[][21])
     {
         for (int j = 0; j < 21; j++)
         {
-            if (Board[i][j] == 'f')
+            if (Board[i][j] == '.')
             {
                 Board[i][j] = ' ';
                 break;
@@ -95,10 +101,9 @@ void moveEnemy(char Board[][21], char enemyType, char move)
         {
             if (Board[i][j] == enemyType)
             {
-                Board[i][j] = ' ';
                 if (move == 'r')     /// right
                 {
-                    if (j + 1 < 21 && Board[i][j + 1] == ' ')     /// wall collision
+                    if (Board[i][j] == enemyType && Board[i][j + 1] == ' ')     /// wall collision
                     {
                         Board[i][j] = ' ';
                         Board[i][j + 1] = enemyType;
@@ -107,7 +112,7 @@ void moveEnemy(char Board[][21], char enemyType, char move)
                 }
                 else if (move == 'l')       /// left
                 {
-                    if (Board[i][j - 1] == ' ')
+                    if (Board[i][j - 1] == ' ' && Board[i][j - 1] != '#')
                     {
                         Board[i][j] = ' ';
                         Board[i][j-1] = enemyType;
@@ -149,7 +154,6 @@ void movePlayer(char Board[][21], char position)
         }
     }
 }
-
 void moveFire(char Board[][21], int step)
 {
     while(step != 0)
@@ -158,33 +162,30 @@ void moveFire(char Board[][21], int step)
         {
             for (int j = 0; j < 21; j++)
             {
-                if (Board[i][j] == 'f')
+                if (Board[i][j] == '.')
                 {
                     Board[i][j] = ' ';
-                    Board[i-1][j] = 'f';
+                    Board[i-1][j] = '.';
                 }
             }
         }
         step--;    
     }
 }
-
 void moveFire(char Board[][21])
 {
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 21; j++)
         {
-            if (Board[i][j] == 'f')
+            if (Board[i][j] == '.')
             {
                 Board[i][j] = ' ';
-                Board[i-1][j] = 'f';
+                Board[i-1][j] = '.';
             }
         }
     }
 }
-
-
 void fire(char Board[][21])
 {
     for (int i = 0; i < 10; i++)
@@ -193,7 +194,7 @@ void fire(char Board[][21])
         {
             if (Board[i][j] == 'p')
             {
-                Board[i-1][j] = 'f';
+                Board[i-1][j] = '.';
             }
 
         }
@@ -219,39 +220,25 @@ void printBorder(char Board[][21])
 }
 void printBoard(char Board[][21])
 {
-    system("cls");
+    string buffer = "";
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 21; j++)
         {
-                cout << Board[i][j];
+            buffer += Board[i][j];    /// storing each element of the array in the buffer string variable
         }
-        cout << endl;
+        buffer += "\n";
     }
+    system("cls");
+    cout << buffer;               /// printing the buffer string variable which has the whole board
 }
-
-// bool wallNotDetected(char arr[10][21])
-// {
-//     for (int i = 0; i < 10; i++)
-//     {
-//         for (int j = 0; j < 21; j++)
-//         {
-//             if (j==20)
-//             {
-//                 arr[i][j] = ' ';  // remove fire
-//                 return false; // Collision detected, stop moving
-//             }
-//         }
-//     }
-//     return true; // No collision detected, continue moving
-// }
 bool wallNotDetected(char arr[][21])
 {
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 21; j++)
         {
-            if (arr[i][j] == 'f' && arr[i - 1][j] == '#')
+            if (arr[i][j] == '.' && arr[i - 1][j] == '#')
             {
                 arr[i][j] = ' ';  // remove fire
                 return false; // Collision detected, stop moving
@@ -259,49 +246,4 @@ bool wallNotDetected(char arr[][21])
         }
     }
     return true; // No collision detected, continue moving
-}
-///// old separte functions     ;}
-// void movePlayerLeft(char Board[][21])
-// {
-//     for (int i = 0; i < 10; i++)
-//     {
-//         for (int j = 0; j < 21; j++)
-//         {
-//             if (Board[i][j] == 'p')
-//             {
-//                 if (Board[i][j + 1] == ' ')
-//                 {
-//                     Board[i][j] = ' ';
-//                     Board[i][j-1] = 'p';
-//                 }
-//             }
-//         }
-//     }
-// }
-// void movePlayerRight(char Board[][21])
-// {
-//     for (int i = 0; i < 10; i++)
-//     {
-//         for (int j = 0; j < 21; j++)
-//         {
-//             if (Board[i][j] == 'p')
-//             {
-//                 if (j + 1 < 21 && Board[i][j + 1] == ' ')
-//                 {
-//                     // Move player to the right if the next position is empty
-//                     Board[i][j] = ' ';
-//                     Board[i][j + 1] = 'p';
-//                     break;
-//                 }
-//             }
-//         }
-//     }
-// }
-void gotoxy(int x, int y)
-{
-    COORD coordinates;
-    coordinates.X = x;
-    coordinates.Y = y;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coordinates);
-
 }
