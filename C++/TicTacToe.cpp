@@ -29,27 +29,26 @@ int main()
     cout << "Welcome to Tic Tac Toe!" << endl;
     displayBoard(board);
     int x,y;
-    int turn = 1; /// 1 = X's turn, 0 = O's turn
-    /// getting the input
+    int turn = 1;                               /// 1 = X's turn, 0 = O's turn
     while(true)
     {
         if (win(board))
-            break;            // if game over then break
+            break;                             // if game over then break
         else if (checkDraw(board))
         {
-            cout << "Draw!" << endl;
+            cout << "Game has been Drawn!" << endl;
             break;
         }
         if (turn == 1)
         {
-            cout << "Enter Your Move 'X' i.e(A0): ";
+            cout << "Enter Your Move 'X' i.e(A0, C2): ";
             x = getx();
             y = gety();
             doMove(board, x, y, turn);
         }
         else if(turn == 0)
         {
-            cout << "Enter Your Move 'O' i.e(A0): "; 
+            cout << "Enter Your Move 'O' i.e(A0, C2): "; 
             x = getx();
             y = gety();
             doMove(board, x, y, turn);
