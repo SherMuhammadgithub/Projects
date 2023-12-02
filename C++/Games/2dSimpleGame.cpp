@@ -199,7 +199,6 @@ void fire(char Board[][21])
             {
                 Board[i-1][j] = '.';
             }
-
         }
     }
 }
