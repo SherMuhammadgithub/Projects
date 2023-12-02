@@ -78,7 +78,7 @@ bool win(char board[][8])
 {
     /// checking for horizontal win
     bool horizontal = horizontalWin(board);
-    bool vertical = false;//verticalWin(board);
+    bool vertical = verticalWin(board);
     bool diagonal = diagonalWin(board);
     if (horizontal || vertical || diagonal)
         return true;
@@ -102,15 +102,24 @@ bool diagonalWin(char board[][8])
 }
 bool verticalWin(char board[][8])
 {
-    for (int i = 1; i < BOARD_W; i+=2)
+    // Check first column
+    if (board[1][1] == board[3][1] && board[3][1] == board[5][1] && board[1][1] != ' ')
     {
-        if (board[1][i] == board[3][i] && board[3][i] == board[5][i] && board[1][i] != ' ')
-        {
-                /// player symbol            
-            cout << board[1][i] << " Wins!" << endl;
-            return true;
-        }
-     }  
+        cout << board[1][1] << " Wins!" << endl;
+        return true;
+    }
+    // Check second column
+    else if (board[1][3] == board[3][3] && board[3][3] == board[5][3] && board[1][3] != ' ')
+    {
+        cout << board[1][3] << " Wins!" << endl;
+        return true;
+    }
+    // Check third column
+    else if (board[1][5] == board[3][5] && board[3][5] == board[5][5] && board[1][5] != ' ')
+    {
+        cout << board[1][5] << " Wins!" << endl;
+        return true;
+    }
     return false;
 }
 bool horizontalWin(char board[][8])
