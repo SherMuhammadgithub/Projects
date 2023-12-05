@@ -1,8 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////// Start of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <string>
 #include <windows.h>
 #include <iomanip>
 #include <conio.h>
+#include <fstream>
 using namespace std;
 // headers
 void header();
@@ -19,7 +21,7 @@ int liquidity(float userBalances[], int index);
 int setNewGoldRate();
 bool addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index, string, string);
 bool modifyInfoAdmin(string userNames[], int index, int &transferIndex);
-bool deleteUser(string [], int);
+bool deleteUser(string userNames[], string userPasswords[], float userBalances[], int choice);
 void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del);
 void viewAssets(string [], string [], int);
 string resetAdminPassword(string adminPassword, string);
@@ -66,6 +68,8 @@ void simulateWithoutTelling();
 void storeTransactionHistory(string transactionsTypes[], float transactions[], int &transactionsIndex, float deposit);
 void invest(float userBalances[], float userInvestments[], int currentIndex, float investment, float goldinGrams);
 void transferNow(string [], float userBalances[], int currentIndex, int transferIndex, float transfer);
+void loader();
+void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int index);
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
@@ -96,9 +100,10 @@ int main()
     int choice = 0;
     string LogInTo = "none"; 
 mainPage:       ///// for logging out of user's
+    loader();
     while(choice != 4)
     {
-        choice = mainMenu();         //// menu bar option select
+        int choice = mainMenu();         //// menu bar option select
         if (choice == 1)             /// admin login
         { 
             adminLoginHeader();
@@ -155,6 +160,7 @@ mainPage:       ///// for logging out of user's
         {
             cout << "\t\t\t\t\t\t\t\t\t\t   Terminating the program....";
             simulateWithoutTelling();
+            storeDataLocally(userNames, userPasswords, userIDs, userBalances, userInvestments, transactionsTypes, transactions, index);
             system("cls");
             return 0;                         /// end program
         }
@@ -264,7 +270,7 @@ mainPage:       ///// for logging out of user's
                 int deletionIndex;
                 cout << "\n\t\t\t\t\t\t\t\t\t\tEnter the Sr.No you want to remove: ";
                 cin >> deletionIndex;
-                bool deletion = deleteUser(userNames, deletionIndex);
+                bool deletion = deleteUser(userNames, userPasswords, userBalances, deletionIndex);
                 if (deletion)
                     cout << "\n\t\t\t\t\t\t\t\t\t\tThe record was deleted successfully";
                 else
@@ -308,7 +314,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Deposit: $";
                     cin >> deposit;
                     bool depositStatus = depositMoney(userBalances, currentIndex, deposit);
-                    if (depositStatus == true)   // transaction successful then store the history
+                    if (depositStatus == true)   // transaction successful then storeDataLocally the history
                         storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, deposit);
                     else
                         transactionError();
@@ -459,7 +465,7 @@ mainPage:       ///// for logging out of user's
 int mainMenu()         
 {
     header();
-    int option;
+    string option;
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Login as Manager" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. Login as User" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   3. Sign up as User" << endl;
@@ -467,7 +473,12 @@ int mainMenu()
     cout << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
     cin >> option;
-    return option;
+    try{
+        return stoi(option);
+    }
+    catch(std::invalid_argument){
+        cout << "error";
+    }
 }
 void mainPressAnyKey()
 {
@@ -475,6 +486,19 @@ void mainPressAnyKey()
     getch();
 }   
 ////////////////////////////////////////////////////////////////////////////////////// admin functions start ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int index)
+{
+    fstream storeFile;
+    string data = "";
+    storeFile.open("data.txt", ios::out);
+    for (int i = 0; i < index; i++)
+    {
+        data += userNames[i] + ", " + userPasswords[i] + ", " + userIDs[i] + ", " + to_string(userBalances[i]) + ", " + to_string(userInvestments[i]) + ", " + transactionsTypes[i] + ", " + to_string(transactions[i]) + "\n";
+        storeFile << data;
+        data = "";        
+    }
+    storeFile.close();
+}
 int managerMenu()
 {
     managerHeader();
@@ -600,10 +624,12 @@ int setNewGoldRate()
     cin >> newGoldRate;
     return newGoldRate;
 }
-bool deleteUser(string userNames[], int choice)
+bool deleteUser(string userNames[], string userPasswords[], float userBalances[], int choice)
 {
     simulateProcessing();
     userNames[choice] = "";  /// just setting name to empty and not displaying it's all records on view record  ;}   
+    userPasswords[choice] = "";
+    userBalances[choice] = 0;
     return true;
 }
 int againExecuteThisFunction()
@@ -1086,6 +1112,26 @@ void managerHeader()
     cout << endl;
     cout << "                                                                ##########################################################" << endl;
     cout << endl;
+    SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+}
+void loader()
+{
+    system("cls");
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+    int bar1=177,bar2=219;
+    cout<< "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+    cout<<"\t\t\t\t\t\t\t\t\t   WAIT A MINUTE.....";
+    cout<<"\n\n\n\t\t\t\t\t\t\t\t\t";
+    for(int i=0;i<25;i++)
+        cout<<(char)bar1;
+    cout<<"\r";
+    cout<<"\t\t\t\t\t\t\t\t\t";
+    for(int i=0;i<25;i++)
+    {
+        cout<<(char)bar2;
+        Sleep(50);
+    }
     SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 }
 //////////////////////////////////////////////////////////////////////////////////////   headers   end    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
