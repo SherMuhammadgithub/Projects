@@ -40,7 +40,7 @@ bool investGold(string userNames[],float userInvestments[], float userBalances[]
 void viewTransactions(string transactionsTypes[], float transactions[], int transactionsIndex);
 void checkPortfolio(float userInvestments[], float userBalances[], int currentIndex, float goldRate);
 /// menus
-int mainMenu();
+string mainMenu();
 int managerMenu();
 int userMenu();
 /// sign up
@@ -69,19 +69,23 @@ void storeTransactionHistory(string transactionsTypes[], float transactions[], i
 void invest(float userBalances[], float userInvestments[], int currentIndex, float investment, float goldinGrams);
 void transferNow(string [], float userBalances[], int currentIndex, int transferIndex, float transfer);
 void loader();
+/// data storage and retrival
 void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int index);
+void loadData(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int &index);
+string getFieldData(string data, int count);
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
     //// arrays for user data
-    int index = 4;                                                    /// counter for the storing values
-    string userNames[100] = {"moon", "ateeb", "ali", "sheri"};
-    string userPasswords[100] = {"123", "123", "123", "123"};
-    string userIDs[100] = {"0001","0002","0003","0004"};
-    float userBalances[100] = {100,200,400,800};
-    float userInvestments[100] = {0};
-    float transactions[100] = {0};           
+    int index = 0;                                                   /// counter for the storing values
+    string userNames[100];
+    string userPasswords[100];
+    string userIDs[100];
+    float userBalances[100];
+    float userInvestments[100];
+    float transactions[100];           
     string transactionsTypes[100];
+    loadData(userNames, userPasswords, userIDs, userBalances, userInvestments, transactionsTypes, transactions, index);   /// loading data from file
     /////// bank assets
     string bankAssets[100] = {"Real-Estate","Bitcoin"};
     string bankAssetsWorth[100] = {"500k","100k"};
@@ -103,8 +107,8 @@ mainPage:       ///// for logging out of user's
     loader();
     while(choice != 4)
     {
-        int choice = mainMenu();         //// menu bar option select
-        if (choice == 1)             /// admin login
+        string choice = mainMenu();         //// menu bar option select
+        if (choice == "1")             /// admin login
         { 
             adminLoginHeader();
             string userEnterAdminPass;    
@@ -120,7 +124,7 @@ mainPage:       ///// for logging out of user's
             cout << "\n\n\t\t\t\t\t\t\t\t\t\t   Access Denied.............." << endl;
             mainPressAnyKey();
         }
-        else if (choice == 2)      /////sig in user
+        else if (choice == "2")      /////sig in user
         {
             signInHeader();
             string userEnteredPassword, userEnteredName;
@@ -141,7 +145,7 @@ mainPage:       ///// for logging out of user's
             else
                 accountNotExists();
         }
-        else if (choice == 3)   //// sign up user
+        else if (choice == "3")   //// sign up user
         {
             signUpHeader();
             string name;
@@ -156,7 +160,7 @@ mainPage:       ///// for logging out of user's
                 cout << "\n\n\t\t\t\t\t\t\t\t\t\t   User Already Exists....";
             mainPressAnyKey();
         }
-        else if (choice == 4)
+        else if (choice == "4")
         {
             cout << "\t\t\t\t\t\t\t\t\t\t   Terminating the program....";
             simulateWithoutTelling();
@@ -462,7 +466,7 @@ mainPage:       ///// for logging out of user's
 }
 //////////////////////////////////////////////////////////////////////////////////////   main function end    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////// main menu
-int mainMenu()         
+string mainMenu()         
 {
     header();
     string option;
@@ -473,12 +477,7 @@ int mainMenu()
     cout << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
     cin >> option;
-    try{
-        return stoi(option);
-    }
-    catch(std::invalid_argument){
-        cout << "error";
-    }
+    return option;
 }
 void mainPressAnyKey()
 {
@@ -486,6 +485,40 @@ void mainPressAnyKey()
     getch();
 }   
 ////////////////////////////////////////////////////////////////////////////////////// admin functions start ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void loadData(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int &index)
+{
+    fstream loadFile;
+    string data = "";
+    loadFile.open("data.txt", ios::in);
+    while (!loadFile.eof())
+    {
+        getline(loadFile, data);
+        userNames[index] = getFieldData(data, 0);
+        userPasswords[index] = getFieldData(data, 1);
+        userIDs[index] = getFieldData(data, 2);
+        userBalances[index] = stof(getFieldData(data, 3));
+        // userInvestments[index] = stof(getFieldData(data, 4));
+        // transactionsTypes[index] = stof(getFieldData(data, 5));
+        // transactions[index] = stof(getFieldData(data, 6));
+        index++;
+    }
+    loadFile.close();
+}
+string getFieldData(string data, int count)
+{
+    string result = "";
+    int comma = 0;
+    for (int i =0; i<data.length(); i++)
+    {
+        if (data[i] == ',')
+            comma++;
+        else if (comma == count)
+            result += data[i];
+        else if (comma > count)
+            break;
+    }
+    return result;
+}
 void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int index)
 {
     fstream storeFile;
@@ -493,7 +526,11 @@ void storeDataLocally(string userNames[], string userPasswords[], string userIDs
     storeFile.open("data.txt", ios::out);
     for (int i = 0; i < index; i++)
     {
-        data += userNames[i] + ", " + userPasswords[i] + ", " + userIDs[i] + ", " + to_string(userBalances[i]) + ", " + to_string(userInvestments[i]) + ", " + transactionsTypes[i] + ", " + to_string(transactions[i]) + "\n";
+        if (i == index - 1)
+            data += userNames[i] + "," + userPasswords[i] + "," + userIDs[i] + "," + to_string(userBalances[i]);  ///to_string(userInvestments[i]) + ", " + transactionsTypes[i] + ", " + to_string(transactions[i]) + "\n";
+        else
+            data += userNames[i] + "," + userPasswords[i] + "," + userIDs[i] + "," + to_string(userBalances[i]) + "\n";  ///to_string(userInvestments[i]) + ", " + transactionsTypes[i] + ", " + to_string(transactions[i]) + "\n";
+
         storeFile << data;
         data = "";        
     }
