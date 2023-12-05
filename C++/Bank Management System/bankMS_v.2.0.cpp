@@ -21,7 +21,7 @@ int liquidity(float userBalances[], int index);
 int setNewGoldRate();
 bool addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index, string, string);
 bool modifyInfoAdmin(string userNames[], int index, int &transferIndex);
-bool deleteUser(string userNames[], string userPasswords[], float userBalances[], int choice);
+bool deleteUser(string userNames[], string userPasswords[], float userBalances[], int choice, int &userCount);
 void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del);
 void viewAssets(string [], string [], int);
 string resetAdminPassword(string adminPassword, string);
@@ -274,7 +274,7 @@ mainPage:       ///// for logging out of user's
                 int deletionIndex;
                 cout << "\n\t\t\t\t\t\t\t\t\t\tEnter the Sr.No you want to remove: ";
                 cin >> deletionIndex;
-                bool deletion = deleteUser(userNames, userPasswords, userBalances, deletionIndex);
+                bool deletion = deleteUser(userNames, userPasswords, userBalances, deletionIndex, index);
                 if (deletion)
                     cout << "\n\t\t\t\t\t\t\t\t\t\tThe record was deleted successfully";
                 else
@@ -661,12 +661,16 @@ int setNewGoldRate()
     cin >> newGoldRate;
     return newGoldRate;
 }
-bool deleteUser(string userNames[], string userPasswords[], float userBalances[], int choice)
+bool deleteUser(string userNames[], string userPasswords[], float userBalances[], int choice, int &userCount)
 {
     simulateProcessing();
-    userNames[choice] = "";  /// just setting name to empty and not displaying it's all records on view record  ;}   
-    userPasswords[choice] = "";
-    userBalances[choice] = 0;
+    for (int i = choice; i < userCount; i++)
+    {
+        userNames[i] = userNames[i+1];
+        userPasswords[i] = userPasswords[i+1];
+        userBalances[i] = userBalances[i+1];
+    }
+    userCount--;
     return true;
 }
 int againExecuteThisFunction()
