@@ -41,8 +41,8 @@ void viewTransactions(string transactionsTypes[], float transactions[], int tran
 void checkPortfolio(float userInvestments[], float userBalances[], int currentIndex, float goldRate);
 /// menus
 string mainMenu();
-int managerMenu();
-int userMenu();
+string managerMenu();
+string userMenu();
 /// sign up
 void createUser(string userNames[], string userPasswords[], string userIDs[], int &index, string name, string pass);
 /// data Verification
@@ -70,7 +70,7 @@ void invest(float userBalances[], float userInvestments[], int currentIndex, flo
 void transferNow(string [], float userBalances[], int currentIndex, int transferIndex, float transfer);
 void loader();
 /// data storage and retrival
-void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int index);
+void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], int index);
 void loadData(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], int &index);
 string getFieldData(string data, int count);
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,11 +102,11 @@ int main()
     float goldRate = 63.69;
     int del = 0;                                     ////// for deletion of records
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    int choice = 0;
+    string choice = 0;     
     string LogInTo = "none"; 
 mainPage:       ///// for logging out of user's
     loader();
-    while(choice != 4)
+    while(choice != "4")
     {
         string choice = mainMenu();         //// menu bar option select
         if (choice == "1")             /// admin login
@@ -165,7 +165,8 @@ mainPage:       ///// for logging out of user's
         {
             cout << "\t\t\t\t\t\t\t\t\t\t   Terminating the program....";
             simulateWithoutTelling();
-            storeDataLocally(userNames, userPasswords, userIDs, userBalances, userInvestments, transactionsTypes, transactions, index);
+            /// storing the data
+            storeDataLocally(userNames, userPasswords, userIDs, userBalances, userInvestments, index);
             system("cls");
             return 0;                         /// end program
         }
@@ -177,11 +178,11 @@ mainPage:       ///// for logging out of user's
     }
     if (LogInTo == "admin")
     {
-        int adminSelectedOption = 0;
-        while(adminSelectedOption != 11)
+        string adminSelectedOption = "0";
+        while(adminSelectedOption != "11")
         { 
             adminSelectedOption = managerMenu();
-            if (adminSelectedOption == 1)
+            if (adminSelectedOption == "1")
             {
                 bool again = true;
                 while (again)        /// loop is for the admin if he want to add more then "1" user
@@ -195,12 +196,12 @@ mainPage:       ///// for logging out of user's
                     again = addNewUser(userNames, userPasswords, userIDs, index, newUserName, newUserPass);
                 }
             }
-            else if (adminSelectedOption == 2)
+            else if (adminSelectedOption == "2")
             {
                 viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances ,index , del);      
             }
-            else if (adminSelectedOption == 3)
+            else if (adminSelectedOption == "3")
             {   
                 managerHeader();
                 string assetName;
@@ -211,28 +212,28 @@ mainPage:       ///// for logging out of user's
                 cin >> assetWorth;
                 assetIndex = addAsset(bankAssets, bankAssetsWorth, assetIndex, assetName, assetWorth);  // increasing the asset index by value return
             }
-            else if (adminSelectedOption == 4)
+            else if (adminSelectedOption == "4")
             {   
                 managerHeader();
                 int cashHoldings = liquidity(userBalances, index);
                 cout << "\t\t\t\t\t\t\t\t\tTotal Cash available in Liquid: " << cashHoldings << endl;
                 adminPressAnyKey();
             }
-            else if (adminSelectedOption == 5)
+            else if (adminSelectedOption == "5")
             {   
                 managerHeader();
                 goldHeader(goldRate);
                 goldRate = setNewGoldRate();       
                 adminPressAnyKey();
             }
-            else if (adminSelectedOption == 6)
+            else if (adminSelectedOption == "6")
             {   
                 managerHeader();
                 cout << "\t\t\t\t\t\t\t\t\tAsset's Name\t\t\tAsset's Worth($)\n";
                 viewAssets(bankAssets, bankAssetsWorth, assetIndex);
                 adminPressAnyKey();
             }
-            else if (adminSelectedOption == 7)
+            else if (adminSelectedOption == "7")
             {   
                 del = 1;
                 viewRecordHeader();
@@ -245,7 +246,7 @@ mainPage:       ///// for logging out of user's
                 viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
             }
-            else if (adminSelectedOption == 8)
+            else if (adminSelectedOption == "8")
             {   
                 del = 1;
                 viewRecordHeader();
@@ -259,7 +260,7 @@ mainPage:       ///// for logging out of user's
                 viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
             }
-            else if (adminSelectedOption == 9)
+            else if (adminSelectedOption == "9")
             {   
                 managerHeader();
                 string userEnteredAdminpass;
@@ -267,7 +268,7 @@ mainPage:       ///// for logging out of user's
                 userEnteredAdminpass = getAnonymousPass();
                 adminPassword = resetAdminPassword(adminPassword, userEnteredAdminpass);
             }
-            else if (adminSelectedOption == 10)
+            else if (adminSelectedOption == "10")
             {   
                 del = 1;
                 viewRecordHeader();
@@ -284,7 +285,7 @@ mainPage:       ///// for logging out of user's
                 viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
             }
-            else if (adminSelectedOption == 11)
+            else if (adminSelectedOption == "11")
             {
                 goto mainPage;     /// logging out
             }
@@ -297,20 +298,20 @@ mainPage:       ///// for logging out of user's
     }
     else if (LogInTo == "user")
     {
-        int userSelectedOption = 0;
-        while(userSelectedOption != 11)
+        string userSelectedOption = "0";
+        while(userSelectedOption != "11")
         {
             userHeader();
             greetUser(userNames[currentIndex]);
             cout << endl;
             userSelectedOption = userMenu();
-            if (userSelectedOption == 1)
+            if (userSelectedOption == "1")
             {
                 userHeader();
                 checkPortfolio(userInvestments, userBalances, currentIndex, goldRate);
                 userPressAnyKey();
             }
-            else if(userSelectedOption == 2)
+            else if(userSelectedOption == "2")
             {
                 userHeader();
                 float deposit;
@@ -328,7 +329,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 3)
+            else if (userSelectedOption == "3")
             {
                 userHeader();
                 float withdraw;
@@ -345,7 +346,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 4)
+            else if (userSelectedOption == "4")
             {
                 userHeader();
                 float transfer;
@@ -370,7 +371,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 5)
+            else if (userSelectedOption == "5")
             {
                 userHeader();
                 float investment;
@@ -393,7 +394,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 6)
+            else if (userSelectedOption == "6")
             {
                 userHeader();
                 if (transactions[0] != 0)
@@ -405,7 +406,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\n\t\t\t\t\t\t\t\t\t\tNo Transactions for Now..";
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 7)
+            else if (userSelectedOption == "7")
             {
                 userHeader();
                 blockTransactions = blockOrUnblockTransactions(blockTransactions);
@@ -415,7 +416,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Unblocked.";
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 8)
+            else if (userSelectedOption == "8")
             {
                 userHeader();   
                 string userCurrentPassword;
@@ -428,7 +429,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\n\t\t\t\t\t\t\t\t\t\tName was not modified Successfully";
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 9)
+            else if (userSelectedOption == "9")
             {
                 userHeader();
                 string userEnteredPassword;
@@ -441,13 +442,13 @@ mainPage:       ///// for logging out of user's
                     cout << "\n\t\t\t\t\t\t\t\t\t\tPassword was not changed";
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 10)
+            else if (userSelectedOption == "10")
             {
                 bool confirmDelete = deleteAccount(userNames, userPasswords, currentIndex);
                 if (confirmDelete)
                     goto mainPage;
             }
-            else if (userSelectedOption == 11)
+            else if (userSelectedOption == "11")
             {
                 blockTransactions = false;                         // reseting the 
                 for (int i = 0; i < transactionsIndex; i++)         //
@@ -505,19 +506,19 @@ void loadData(string userNames[], string userPasswords[], string userIDs[], floa
         }
         loadFile.close();
     }
-    catch(std::invalid_argument)
+    catch(std::invalid_argument)     // file not found
     {
         system("cls");
         cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        cout << "\033[1m";
-        cout << "\033[31m";
-        remove("data.txt");     /// removing the file as it is corrupted
+        cout << "\033[1m";         // bold
+        cout << "\033[31m";       // red
+        remove("data.txt");      // removing the file as it is corrupted
         cout << "\n\t\t\t\t\t\t\t\t\t\tData file is corrupted.";
         cout << "\n\t\t\t\t\t\t\t\t\t\tCreating new record file"; 
         cout << "\n\t\t\t\t\t\t\t\t\t\tDo you want to proceed.";
         userPressAnyKey();
-        cout << "\033[0m";
-        cout << "\033[0m";
+        cout << "\033[0m";    // reseting the color
+        cout << "\033[0m";   // reseting the bold
     }
 }
 string getFieldData(string data, int count)
@@ -535,7 +536,7 @@ string getFieldData(string data, int count)
     }
     return result;
 }
-void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int index)
+void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], int index)
 {
     fstream storeFile;
     string data = "";
@@ -551,10 +552,10 @@ void storeDataLocally(string userNames[], string userPasswords[], string userIDs
     }
     storeFile.close();
 }
-int managerMenu()
+string managerMenu()
 {
     managerHeader();
-    int adminSelectedOption;
+    string adminSelectedOption;
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Add a New User" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. View All Records" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   3. Add an Asset" << endl; 
@@ -697,9 +698,9 @@ int againExecuteThisFunction()
 }
 ////////////////////////////////////////////////////////////////////////////////////// admin functions end ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////// user functions Start ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-int userMenu()
+string userMenu()
 {    
-    int userOption;
+    string userOption;
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Check Portfolio" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. Deposit Money" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   3. With-Draw Money" << endl;
