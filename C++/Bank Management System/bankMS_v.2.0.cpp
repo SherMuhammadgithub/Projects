@@ -71,7 +71,7 @@ void transferNow(string [], float userBalances[], int currentIndex, int transfer
 void loader();
 /// data storage and retrival
 void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int index);
-void loadData(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int &index);
+void loadData(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], int &index);
 string getFieldData(string data, int count);
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
@@ -81,11 +81,12 @@ int main()
     string userNames[100];
     string userPasswords[100];
     string userIDs[100];
-    float userBalances[100];
-    float userInvestments[100];
-    float transactions[100];           
+    float userBalances[100] = {0};
+    float userInvestments[100] = {0};
+    float transactions[100] = {0};           
     string transactionsTypes[100];
-    loadData(userNames, userPasswords, userIDs, userBalances, userInvestments, transactionsTypes, transactions, index);   /// loading data from file
+    ///// loading the data
+    loadData(userNames, userPasswords, userIDs, userBalances, userInvestments, index);   /// loading data from file
     /////// bank assets
     string bankAssets[100] = {"Real-Estate","Bitcoin"};
     string bankAssetsWorth[100] = {"500k","100k"};
@@ -485,24 +486,39 @@ void mainPressAnyKey()
     getch();
 }   
 ////////////////////////////////////////////////////////////////////////////////////// admin functions start ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void loadData(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int &index)
+void loadData(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], int &index)
 {
-    fstream loadFile;
-    string data = "";
-    loadFile.open("data.txt", ios::in);
-    while (!loadFile.eof())
+    try
     {
-        getline(loadFile, data);
-        userNames[index] = getFieldData(data, 0);
-        userPasswords[index] = getFieldData(data, 1);
-        userIDs[index] = getFieldData(data, 2);
-        userBalances[index] = stof(getFieldData(data, 3));
-        // userInvestments[index] = stof(getFieldData(data, 4));
-        // transactionsTypes[index] = stof(getFieldData(data, 5));
-        // transactions[index] = stof(getFieldData(data, 6));
-        index++;
+        fstream loadFile;
+        string data = "";
+        loadFile.open("data.txt", ios::in);
+        while (!loadFile.eof())
+        {
+            getline(loadFile, data);
+            userNames[index] = getFieldData(data, 0);
+            userPasswords[index] = getFieldData(data, 1);
+            userIDs[index] = getFieldData(data, 2);
+            userBalances[index] = stof(getFieldData(data, 3));
+            userInvestments[index] = stof(getFieldData(data, 4));
+            index++;
+        }
+        loadFile.close();
     }
-    loadFile.close();
+    catch(std::invalid_argument)
+    {
+        system("cls");
+        cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+        cout << "\033[1m";
+        cout << "\033[31m";
+        remove("data.txt");     /// removing the file as it is corrupted
+        cout << "\n\t\t\t\t\t\t\t\t\t\tData file is corrupted.";
+        cout << "\n\t\t\t\t\t\t\t\t\t\tCreating new record file"; 
+        cout << "\n\t\t\t\t\t\t\t\t\t\tDo you want to proceed.";
+        userPressAnyKey();
+        cout << "\033[0m";
+        cout << "\033[0m";
+    }
 }
 string getFieldData(string data, int count)
 {
@@ -526,11 +542,10 @@ void storeDataLocally(string userNames[], string userPasswords[], string userIDs
     storeFile.open("data.txt", ios::out);
     for (int i = 0; i < index; i++)
     {
-        if (i == index - 1)
-            data += userNames[i] + "," + userPasswords[i] + "," + userIDs[i] + "," + to_string(userBalances[i]);  ///to_string(userInvestments[i]) + ", " + transactionsTypes[i] + ", " + to_string(transactions[i]) + "\n";
-        else
-            data += userNames[i] + "," + userPasswords[i] + "," + userIDs[i] + "," + to_string(userBalances[i]) + "\n";  ///to_string(userInvestments[i]) + ", " + transactionsTypes[i] + ", " + to_string(transactions[i]) + "\n";
-
+        if (i == index - 1)     // last line not adding "\n"
+            data += userNames[i] + "," + userPasswords[i] + "," + userIDs[i] + "," + to_string(userBalances[i]) + "," + to_string(userInvestments[i]);
+        else    
+            data += userNames[i] + "," + userPasswords[i] + "," + userIDs[i] + "," + to_string(userBalances[i]) + "," + to_string(userInvestments[i]) + "\n";
         storeFile << data;
         data = "";        
     }
