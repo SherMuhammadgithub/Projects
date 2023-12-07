@@ -42,7 +42,7 @@ void checkPortfolio(float userInvestments[], float userBalances[], int currentIn
 /// menus
 string mainMenu();
 string managerMenu();
-int userMenu();
+string userMenu();
 /// sign up
 void createUser(string userNames[], string userPasswords[], string userIDs[], int &index, string name, string pass);
 /// data Verification
@@ -297,20 +297,20 @@ mainPage:       ///// for logging out of user's
     }
     else if (LogInTo == "user")
     {
-        int userSelectedOption = 0;
-        while(userSelectedOption != 11)
+        string userSelectedOption = "0";
+        while(userSelectedOption != "11")
         {
             userHeader();
             greetUser(userNames[currentIndex]);
             cout << endl;
             userSelectedOption = userMenu();
-            if (userSelectedOption == 1)
+            if (userSelectedOption == "1")
             {
                 userHeader();
                 checkPortfolio(userInvestments, userBalances, currentIndex, goldRate);
                 userPressAnyKey();
             }
-            else if(userSelectedOption == 2)
+            else if(userSelectedOption == "2")
             {
                 userHeader();
                 float deposit;
@@ -328,7 +328,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 3)
+            else if (userSelectedOption == "3")
             {
                 userHeader();
                 float withdraw;
@@ -345,7 +345,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 4)
+            else if (userSelectedOption == "4")
             {
                 userHeader();
                 float transfer;
@@ -370,7 +370,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 5)
+            else if (userSelectedOption == "5")
             {
                 userHeader();
                 float investment;
@@ -393,7 +393,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 6)
+            else if (userSelectedOption == "6")
             {
                 userHeader();
                 if (transactions[0] != 0)
@@ -405,7 +405,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\n\t\t\t\t\t\t\t\t\t\tNo Transactions for Now..";
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 7)
+            else if (userSelectedOption == "7")
             {
                 userHeader();
                 blockTransactions = blockOrUnblockTransactions(blockTransactions);
@@ -415,7 +415,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Unblocked.";
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 8)
+            else if (userSelectedOption == "8")
             {
                 userHeader();   
                 string userCurrentPassword;
@@ -428,7 +428,7 @@ mainPage:       ///// for logging out of user's
                     cout << "\n\t\t\t\t\t\t\t\t\t\tName was not modified Successfully";
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 9)
+            else if (userSelectedOption == "9")
             {
                 userHeader();
                 string userEnteredPassword;
@@ -441,13 +441,13 @@ mainPage:       ///// for logging out of user's
                     cout << "\n\t\t\t\t\t\t\t\t\t\tPassword was not changed";
                 userPressAnyKey();
             }
-            else if (userSelectedOption == 10)
+            else if (userSelectedOption == "10")
             {
                 bool confirmDelete = deleteAccount(userNames, userPasswords, currentIndex);
                 if (confirmDelete)
                     goto mainPage;
             }
-            else if (userSelectedOption == 11)
+            else if (userSelectedOption == "11")
             {
                 blockTransactions = false;                         // reseting the 
                 for (int i = 0; i < transactionsIndex; i++)         //
@@ -697,9 +697,9 @@ int againExecuteThisFunction()
 }
 ////////////////////////////////////////////////////////////////////////////////////// admin functions end ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////// user functions Start ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-int userMenu()
+string userMenu()
 {    
-    int userOption;
+    string userOption;
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Check Portfolio" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. Deposit Money" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   3. With-Draw Money" << endl;
