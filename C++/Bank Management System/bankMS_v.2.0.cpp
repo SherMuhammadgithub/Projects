@@ -493,9 +493,15 @@ void loadData(string userNames[], string userPasswords[], string userIDs[], floa
         fstream loadFile;
         string data = "";
         loadFile.open("data.txt", ios::in);
+        bool firstIteration = true;
         while (!loadFile.eof())
         {
             getline(loadFile, data);
+            if (firstIteration)
+            {
+                firstIteration = false;
+                continue;
+            }
             userNames[index] = getFieldData(data, 0);
             userPasswords[index] = getFieldData(data, 1);
             userIDs[index] = getFieldData(data, 2);
@@ -540,6 +546,7 @@ void storeDataLocally(string userNames[], string userPasswords[], string userIDs
     fstream storeFile;
     string data = "";
     storeFile.open("data.txt", ios::out);
+    storeFile << "Name,Password,ID,Balance,Investments\n";
     for (int i = 0; i < index; i++)
     {
         if (i == index - 1)     // last line not adding "\n"
