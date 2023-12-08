@@ -75,6 +75,8 @@ void storeDataLocally(string userNames[], string userPasswords[], string userIDs
 void loadData(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], int &index);
 string getFieldData(string data, int count);
 string setcolor(unsigned short color);
+/// colors
+int black = 0, blue = 1, green = 2, cyan = 3, red = 4, magenta = 5, brown = 6, lightwhite = 7, darkwhite = 8, lightblue = 9, lightgreen = 10, lightcyan = 11, lightred = 12, lightmagenta = 13, yellow = 14, white = 15;
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
@@ -107,34 +109,40 @@ int main()
     string choice = "0";
     string LogInTo = "none"; 
 mainPage:       ///// for logging out of user's
-    loader();
+    // loader();  // debuging
     while(choice != "4")
     {
         choice = mainMenu();         //// menu bar option select
         if (choice == "1")             /// admin login
         { 
             adminLoginHeader();
-            string userEnterAdminPass;    
+            string userEnterAdminPass;
+            setcolor(lightcyan);    
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter the Password: ";
             userEnterAdminPass = getAnonymousPass();       /// pass in  '***' format
             bool login =  adminLoginCheck(userEnterAdminPass, adminPassword);
+            setcolor(lightblue);
             simulateProcessing();
             if (login)
             {
                 LogInTo = "admin";
                 break;
             }
+            setcolor(lightred);
             cout << "\n\n\t\t\t\t\t\t\t\t\t\t   Access Denied.............." << endl;
+            setcolor(white);
             mainPressAnyKey();
         }
         else if (choice == "2")      /////sig in user
         {
             signInHeader();
             string userEnteredPassword, userEnteredName;
+            setcolor(lightcyan);
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter your User Name: ";
             cin >> userEnteredName;
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter your Password: ";
             userEnteredPassword = getAnonymousPass();
+            setcolor(lightblue);
             simulateProcessing();
             if (userExist(userNames, userEnteredName, index, transferIndex))
             {
@@ -143,29 +151,42 @@ mainPage:       ///// for logging out of user's
                     LogInTo = "user";       /// login successful
                     break;
                 }
+                setcolor(lightred);
                 passNotCorrect();  // no need to place in else   :)
             }
             else
+            {
+                setcolor(lightred);
                 accountNotExists();
+            }
+            setcolor(white);
         }
         else if (choice == "3")   //// sign up user
         {
             signUpHeader();
             string name;
+            setcolor(lightcyan);
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter your name: ";
             cin >> name;
             string pass;
             cout << "\t\t\t\t\t\t\t\t\t\t   Set password: ";
             pass = getAnonymousPass();
+            setcolor(lightblue);
             if (uniqueUser(userNames, index ,name))         /// User created
                 createUser(userNames, userPasswords, userIDs, index, name, pass);
             else
+            {
+                setcolor(red);
                 cout << "\n\n\t\t\t\t\t\t\t\t\t\t   User Already Exists....";
+            }
+            setcolor(white);
             mainPressAnyKey();
         }
         else if (choice == "4")
         {
+            setcolor(red);
             cout << "\t\t\t\t\t\t\t\t\t\t   Terminating the program....";
+            setcolor(white);
             simulateWithoutTelling();
             storeDataLocally(userNames, userPasswords, userIDs, userBalances, userInvestments, transactionsTypes, transactions, index);
             system("cls");
@@ -173,7 +194,9 @@ mainPage:       ///// for logging out of user's
         }
         else             /// for error cases
         { 
+            setcolor(lightred); 
             cout << "\t\t\t\t\t\t\t\t\t\t   Invalid choice....";
+            setcolor(white);    
             simulateWithoutTelling();
         }
     }
@@ -483,12 +506,15 @@ string mainMenu()
 {
     header();
     string option;
+    setcolor(cyan);
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Login as Manager" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. Login as User" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   3. Sign up as User" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   4. End" << endl;
     cout << endl;
+    setcolor(yellow);
     cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
+    setcolor(15);
     cin >> option;
     return option;
 }
@@ -574,6 +600,7 @@ string managerMenu()
 {
     managerHeader();
     string adminSelectedOption;
+    setcolor(cyan);
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Add a New User" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. View All Records" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   3. Add an Asset" << endl; 
@@ -586,8 +613,10 @@ string managerMenu()
     cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete a User" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t  11. Log Out" << endl;
     cout << endl;
+    setcolor(yellow);
     cout << "\t\t\t\t\t\t\t\t\t\t  Please Select an Option...";
     cin >> adminSelectedOption;
+    setcolor(white);
     return adminSelectedOption;
 }
 string resetAdminPassword(string adminPassword, string pass)
@@ -723,6 +752,7 @@ string againExecuteThisFunction()
 string userMenu()
 {    
     string userOption;
+    setcolor(lightcyan);
     cout << "\t\t\t\t\t\t\t\t\t\t   1. Check Portfolio" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   2. Deposit Money" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t   3. With-Draw Money" << endl;
@@ -737,8 +767,10 @@ string userMenu()
     cout << "\t\t\t\t\t\t\t\t\t\t  10. Delete Account" << endl;
     cout << "\t\t\t\t\t\t\t\t\t\t  11. Log Out" << endl;
     cout << endl;
+    setcolor(yellow);
     cout << "\t\t\t\t\t\t\t\t\t\t  Please Select an Option...";
     cin >> userOption;
+    setcolor(white);
     return userOption;
 }
 void userPressAnyKey()
@@ -748,7 +780,9 @@ void userPressAnyKey()
 }
 void greetUser(string userName)
 {
+    setcolor(cyan);
     cout << "\t\t\t\t\t\t\t\t\t\t   Welcome Back " << userName << endl;
+    setcolor(white);
 }
 void checkPortfolio(float userInvestments[], float userBalances[], int currentIndex, float goldRate)
 {
