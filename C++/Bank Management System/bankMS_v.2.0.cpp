@@ -1,10 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////// Start of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-#include <string>
-#include <windows.h>
-#include <iomanip>
-#include <conio.h>
-#include <fstream>
+#include <iostream>                  // for input and output
+#include <typeinfo>                // for checking the type of variable
+#include <string>                // for string functions
+#include <windows.h>           // for color
+#include <iomanip>           // for setw()
+#include <conio.h>         // for getch()
+#include <fstream>       // for file handling
 using namespace std;
 // headers
 void header();
@@ -31,7 +32,7 @@ void greetUser(string);
 /// user functions
 bool blockOrUnblockTransactions(bool);
 bool modifyInformation(string userNames[], string userPasswords[], int currentIndex, int index, int &transferIndex, string);
-bool deleteAccount(string userNames[], string userPasswords[],int currentIndex);
+bool deleteAccount(string userNames[], string userPasswords[],int currentIndex, int &userCount, float userBalances[], float userInvestments[], string userIDs[]);
 bool changePassword(string userPasswords[], int currentIndex, string);
 bool depositMoney(float userBalances[], int currentIndex, float deposit);
 bool withdrawMoney(float userBalances[], int currentIndex, float withdraw);
@@ -54,7 +55,7 @@ void accountNotExists();
 void passNotCorrect();
 /////////////////  Extra   /////////////////////////// 
 string getAnonymousPass();
-int againExecuteThisFunction();
+string againExecuteThisFunction();
 void showBalance(float userBalances[], int currentIndex);
 void transactionError();
 void goldHeader(float);
@@ -73,6 +74,7 @@ void loader();
 void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int index);
 void loadData(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], int &index);
 string getFieldData(string data, int count);
+string setcolor(unsigned short color);
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
@@ -102,13 +104,13 @@ int main()
     float goldRate = 63.69;
     int del = 0;                                     ////// for deletion of records
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    int choice = 0;
+    string choice = "0";
     string LogInTo = "none"; 
 mainPage:       ///// for logging out of user's
     loader();
-    while(choice != 4)
+    while(choice != "4")
     {
-        string choice = mainMenu();         //// menu bar option select
+        choice = mainMenu();         //// menu bar option select
         if (choice == "1")             /// admin login
         { 
             adminLoginHeader();
@@ -269,20 +271,30 @@ mainPage:       ///// for logging out of user's
             }
             else if (adminSelectedOption == "10")
             {   
+            Again:         // if invalid choice then again
                 del = 1;
                 viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
                 int deletionIndex;
                 cout << "\n\t\t\t\t\t\t\t\t\t\tEnter the Sr.No you want to remove: ";
                 cin >> deletionIndex;
-                bool deletion = deleteUser(userNames, userPasswords, userBalances, deletionIndex, index);
-                if (deletion)
-                    cout << "\n\t\t\t\t\t\t\t\t\t\tThe record was deleted successfully";
+                if (deletionIndex >= index || deletionIndex < 0)
+                {
+                    cout << "\n\t\t\t\t\t\t\t\t\t\tInvalid Sr.No";
+                    simulateWithoutTelling();
+                    goto Again;
+                }                
                 else
-                    cout << "\n\t\t\t\t\t\t\t\t\t\tThe record was not deleted";
-                del = 0;
-                viewRecordHeader();
-                viewRecords(userNames, userIDs, userBalances , index, del);
+                {
+                    bool deletion = deleteUser(userNames, userPasswords, userBalances, deletionIndex, index);
+                    if (deletion)
+                        cout << "\n\t\t\t\t\t\t\t\t\t\tThe record was deleted successfully";
+                    else
+                        cout << "\n\t\t\t\t\t\t\t\t\t\tThe record was not deleted";
+                    del = 0;
+                    viewRecordHeader();
+                    viewRecords(userNames, userIDs, userBalances , index, del);
+                }
             }
             else if (adminSelectedOption == "11")
             {
@@ -443,7 +455,7 @@ mainPage:       ///// for logging out of user's
             }
             else if (userSelectedOption == "10")
             {
-                bool confirmDelete = deleteAccount(userNames, userPasswords, currentIndex);
+                bool confirmDelete = deleteAccount(userNames, userPasswords, currentIndex, index, userBalances, userInvestments, userIDs);
                 if (confirmDelete)
                     goto mainPage;
             }
@@ -647,12 +659,7 @@ bool modifyInfoAdmin(string userNames[], int index, int &transferIndex)
 void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del)
 {
     for (int i = 0; i < index; i++)
-    {
-        if (userNames[i] != "")
-            cout << "\t\t\t\t\t\t\t\t\t      " << i << "      " << setw(8) << userNames[i] << "\t      " << userIDs[i] << "\t   " << userBalances[i] << endl;
-        else   
-            continue;
-    }
+        cout << "\t\t\t\t\t\t\t\t\t      " << i << "      " << setw(8) << userNames[i] << "\t      " << userIDs[i] << "\t   " << userBalances[i] << endl;
     if (del==0)
         adminPressAnyKey();
 }
@@ -671,9 +678,18 @@ bool addNewUser(string userNames[], string userPasswords[], string userIDs[], in
         createUser(userNames, userPasswords, userIDs, index, name, pass);
     else
         cout << "\n\t\t\t\t\t\t\t\t\t\t   User already exists..........";
-    int choice = againExecuteThisFunction();  /// if want to execute again
-    if (choice == 1)
+choiceAgain:  // if invalid choice then again
+    string choice = againExecuteThisFunction();  /// if want to execute again
+    if (choice == "1")
         again = true;
+    else if (choice == "2")
+        again = false;
+    else
+    {
+        cout << "\t\t\t\t\t\t\t\t\t\t   Invalid Choice..........";
+        simulateWithoutTelling();
+        goto choiceAgain;   // choice not correct so again
+    }
     return again;
 }
 int setNewGoldRate()
@@ -695,9 +711,9 @@ bool deleteUser(string userNames[], string userPasswords[], float userBalances[]
     userCount--;
     return true;
 }
-int againExecuteThisFunction()
+string againExecuteThisFunction()
 {
-    int choice;
+    string choice;
     cout << "\n\t\t\t\t\t\t\t\t    Do you want to add another one press 1(yes) or 2(no): ";
     cin >> choice;
     return choice;
@@ -766,7 +782,7 @@ bool withdrawMoney(float userBalances[], int currentIndex, float withdraw)
 {
     bool status = false;
     simulateProcessing();
-    if (withdraw <= userBalances[currentIndex])
+    if (withdraw <= userBalances[currentIndex] && withdraw > 0)
     {
         userBalances[currentIndex] -= withdraw;
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tYou have successfully With-Drawn \"$" << withdraw << "\" from you're account." << endl;
@@ -803,12 +819,12 @@ bool investGold(string userNames[],float userInvestments[], float userBalances[]
     bool status = false;
     float goldinGrams = investment / goldRate;
     cout << "\n\t\t\t\t\t\t\t\t\t\tYou will get " << goldinGrams << "-Gram of Gold.";
-    int proceed;
-    while(proceed != 2)
+    string proceed;
+    while(proceed != "2")
     {
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tDo you want to proceed Press 1(yes) or 2(no)... ";
         cin >> proceed;
-        if (proceed == 1)
+        if (proceed == "1")
         {
             simulateProcessing();
             if (investment <= userBalances[currentIndex])
@@ -822,7 +838,7 @@ bool investGold(string userNames[],float userInvestments[], float userBalances[]
                 break;
             }
         }
-        else if (proceed == 2)
+        else if (proceed == "2")
             cout << "\n\t\t\t\t\t\t\t\t\t\tTransaction Terminated.........";
         }
     return status;
@@ -882,7 +898,7 @@ bool changePassword(string userPasswords[], int currentIndex, string currentPass
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tInvalid Password.";
     return passwordModification;
 }
-bool deleteAccount(string userNames[], string userPasswords[],int currentIndex)
+bool deleteAccount(string userNames[], string userPasswords[],int currentIndex, int &index, float userBalances[], float userInvestments[], string userIDs[])
 {
     bool accountDeletion = false;
     userHeader();
@@ -892,8 +908,15 @@ bool deleteAccount(string userNames[], string userPasswords[],int currentIndex)
     simulateProcessing();
     if(currentPass == userPasswords[currentIndex])
     {
-        userNames[currentIndex] = "";         /// deleting name so can't access this account now     ;}
-        
+        for (int i = currentIndex; i < index; i++)
+        {
+            userNames[i] = userNames[i+1];
+            userPasswords[i] = userPasswords[i+1];
+            userBalances[i] = userBalances[i+1];
+            userInvestments[i] = userInvestments[i+1];
+            userIDs[i] = userIDs[i+1];
+        }
+        index--;
         accountDeletion = true;
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour account has been removed.";
     }
@@ -1196,6 +1219,12 @@ void loader()
         Sleep(50);
     }
     SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+}
+string setcolor(unsigned short color)
+{
+    HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hcon, color);
+    return "";
 }
 //////////////////////////////////////////////////////////////////////////////////////   headers   end    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////// End of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
