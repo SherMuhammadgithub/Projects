@@ -47,6 +47,7 @@ void changeFirePosition();
 void playerFire();
 void moveFire();
 void printScores();
+void winScreen();
 ///////////////
 bool fired = false;
 int bulletX = 0;
@@ -96,6 +97,7 @@ int main()
         {
             movePlayerDown();
         }
+        // change fire position
         if (GetAsyncKeyState('F'))
         {
             if (!fired)
@@ -104,6 +106,7 @@ int main()
                 printPlayer();
             } 
         }
+        // fire
         if (GetAsyncKeyState(VK_SPACE))
         {
             if (!fired)
@@ -112,6 +115,7 @@ int main()
                 fired = true;
             }
         }
+        // fire
         if (fired)
         {
             moveFire();
@@ -120,6 +124,7 @@ int main()
         {
             moveEnemy1();
         }
+        // enemy one dead
         if (dead1)
         {
             eraseEnemy1();
@@ -129,6 +134,7 @@ int main()
         {
             moveEnemy2();
         }
+        // enemy two dead
         if (dead2)
         {
             eraseEnemy2();
@@ -138,25 +144,31 @@ int main()
         {
             moveEnemy3();
         }
+        // enemy three dead
         if (dead3)
         {
             eraseEnemy3();
             dead3 = false;
         }
+        // game over
         if (enemy1Health == 0 && enemy2Health == 0 && enemy3Health == 0)
         {
-            gotoxy(80,15);
-            cout << "You Win";
-            gotoxy(80,16);
-            cout << "Your Score: " << bonus1;
-            gotoxy(80,17);
-            cout << "Press any key to exit";
-            system("cls");
+            winScreen();
             break;
         }
         printScores();
         Sleep(100);
     }
+}
+void winScreen()
+{
+    gotoxy(80,15);
+    cout << "You Win";
+    gotoxy(80,16);
+    cout << "Your Score: " << bonus1;
+    gotoxy(80,17);
+    cout << "Press any key to exit";
+    system("cls");
 }
 void printScores()
 {
