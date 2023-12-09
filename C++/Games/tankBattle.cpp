@@ -46,6 +46,7 @@ int pX = 20, pY = 20;
 void changeFirePosition();
 void playerFire();
 void moveFire();
+void printScores();
 ///////////////
 bool fired = false;
 int bulletX = 0;
@@ -150,35 +151,36 @@ int main()
             cout << "Your Score: " << bonus1;
             gotoxy(80,17);
             cout << "Press any key to exit";
+            system("cls");
             break;
         }
-        gotoxy(85,9);
-        cout << "Points";
-        gotoxy(100,9);
-        cout << bonus1;
-
-        gotoxy(80,10);
-        cout << "Player Health";
-        gotoxy(100,10);
-        cout << playerHealth;
-        
-        gotoxy(80,11);
-        cout << "Enemy One Health";
-        gotoxy(100,11);
-        cout << enemy1Health;
-
-        gotoxy(80,12);
-        cout << "Enemy Two Health";
-        gotoxy(100,12);
-        cout << enemy2Health;
-
-        gotoxy(80,13);
-        cout << "Enemy Three Health";
-        gotoxy(100,13);
-        cout << enemy3Health;
-        
+        printScores();
         Sleep(100);
     }
+}
+void printScores()
+{
+    gotoxy(85,9);
+    cout << "Points";
+    gotoxy(100,9);
+    cout << bonus1;
+    gotoxy(80,10);
+    cout << "Player Health";
+    gotoxy(100,10);
+    cout << playerHealth;
+    
+    gotoxy(80,11);
+    cout << "Enemy One Health";
+    gotoxy(100,11);
+    cout << enemy1Health;
+    gotoxy(80,12);
+    cout << "Enemy Two Health";
+    gotoxy(100,12);
+    cout << enemy2Health;
+    gotoxy(80,13);
+    cout << "Enemy Three Health";
+    gotoxy(100,13);
+    cout << enemy3Health;
 }
 void moveFire()
 {
