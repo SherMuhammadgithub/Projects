@@ -18,37 +18,37 @@ void userHeader();
 bool adminLoginCheck(string, string &);         
 /// manager functions
 int addAsset(string [], string [],int, string, string);
-int liquidity(float userBalances[], int index);
+int liquidity(float [], int );
 int setNewGoldRate();
-bool addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index, string, string);
-bool modifyInfoAdmin(string userNames[], int index, int &transferIndex);
-bool deleteUser(string userNames[], string userPasswords[], float userBalances[], int choice, int &userCount);
-void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int index ,int del);
+bool addNewUser(string [], string [], string [], int &, string, string);
+bool modifyInfoAdmin(string [], int , int &);
+bool deleteUser(string [], string [], float [], int , int &);
+void viewRecords(string [], string [], float [] ,int  ,int);
 void viewAssets(string [], string [], int);
-string resetAdminPassword(string adminPassword, string);
-float giveLoan(float userBalances[],int index);
+string resetAdminPassword(string, string);
+float giveLoan(float [],int );
 //////////////////////// user
 void greetUser(string);   
 /// user functions
 bool blockOrUnblockTransactions(bool);
-bool modifyInformation(string userNames[], string userPasswords[], int currentIndex, int index, int &transferIndex, string);
-bool deleteAccount(string userNames[], string userPasswords[],int currentIndex, int &userCount, float userBalances[], float userInvestments[], string userIDs[]);
-bool changePassword(string userPasswords[], int currentIndex, string);
-bool depositMoney(float userBalances[], int currentIndex, float deposit);
-bool withdrawMoney(float userBalances[], int currentIndex, float withdraw);
-bool transferMoney(string userNames[], float userBalances[], int currentIndex, int &transferIndex, int index, float transfer, string name);
-bool investGold(string userNames[],float userInvestments[], float userBalances[], int currentIndex, int index, float goldRate, float investment);
-void viewTransactions(string transactionsTypes[], float transactions[], int transactionsIndex);
-void checkPortfolio(float userInvestments[], float userBalances[], int currentIndex, float goldRate);
+bool modifyInformation(string [], string [], int , int , int &, string);
+bool deleteAccount(string [], string [],int , int &, float [], float [], string []);
+bool changePassword(string [], int , string);
+bool depositMoney(float [], int , float );
+bool withdrawMoney(float [], int , float );
+bool transferMoney(string [], float [], int , int &, int , float , string );
+bool investGold(string [],float [], float [], int , int , float , float );
+void viewTransactions(string [], float [], int );
+void checkPortfolio(float [], float [], int , float );
 /// menus
 string mainMenu();
 string managerMenu();
 string userMenu();
 /// sign up
-void createUser(string userNames[], string userPasswords[], string userIDs[], int &index, string name, string pass);
+void createUser(string [], string [], string [], int &, string , string );
 /// data Verification
 bool uniqueUser(string[], int &, string);   /// sign up
-bool userExist(string[], string, int, int &transferIndex);     /// sign in
+bool userExist(string[], string, int, int &);     /// sign in
 bool checkUserValidity(string [], string [], int , int &, string, string);  /// pass checker
 ///// error handling
 void accountNotExists();
@@ -56,7 +56,7 @@ void passNotCorrect();
 /////////////////  Extra   /////////////////////////// 
 string getAnonymousPass();
 string againExecuteThisFunction();
-void showBalance(float userBalances[], int currentIndex);
+void showBalance(float [], int );
 void transactionError();
 void goldHeader(float);
 void viewRecordHeader();
@@ -66,15 +66,15 @@ void userPressAnyKey();
 void mainPressAnyKey();
 void simulateProcessing();
 void simulateWithoutTelling();
-void storeTransactionHistory(string transactionsTypes[], float transactions[], int &transactionsIndex, float deposit);
-void invest(float userBalances[], float userInvestments[], int currentIndex, float investment, float goldinGrams);
-void transferNow(string [], float userBalances[], int currentIndex, int transferIndex, float transfer);
+void storeTransactionHistory(string [], float [], int &, float );
+void invest(float [], float [], int , float , float );
+void transferNow(string [], float [], int , int , float );
 void loader();
 /// data storage and retrival
-void storeDataLocally(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], string transactionsTypes[], float transactions[], int index);
-void loadData(string userNames[], string userPasswords[], string userIDs[], float userBalances[], float userInvestments[], int &index);
-string getFieldData(string data, int count);
-string setcolor(unsigned short color);
+void storeDataLocally(string [], string [], string [], float [], float [], string [], float [], int );
+void loadData(string [], string [], string [], float [], float [], int &);
+string getFieldData(string , int );
+string setcolor(unsigned short );
 /// colors
 int black = 0, blue = 1, green = 2, cyan = 3, red = 4, magenta = 5, brown = 6, lightwhite = 7, darkwhite = 8, lightblue = 9, lightgreen = 10, lightcyan = 11, lightred = 12, lightmagenta = 13, yellow = 14, white = 15;
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,8 +108,8 @@ int main()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     string choice = "0";
     string LogInTo = "none"; 
+    loader(); 
 mainPage:       ///// for logging out of user's
-    // loader();  // debuging
     while(choice != "4")
     {
         choice = mainMenu();         //// menu bar option select
@@ -325,7 +325,9 @@ mainPage:       ///// for logging out of user's
             }
             else
             {
+                setcolor(lightred);
                 cout << "\t\t\t\t\t\t\t\t\t\t  Invalid Choice...";      /// invalid input
+                setcolor(white);
                 simulateWithoutTelling();
             }
         }
@@ -494,7 +496,9 @@ mainPage:       ///// for logging out of user's
             }
             else 
             {
+                setcolor(lightred);
                 cout << "\t\t\t\t\t\t\t\t\t\t  Invalid Choice...";   // invalid input
+                setcolor(white);
                 simulateWithoutTelling();
             }   
         }
