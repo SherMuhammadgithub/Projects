@@ -518,7 +518,7 @@ string mainMenu()
     cout << endl;
     setcolor(yellow);
     cout << "\t\t\t\t\t\t\t\t\t\t   Please Select an Option...";
-    setcolor(15);
+    setcolor(white);
     cin >> option;
     return option;
 }
