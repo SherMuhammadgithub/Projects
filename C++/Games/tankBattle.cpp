@@ -31,7 +31,7 @@ void movePlayerLeft();
 void movePlayerRight();
 void movePlayerUp();
 void movePlayerDown();
-// enemy varaibles
+/////////////////////// enemy varaibles
 int e1X = 2, e1Y = 1;
 bool e1WallHit = false;
 ///
@@ -42,6 +42,23 @@ int e3X = 69, e3Y = 1;
 bool e3WallHit = false;
 // player variables
 int pX = 20, pY = 20;
+/////////////////////////////////////
+void changeFirePosition();
+void playerFire();
+void moveFire();
+///////////////
+bool fired = false;
+int bulletX = 0;
+int bulletY = 0;
+int enemy1Health = 3;
+int enemy2Health = 3;
+int enemy3Health = 3;
+/////
+bool horizontal = true;
+bool vertical = false;
+bool dead1 = false;
+bool dead2 = false;
+bool dead3 = false;
 // main
 int main()
 {
@@ -59,27 +76,231 @@ int main()
     
     printPlayer();
     
-    while(true){
+    while(true)
+    {
         if (GetAsyncKeyState(VK_LEFT))
+        {
             movePlayerLeft();
-
+        }
         if (GetAsyncKeyState(VK_RIGHT))
+        {
             movePlayerRight();
-        
+        }
         if (GetAsyncKeyState(VK_UP))
+        {
             movePlayerUp();
-        
+        }
         if (GetAsyncKeyState(VK_DOWN))
+        {
             movePlayerDown();
-      
-        moveEnemy1();
-        moveEnemy2();
-        moveEnemy3();
-    
-        gotoxy(100,8);
+        }
+        if (GetAsyncKeyState('F'))
+        {
+            if (!fired)
+            {
+                changeFirePosition();
+                printPlayer();
+            } 
+        }
+        if (GetAsyncKeyState(VK_SPACE))
+        {
+            if (!fired)
+            {
+                playerFire();
+                fired = true;
+            }
+        }
+        if (fired)
+        {
+            moveFire();
+        }
+        if (enemy1Health != 0)
+        {
+            moveEnemy1();
+        }
+        if (dead1)
+        {
+            eraseEnemy1();
+            dead1 = false;
+        }
+        if (enemy2Health != 0)
+        {
+            moveEnemy2();
+        }
+        if (dead2)
+        {
+            eraseEnemy2();
+            dead2 = false;
+        }
+        if (enemy3Health != 0)
+        {
+            moveEnemy3();
+        }
+        if (dead3)
+        {
+            eraseEnemy3();
+            dead3 = false;
+        }
+        gotoxy(85,9);
+        cout << "Points";
+        gotoxy(100,9);
         cout << bonus1;
         
+        gotoxy(85,10);
+        cout << "enemy1Health";
+        gotoxy(100,10);
+        cout << enemy1Health;
+        gotoxy(85,11);
+        cout << "enemy2Health";
+        gotoxy(100,11);
+        cout << enemy2Health;
+        gotoxy(85,12);
+        cout << "enemy3Health";
+        gotoxy(100,12);
+        cout << enemy3Health;
+        
         Sleep(100);
+    }
+}
+void moveFire()
+{
+    if (horizontal)
+    {
+
+        gotoxy(bulletX,bulletY);
+        cout << " ";
+        gotoxy(bulletX,bulletY-1);
+        cout << "^";
+        if (getCharAtxy(bulletX, bulletY - 2) == ' ')
+        {
+            bulletY = bulletY - 1;
+        }
+        else if (getCharAtxy(bulletX, bulletY - 2) == '@' || getCharAtxy(bulletX, bulletY - 2) == 'E')
+        {
+            bonus1 += 5;
+            gotoxy(bulletX,bulletY-1);
+            cout << " ";
+            fired = false;
+            enemy1Health--;
+            if (enemy1Health == 0)
+            {
+                dead1 = true;
+            }
+        }
+        else if (getCharAtxy(bulletX, bulletY - 2) == '|' || getCharAtxy(bulletX, bulletY - 2) == 'e')
+        {
+            bonus1 += 5;
+            gotoxy(bulletX,bulletY-1);
+            cout << " ";
+            fired = false;
+            enemy2Health--;
+            if (enemy2Health == 0)
+            {
+                dead2 = true;
+            }
+        }
+        else if (getCharAtxy(bulletX, bulletY - 2) == '-' || getCharAtxy(bulletX, bulletY - 2) == 'j'|| getCharAtxy(bulletX, bulletY - 2) == '0')
+        {
+            bonus1 += 5;
+            gotoxy(bulletX,bulletY-1);
+            cout << " ";
+            fired = false;
+            enemy3Health--;
+            if (enemy3Health == 0)
+            {
+                dead3 = true;
+            }
+        }
+        else
+        {
+            gotoxy(bulletX,bulletY-1);
+            cout << " ";
+            fired = false;
+        }
+    }
+    else if (vertical)
+    {
+        gotoxy(bulletX,bulletY);
+        cout << " ";
+        gotoxy(bulletX+1,bulletY);
+        cout << ">";
+        if (getCharAtxy(bulletX + 3, bulletY) == ' ')
+        {
+            bulletX = bulletX + 1;
+        }
+        else if (getCharAtxy(bulletX + 3, bulletY) == '@' || getCharAtxy(bulletX + 3, bulletY) == 'E')
+        {
+            bonus1 += 5;
+            gotoxy(bulletX, bulletY-1);
+            cout << " ";
+            fired = false;
+            enemy1Health--;
+            if (enemy1Health == 0)
+            {
+                dead1 = true;
+            }
+        }
+        else if (getCharAtxy(bulletX + 3, bulletY) == '|' || getCharAtxy(bulletX + 3, bulletY) == 'e')
+        {
+            bonus1 += 5;
+            gotoxy(bulletX,bulletY-1);
+            cout << " ";
+            fired = false;
+            enemy2Health--;
+            if (enemy2Health == 0)
+            {
+                dead2 = true;
+            }
+        }
+        else if (getCharAtxy(bulletX + 3, bulletY) == '-' || getCharAtxy(bulletX + 3, bulletY) == 'j'|| getCharAtxy(bulletX, bulletY) == '0')
+        {
+            bonus1 += 5;
+            gotoxy(bulletX,bulletY-1);
+            cout << " ";
+            fired = false;
+            enemy3Health--;
+            if (enemy3Health == 0)
+            {
+                dead3 = true;
+            }
+        }
+        else
+        {
+            gotoxy(bulletX+1,bulletY);
+            cout << " ";
+            fired = false;
+        }
+    }
+}
+
+void playerFire()
+{
+    if (horizontal)
+    {
+        bulletX = pX + 2;
+        bulletY = pY - 1;
+        gotoxy(bulletX, bulletY);
+        cout << "^";
+    }
+    else if (vertical)
+    {
+        bulletX = pX + 2;
+        bulletY = pY - 1;
+        gotoxy(bulletX, bulletY);
+        cout << ">";
+    }
+}
+void changeFirePosition()
+{
+    if (horizontal)
+    {
+        vertical = true;
+        horizontal = false;
+    }
+    else if (vertical)
+    {
+        vertical = false;
+        horizontal = true;
     }
 }
 // enemy one
@@ -121,11 +342,11 @@ void moveEnemy1()
 void printEnemy2()
 {
     gotoxy(e2X,e2Y);
-    cout << "@ EE @" << endl;
+    cout << "| ee |" << endl;
     gotoxy(e2X,e2Y+1);
-    cout << "@_EE_@" << endl;
+    cout << "|_ee_|" << endl;
     gotoxy(e2X,e2Y+2);
-    cout << "@    @" << endl;
+    cout << "|    |" << endl;
 }
 void eraseEnemy2()
 {
@@ -157,11 +378,11 @@ void moveEnemy2()
 void printEnemy3()
 {
     gotoxy(e3X,e3Y);
-    cout << "@-@-@" << endl;
+    cout << "0-0-0" << endl;
     gotoxy(e3X,e3Y+1);
-    cout << "333| " << endl;
+    cout << "jjj| " << endl;
     gotoxy(e3X,e3Y+2);
-    cout << "@-@-@" << endl;
+    cout << "0-0-0" << endl;
 }
 void eraseEnemy3()
 {
@@ -190,12 +411,24 @@ void moveEnemy3()
 // player  
 void printPlayer()
 {
-    gotoxy(pX,pY);
-    cout << "@ || @" << endl;
-    gotoxy(pX,pY+1);
-    cout << "@_||_@" << endl;
-    gotoxy(pX,pY+2);
-    cout << "@    @" << endl;    
+    if (horizontal)
+    {
+        gotoxy(pX,pY);
+        cout << "@ || @" << endl;
+        gotoxy(pX,pY+1);
+        cout << "@_||_@" << endl;
+        gotoxy(pX,pY+2);
+        cout << "@    @" << endl;    
+    }
+    else if (vertical)
+    {
+        gotoxy(pX,pY);
+        cout << "@ //  " << endl;
+        gotoxy(pX,pY+1);
+        cout << "@_||_@" << endl;
+        gotoxy(pX,pY+2);
+        cout << "@    @" << endl;    
+    }
 }
 void erasePlayer()
 {
