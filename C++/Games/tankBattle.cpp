@@ -50,6 +50,7 @@ void moveFire();
 bool fired = false;
 int bulletX = 0;
 int bulletY = 0;
+int playerHealth = 3;
 int enemy1Health = 3;
 int enemy2Health = 3;
 int enemy3Health = 3;
@@ -141,22 +142,39 @@ int main()
             eraseEnemy3();
             dead3 = false;
         }
+        if (enemy1Health == 0 && enemy2Health == 0 && enemy3Health == 0)
+        {
+            gotoxy(80,15);
+            cout << "You Win";
+            gotoxy(80,16);
+            cout << "Your Score: " << bonus1;
+            gotoxy(80,17);
+            cout << "Press any key to exit";
+            break;
+        }
         gotoxy(85,9);
         cout << "Points";
         gotoxy(100,9);
         cout << bonus1;
-        
-        gotoxy(85,10);
-        cout << "enemy1Health";
+
+        gotoxy(80,10);
+        cout << "Player Health";
         gotoxy(100,10);
-        cout << enemy1Health;
-        gotoxy(85,11);
-        cout << "enemy2Health";
+        cout << playerHealth;
+        
+        gotoxy(80,11);
+        cout << "Enemy One Health";
         gotoxy(100,11);
-        cout << enemy2Health;
-        gotoxy(85,12);
-        cout << "enemy3Health";
+        cout << enemy1Health;
+
+        gotoxy(80,12);
+        cout << "Enemy Two Health";
         gotoxy(100,12);
+        cout << enemy2Health;
+
+        gotoxy(80,13);
+        cout << "Enemy Three Health";
+        gotoxy(100,13);
         cout << enemy3Health;
         
         Sleep(100);
