@@ -6,7 +6,7 @@ using namespace std;
 char getCharAtxy(short int x, short int y);
 void gotoxy(int x, int y);//
 string setcolor(unsigned short color);
-int black = 0, blue = 1, green = 2, cyan = 3, red = 4, magenta = 5, brown = 6, lightwhite = 7, darkwhite = 8, lightblue = 9, lightgreen = 10, lightcyan = 11, lightred = 12, lightmagenta = 13, yellow = 14, white = 15;
+int blue = 1, green = 2, cyan = 3, red = 4, brown = 6, lightwhite = 7, lightblue = 9, lightgreen = 10, lightcyan = 11, lightred = 12, yellow = 14, white = 15;
 int bonus1 = 0; 
 // enemy one
 void printEnemy1();
@@ -135,6 +135,9 @@ int main()
                 fired = true;
             }
         }
+        // score
+        printScores();
+
         // fire
         if (fired)
         {
@@ -174,13 +177,6 @@ int main()
             cout << " ";
             dead3 = false;
         }
-        // game over
-        if (enemy1Health == 0 && enemy2Health == 0 && enemy3Health == 0)
-        {
-            winScreen();
-            break;
-        }
-        printScores();
         /// enemy fire's
         if (!enemy1Fired)
         {
@@ -200,13 +196,19 @@ int main()
         }
 
 
-        ////// game end..... ///////
+        ////// game lost..... ///////
         if (playerHealth == 0)
         {
             gotoxy(80,15);
             cout << "Game Over";
             gotoxy(80,16);
             cout << "Your Score: " << bonus1;
+            break;
+        }
+        // game win..... ///////
+        if (enemy1Health == 0 && enemy2Health == 0 && enemy3Health == 0)
+        {
+            winScreen();
             break;
         }
         Sleep(75);
@@ -218,7 +220,7 @@ void enemy3Fire()
     enemy3BulletY = e3Y + 1;
     gotoxy(enemy3BulletX, enemy3BulletY);
     setcolor(lightred);
-    cout << "v";
+    cout << "3";
     setcolor(white);
     enemy3Fired = true;
 }
@@ -228,7 +230,7 @@ void moveEnemy3Bullet()
     cout << " ";
     gotoxy(enemy3BulletX - 1, enemy3BulletY);
     setcolor(lightred);
-    cout << "v";
+    cout << "3";
     setcolor(white);
     if (getCharAtxy(enemy3BulletX - 2, enemy3BulletY) == ' ')
         enemy3BulletX = enemy3BulletX - 1;
@@ -289,27 +291,39 @@ void winScreen()
 }
 void printScores()
 {
-    gotoxy(85,9);
+    int x1 = 100;  // location
+    int x2 = 120;
+    //////////////////////////
+    gotoxy(x1+5,10);
     cout << "Points";
-    gotoxy(100,9);
+    gotoxy(x2,10);
     cout << bonus1;
-    gotoxy(80,10);
+
+    setcolor(lightgreen);
+    gotoxy(x1,12);
     cout << "Player Health";
-    gotoxy(100,10);
+    gotoxy(x2,12);
     cout << playerHealth;
     
-    gotoxy(80,11);
+    setcolor(lightblue);
+    gotoxy(x1,14);
     cout << "Enemy One Health";
-    gotoxy(100,11);
+    gotoxy(x2,14);
     cout << enemy1Health;
-    gotoxy(80,12);
+
+    setcolor(brown);
+    gotoxy(x1,15);
     cout << "Enemy Two Health";
-    gotoxy(100,12);
+    gotoxy(x2,15);
     cout << enemy2Health;
-    gotoxy(80,13);
+
+    setcolor(red);
+    gotoxy(x1,16);
     cout << "Enemy Three Health";
-    gotoxy(100,13);
+    gotoxy(x2,16);
     cout << enemy3Health;
+    
+    setcolor(white);
 }
 void moveFire()
 {
