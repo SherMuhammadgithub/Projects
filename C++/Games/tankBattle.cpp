@@ -42,7 +42,7 @@ bool e2WallHit = false;
 int e3X = 69, e3Y = 1;
 bool e3WallHit = false;
 // player variables
-int pX = 20, pY = 20;
+int pX = 45, pY = 21;
 /////////////////////////////////////
 void changeFirePosition();
 void playerFire();
@@ -179,6 +179,7 @@ int main()
             break;
         }
         printScores();
+        /// enemy fire's
         if (!enemy1Fired)
         {
             enemy1Fire();
@@ -237,7 +238,7 @@ void moveEnemy1Bullet()
     gotoxy(enemy1BulletX, enemy1BulletY);
     cout << " ";
     gotoxy(enemy1BulletX, enemy1BulletY + 1);
-    cout << "v";
+    cout << "{";
     if (getCharAtxy(enemy1BulletX, enemy1BulletY + 2) == ' ')
         enemy1BulletY = enemy1BulletY + 1;
     else
@@ -252,7 +253,7 @@ void enemy1Fire()
     enemy1BulletX = e1X + 2;
     enemy1BulletY = e1Y + 3;
     gotoxy(enemy1BulletX, enemy1BulletY);
-    cout << "v"; 
+    cout << "{"; 
     enemy1Fired = true;
 }
 void winScreen()
@@ -311,7 +312,7 @@ void moveFire()
                 dead1 = true;
             }
         }
-        else if (getCharAtxy(bulletX, bulletY - 2) == '|' || getCharAtxy(bulletX, bulletY - 2) == 'e')
+        else if (getCharAtxy(bulletX, bulletY - 2) == '1' || getCharAtxy(bulletX, bulletY - 2) == 'e'|| getCharAtxy(bulletX, bulletY - 2) == '_')
         {
             bonus1 += 5;
             gotoxy(bulletX,bulletY-1);
@@ -364,7 +365,7 @@ void moveFire()
                 dead1 = true;
             }
         }
-        else if (getCharAtxy(bulletX + 3, bulletY) == '|' || getCharAtxy(bulletX + 3, bulletY) == 'e')
+        else if (getCharAtxy(bulletX + 3, bulletY) == '1' || getCharAtxy(bulletX + 3, bulletY) == 'e'|| getCharAtxy(bulletX + 3, bulletY) == '_')
         {
             bonus1 += 5;
             gotoxy(bulletX+1,bulletY);
@@ -466,11 +467,11 @@ void moveEnemy1()
 void printEnemy2()
 {
     gotoxy(e2X,e2Y);
-    cout << "| ee |" << endl;
+    cout << "1 ee 1" << endl;
     gotoxy(e2X,e2Y+1);
-    cout << "|_ee_|" << endl;
+    cout << "1_ee_1" << endl;
     gotoxy(e2X,e2Y+2);
-    cout << "|    |" << endl;
+    cout << "1    1" << endl;
 }
 void eraseEnemy2()
 {
@@ -627,26 +628,26 @@ void printMaze()
     cout << "##                                                                         ##" << endl;
     cout << "##                                              ##                         ##" << endl;
     cout << "##                                              ##                         ##" << endl;
-    cout << "##             ##                                           ##             ##" << endl;
-    cout << "##          *  ##                                *          ##    *        ##" << endl;
-    cout << "##             ##           ###                             ##             ##" << endl;
+    cout << "##                                                          ##             ##" << endl;
+    cout << "##          *                                    *          ##    *        ##" << endl;
+    cout << "##                          ###                             ##             ##" << endl;
     cout << "##       #######            ###                              ######        ##" << endl;
-    cout << "##                                              ##                         ##" << endl;
-    cout << "##                                              ##                         ##" << endl;
+    cout << "##                                                 ##                      ##" << endl;
+    cout << "##                                                 ##                      ##" << endl;
     cout << "##                                                                         ##" << endl;
     cout << "##                           *                                             ##" << endl;
     cout << "##                                                *              *         ##" << endl;
     cout << "##                                                                         ##" << endl;
     cout << "##                         ##                                              ##" << endl;
-    cout << "##                         ##                  ##                          ##" << endl;
-    cout << "##                                             ##                          ##" << endl;
-    cout << "##        ######                                             ######        ##" << endl;
-    cout << "##             ##                                           ##             ##" << endl;
-    cout << "##             ##                                           ##    *        ##" << endl;
-    cout << "##             ##          ##                               ##             ##" << endl;
     cout << "##                         ##                                              ##" << endl;
     cout << "##                                                                         ##" << endl;
-    cout << "##                                                                         ##" << endl;
+    cout << "##        ######                                             ######        ##" << endl;
+    cout << "##             ##                                           ##             ##" << endl;
+    cout << "##             ##                         ==        ==      ##    *        ##" << endl;
+    cout << "##             ##          ##             ||        ||      ##             ##" << endl;
+    cout << "##                         ##             []        []                     ##" << endl;
+    cout << "##                                        ||        ||                     ##" << endl;
+    cout<<R"(##                                        //        \\                     ##)" << endl;
     cout << "#############################################################################" << endl;
 }
 void header()
