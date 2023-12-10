@@ -55,7 +55,7 @@ int bulletX = 0;
 int bulletY = 0;
 int playerHealth = 3;
 int enemy1Health = 3;
-int enemy2Health = 3;
+int enemy2Health = 6;   // obstacle health
 int enemy3Health = 3;
 /////
 bool horizontal = true;
@@ -71,11 +71,7 @@ int enemy1BulletX = 0;
 int enemy1BulletY = 0;
 bool enemy1Fired = false;
 
-void enemy2Fire();
-void moveEnemy2Bullet();
-int enemy2BulletX = 0;
-int enemy2BulletY = 0;
-bool enemy2Fired = false;
+// enemy 2 is an obstacle
 
 void enemy3Fire();
 void moveEnemy3Bullet();
@@ -96,7 +92,7 @@ int main()
     score();
 
     printEnemy1();
-    printEnemy2();
+    // printEnemy2();
     printEnemy3();
     
     printPlayer();
@@ -172,6 +168,8 @@ int main()
         if (dead3)
         {
             eraseEnemy3();
+            gotoxy(enemy3BulletX, enemy3BulletY);
+            cout << " ";
             dead3 = false;
         }
         // game over
@@ -185,13 +183,18 @@ int main()
         {
             enemy1Fire();
         }
-        // enemy2Fire();
-        // enemy3Fire();
         if (enemy1Fired && enemy1Health != 0)
         {
             moveEnemy1Bullet();
         }
-
+        if (!enemy3Fired)
+        {
+            enemy3Fire();
+        }
+        if (enemy3Fired && enemy3Health != 0)
+        {
+            moveEnemy3Bullet();
+        }
 
 
         ////// game end..... ///////
@@ -204,6 +207,29 @@ int main()
             break;
         }
         Sleep(75);
+    }
+}
+void enemy3Fire()
+{
+    enemy3BulletX = e3X - 2;
+    enemy3BulletY = e3Y + 1;
+    gotoxy(enemy3BulletX, enemy3BulletY);
+    cout << "v";
+    enemy3Fired = true;
+}
+void moveEnemy3Bullet()
+{
+    gotoxy(enemy3BulletX, enemy3BulletY);
+    cout << " ";
+    gotoxy(enemy3BulletX - 1, enemy3BulletY);
+    cout << "v";
+    if (getCharAtxy(enemy3BulletX - 2, enemy3BulletY) == ' ')
+        enemy3BulletX = enemy3BulletX - 1;
+    else
+    {
+        gotoxy(enemy3BulletX - 1, enemy3BulletY);
+        cout << " ";
+        enemy3Fired = false;
     }
 }
 void moveEnemy1Bullet()
@@ -228,14 +254,6 @@ void enemy1Fire()
     gotoxy(enemy1BulletX, enemy1BulletY);
     cout << "v"; 
     enemy1Fired = true;
-}
-void enemy2Fire()
-{
-
-}
-void enemy3Fire()
-{
-
 }
 void winScreen()
 {
@@ -281,7 +299,7 @@ void moveFire()
         {
             bulletY = bulletY - 1;
         }
-        else if (getCharAtxy(bulletX, bulletY - 2) == '@' || getCharAtxy(bulletX, bulletY - 2) == 'E')
+        else if (getCharAtxy(bulletX, bulletY - 2) == 'O' || getCharAtxy(bulletX, bulletY - 2) == 'E')
         {
             bonus1 += 5;
             gotoxy(bulletX,bulletY-1);
@@ -334,10 +352,10 @@ void moveFire()
         {
             bulletX = bulletX + 1;
         }
-        else if (getCharAtxy(bulletX + 3, bulletY) == '@' || getCharAtxy(bulletX + 3, bulletY) == 'E')
+        else if (getCharAtxy(bulletX + 3, bulletY) == 'O' || getCharAtxy(bulletX + 3, bulletY) == 'E')
         {
             bonus1 += 5;
-            gotoxy(bulletX, bulletY-1);
+            gotoxy(bulletX+1, bulletY);
             cout << " ";
             fired = false;
             enemy1Health--;
@@ -349,7 +367,7 @@ void moveFire()
         else if (getCharAtxy(bulletX + 3, bulletY) == '|' || getCharAtxy(bulletX + 3, bulletY) == 'e')
         {
             bonus1 += 5;
-            gotoxy(bulletX,bulletY-1);
+            gotoxy(bulletX+1,bulletY);
             cout << " ";
             fired = false;
             enemy2Health--;
@@ -361,7 +379,7 @@ void moveFire()
         else if (getCharAtxy(bulletX + 3, bulletY) == '-' || getCharAtxy(bulletX + 3, bulletY) == 'j'|| getCharAtxy(bulletX, bulletY) == '0')
         {
             bonus1 += 5;
-            gotoxy(bulletX,bulletY-1);
+            gotoxy(bulletX+1,bulletY);
             cout << " ";
             fired = false;
             enemy3Health--;
@@ -413,11 +431,11 @@ void changeFirePosition()
 void printEnemy1()
 {
     gotoxy(e1X,e1Y);
-    cout << "@    @" << endl;
+    cout << "O    O" << endl;
     gotoxy(e1X,e1Y+1);
-    cout << "@_EE_@" << endl;
+    cout << "O_EE_O" << endl;
     gotoxy(e1X,e1Y+2);
-    cout << "@ EE @" << endl;
+    cout << "O EE O" << endl;
 
 }
 void eraseEnemy1()
