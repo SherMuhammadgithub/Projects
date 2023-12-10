@@ -495,12 +495,15 @@ void eraseEnemy1()
 void moveEnemy1()
 {
     eraseEnemy1();    
-    if (!e1WallHit){     
+    // gotoxy(e1X+10,e1Y+1);
+    // cout << "hi";
+    // getch();
+    if (!e1WallHit && getCharAtxy(e1X + 11, e1Y) != '@' && getCharAtxy(e1X + 11, e1Y + 1) != '@' && getCharAtxy(e1X + 11, e1Y + 2) != '@'){     
         e1X = e1X + 1;
         if(e1X == 42)
             e1WallHit = true;
     }
-    else if(e1WallHit){ 
+    else if(e1WallHit && getCharAtxy(e1X - 1, e1Y) != '@' && getCharAtxy(e1X - 1, e1Y + 1) != '@' && getCharAtxy(e1X - 1, e1Y + 2) != '@'){ 
         e1X = e1X - 1;
         if(e1X < 3)
             e1WallHit = false;
