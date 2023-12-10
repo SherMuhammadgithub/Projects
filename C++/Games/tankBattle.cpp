@@ -1,5 +1,6 @@
 #include <iostream>
 #include <windows.h>
+#include <conio.h>
 using namespace std;
 //////////////////////////
 char getCharAtxy(short int x, short int y);
@@ -62,6 +63,27 @@ bool vertical = false;
 bool dead1 = false;
 bool dead2 = false;
 bool dead3 = false;
+// enemy fire
+
+void enemy1Fire();
+void moveEnemy1Bullet();
+int enemy1BulletX = 0;
+int enemy1BulletY = 0;
+bool enemy1Fired = false;
+
+void enemy2Fire();
+void moveEnemy2Bullet();
+int enemy2BulletX = 0;
+int enemy2BulletY = 0;
+bool enemy2Fired = false;
+
+void enemy3Fire();
+void moveEnemy3Bullet();
+int enemy3BulletX = 0;
+int enemy3BulletY = 0;
+bool enemy3Fired = false;
+//////////////////////////
+
 // main
 int main()
 {
@@ -128,6 +150,8 @@ int main()
         if (dead1)
         {
             eraseEnemy1();
+            gotoxy(enemy1BulletX, enemy1BulletY);
+            cout << " ";
             dead1 = false;
         }
         if (enemy2Health != 0)
@@ -157,8 +181,61 @@ int main()
             break;
         }
         printScores();
-        Sleep(100);
+        if (!enemy1Fired)
+        {
+            enemy1Fire();
+        }
+        // enemy2Fire();
+        // enemy3Fire();
+        if (enemy1Fired && enemy1Health != 0)
+        {
+            moveEnemy1Bullet();
+        }
+
+
+
+        ////// game end..... ///////
+        if (playerHealth == 0)
+        {
+            gotoxy(80,15);
+            cout << "Game Over";
+            gotoxy(80,16);
+            cout << "Your Score: " << bonus1;
+            break;
+        }
+        Sleep(75);
     }
+}
+void moveEnemy1Bullet()
+{
+    gotoxy(enemy1BulletX, enemy1BulletY);
+    cout << " ";
+    gotoxy(enemy1BulletX, enemy1BulletY + 1);
+    cout << "v";
+    if (getCharAtxy(enemy1BulletX, enemy1BulletY + 2) == ' ')
+        enemy1BulletY = enemy1BulletY + 1;
+    else
+    {
+        gotoxy(enemy1BulletX, enemy1BulletY + 1);
+        cout << " ";
+        enemy1Fired = false;
+    }
+}
+void enemy1Fire()
+{
+    enemy1BulletX = e1X + 2;
+    enemy1BulletY = e1Y + 3;
+    gotoxy(enemy1BulletX, enemy1BulletY);
+    cout << "v"; 
+    enemy1Fired = true;
+}
+void enemy2Fire()
+{
+
+}
+void enemy3Fire()
+{
+
 }
 void winScreen()
 {
@@ -166,9 +243,6 @@ void winScreen()
     cout << "You Win";
     gotoxy(80,16);
     cout << "Your Score: " << bonus1;
-    gotoxy(80,17);
-    cout << "Press any key to exit";
-    system("cls");
 }
 void printScores()
 {
