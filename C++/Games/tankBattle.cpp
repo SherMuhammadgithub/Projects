@@ -5,6 +5,8 @@ using namespace std;
 //////////////////////////
 char getCharAtxy(short int x, short int y);
 void gotoxy(int x, int y);//
+string setcolor(unsigned short color);
+int black = 0, blue = 1, green = 2, cyan = 3, red = 4, magenta = 5, brown = 6, lightwhite = 7, darkwhite = 8, lightblue = 9, lightgreen = 10, lightcyan = 11, lightred = 12, lightmagenta = 13, yellow = 14, white = 15;
 int bonus1 = 0; 
 // enemy one
 void printEnemy1();
@@ -215,7 +217,9 @@ void enemy3Fire()
     enemy3BulletX = e3X - 2;
     enemy3BulletY = e3Y + 1;
     gotoxy(enemy3BulletX, enemy3BulletY);
+    setcolor(lightred);
     cout << "v";
+    setcolor(white);
     enemy3Fired = true;
 }
 void moveEnemy3Bullet()
@@ -223,9 +227,18 @@ void moveEnemy3Bullet()
     gotoxy(enemy3BulletX, enemy3BulletY);
     cout << " ";
     gotoxy(enemy3BulletX - 1, enemy3BulletY);
+    setcolor(lightred);
     cout << "v";
+    setcolor(white);
     if (getCharAtxy(enemy3BulletX - 2, enemy3BulletY) == ' ')
         enemy3BulletX = enemy3BulletX - 1;
+    else if (getCharAtxy(enemy3BulletX - 2, enemy3BulletY) == '@' || getCharAtxy(enemy3BulletX - 2, enemy3BulletY) == '|')
+    {
+        gotoxy(enemy3BulletX - 1, enemy3BulletY);
+        cout << " ";
+        enemy3Fired = false;
+        playerHealth--;
+    }
     else
     {
         gotoxy(enemy3BulletX - 1, enemy3BulletY);
@@ -238,9 +251,18 @@ void moveEnemy1Bullet()
     gotoxy(enemy1BulletX, enemy1BulletY);
     cout << " ";
     gotoxy(enemy1BulletX, enemy1BulletY + 1);
+    setcolor(cyan);
     cout << "{";
+    setcolor(white);
     if (getCharAtxy(enemy1BulletX, enemy1BulletY + 2) == ' ')
         enemy1BulletY = enemy1BulletY + 1;
+    else if (getCharAtxy(enemy1BulletX, enemy1BulletY + 2) == '@' || getCharAtxy(enemy1BulletX, enemy1BulletY + 2) == '|')
+    {
+        gotoxy(enemy1BulletX, enemy1BulletY + 1);
+        cout << " ";
+        enemy1Fired = false;
+        playerHealth--;
+    }
     else
     {
         gotoxy(enemy1BulletX, enemy1BulletY + 1);
@@ -253,7 +275,9 @@ void enemy1Fire()
     enemy1BulletX = e1X + 2;
     enemy1BulletY = e1Y + 3;
     gotoxy(enemy1BulletX, enemy1BulletY);
+    setcolor(cyan);
     cout << "{"; 
+    setcolor(white);
     enemy1Fired = true;
 }
 void winScreen()
@@ -289,6 +313,7 @@ void printScores()
 }
 void moveFire()
 {
+    setcolor(green);
     if (horizontal)
     {
 
@@ -396,16 +421,19 @@ void moveFire()
             fired = false;
         }
     }
+    setcolor(white);
 }
 
 void playerFire()
 {
+    setcolor(green);
     if (horizontal)
     {
         bulletX = pX + 2;
         bulletY = pY - 1;
         gotoxy(bulletX, bulletY);
         cout << "^";
+    
     }
     else if (vertical)
     {
@@ -414,6 +442,7 @@ void playerFire()
         gotoxy(bulletX, bulletY);
         cout << ">";
     }
+    setcolor(white);
 }
 void changeFirePosition()
 {
@@ -431,13 +460,14 @@ void changeFirePosition()
 // enemy one
 void printEnemy1()
 {
+    setcolor(lightblue);
     gotoxy(e1X,e1Y);
     cout << "O    O" << endl;
     gotoxy(e1X,e1Y+1);
     cout << "O_EE_O" << endl;
     gotoxy(e1X,e1Y+2);
     cout << "O EE O" << endl;
-
+    setcolor(white);
 }
 void eraseEnemy1()
 {
@@ -466,12 +496,14 @@ void moveEnemy1()
 // enemy two 
 void printEnemy2()
 {
+    setcolor(brown);
     gotoxy(e2X,e2Y);
     cout << "1 ee 1" << endl;
     gotoxy(e2X,e2Y+1);
     cout << "1_ee_1" << endl;
     gotoxy(e2X,e2Y+2);
     cout << "1    1" << endl;
+    setcolor(white);
 }
 void eraseEnemy2()
 {
@@ -502,12 +534,14 @@ void moveEnemy2()
 // enemy three
 void printEnemy3()
 {
+    setcolor(red);
     gotoxy(e3X,e3Y);
     cout << "0-0-0" << endl;
     gotoxy(e3X,e3Y+1);
     cout << "jjj| " << endl;
     gotoxy(e3X,e3Y+2);
     cout << "0-0-0" << endl;
+    setcolor(white);
 }
 void eraseEnemy3()
 {
@@ -536,6 +570,7 @@ void moveEnemy3()
 // player  
 void printPlayer()
 {
+    setcolor(lightgreen);
     if (horizontal)
     {
         gotoxy(pX,pY);
@@ -554,6 +589,7 @@ void printPlayer()
         gotoxy(pX,pY+2);
         cout << "@    @" << endl;    
     }
+    setcolor(white);
 }
 void erasePlayer()
 {
@@ -623,39 +659,40 @@ void movePlayerDown()
 }
 void printMaze()
 {
-
+    // setcolor(lightgreen);
     cout << "#############################################################################" << endl;
     cout << "##                                                                         ##" << endl;
     cout << "##                                              ##                         ##" << endl;
     cout << "##                                              ##                         ##" << endl;
     cout << "##                                                          ##             ##" << endl;
-    cout << "##          *                                    *          ##    *        ##" << endl;
+    cout << "##                                                          ##             ##" << endl;
     cout << "##                          ###                             ##             ##" << endl;
     cout << "##       #######            ###                              ######        ##" << endl;
     cout << "##                                                 ##                      ##" << endl;
     cout << "##                                                 ##                      ##" << endl;
     cout << "##                                                                         ##" << endl;
-    cout << "##                           *                                             ##" << endl;
-    cout << "##                                                *              *         ##" << endl;
+    cout << "##                                                                         ##" << endl;
+    cout << "##                                                                         ##" << endl;
     cout << "##                                                                         ##" << endl;
     cout << "##                         ##                                              ##" << endl;
     cout << "##                         ##                                              ##" << endl;
     cout << "##                                                                         ##" << endl;
     cout << "##        ######                                             ######        ##" << endl;
     cout << "##             ##                                           ##             ##" << endl;
-    cout << "##             ##                         ==        ==      ##    *        ##" << endl;
+    cout << "##             ##                         ==        ==      ##             ##" << endl;
     cout << "##             ##          ##             ||        ||      ##             ##" << endl;
     cout << "##                         ##             []        []                     ##" << endl;
     cout << "##                                        ||        ||                     ##" << endl;
     cout<<R"(##                                        //        \\                     ##)" << endl;
     cout << "#############################################################################" << endl;
+    setcolor(white);
 }
 void header()
 {    
     cout << endl;
     cout << endl;
     cout << endl;
-
+    setcolor(cyan);
     cout<<R"(     _________  ________  ________   ___  __                                  )"<<endl;    
     cout<<R"(    |\___   ___\\   __  \|\   ___  \|\  \|\  \                                )"<<endl;    
     cout<<R"(    \|___ \  \_\ \  \|\  \ \  \\ \  \ \  \/  /|_                              )"<<endl;    
@@ -663,6 +700,7 @@ void header()
     cout<<R"(          \ \  \ \ \  \ \  \ \  \\ \  \ \  \\ \  \                            )"<<endl;    
     cout<<R"(           \ \__\ \ \__\ \__\ \__\\ \__\ \__\\ \__\                           )"<<endl;    
     cout<<R"(            \|__|  \|__|\|__|\|__|_\|__|\|__| \|__|                           )"<<endl;
+    setcolor(lightred);
     cout<<R"(                             ___       ___  _________ ________  ________      )"<<endl;
     cout<<R"(                            |\  \     |\  \|\   __  \|\   __  \|\   ____\     )"<<endl;
     cout<<R"(                            \ \  \    \ \  \ \  \|\  \ \  \|\  \ \  \___|_    )"<<endl;
@@ -671,11 +709,12 @@ void header()
     cout<<R"(                               \ \____________\ \__\ \__\ \__\\ _\ ____\_\  \ )"<<endl;
     cout<<R"(                                \|____________|\|__|\|__|\|__|\|__|\_________\)"<<endl;
     cout<<R"(                                                                  \|_________|)"<<endl;                                                                     
+    setcolor(white);
 }
 void score() 
 {
     int x = 80, y = 1; 
-
+    setcolor(yellow);
     gotoxy(x,y);
     cout << R"(  ________  ________  ________  ________  _______      )" << endl;
     
@@ -699,6 +738,7 @@ void score()
     
     gotoxy(x,y+7);
     cout << R"(    \|_________|                                       )" << endl;
+    setcolor(white);
 }
 // functions for game
 char getCharAtxy(short int x, short int y)
@@ -717,4 +757,10 @@ void gotoxy(int x, int y)
     coordinates.X = x;
     coordinates.Y = y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coordinates);
+}
+string setcolor(unsigned short color)
+{
+    HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hcon, color);
+    return "";
 }
