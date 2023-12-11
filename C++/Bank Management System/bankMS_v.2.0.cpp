@@ -140,21 +140,9 @@ mainPage:       ///// for logging out of user's
         }
         else if (choice == "2")      /////sig in user
         {
-retakeNameInputSignIN:   // if invalid name then again
-            signInHeader();
-            string userEnteredPassword, userEnteredName;
-            setcolor(lightcyan);
-            cout << "\t\t\t\t\t\t\t\t\t\t\tEnter your User Name: ";
-            cin >> userEnteredName;
-            bool nameValidation = nameCheck(userEnteredName);
-            if (!nameValidation)
-            {
-                invalidNameError();
-                goto retakeNameInputSignIN;
-            }
+            string userEnteredPassword, userEnteredName = getUserEnteredName();
             cout << "\t\t\t\t\t\t\t\t\t\t\tEnter your Password: ";
             userEnteredPassword = getAnonymousPass();
-            setcolor(lightblue);
             simulateProcessing();
             if (userExist(userNames, userEnteredName, index, transferIndex))
             {
@@ -163,14 +151,10 @@ retakeNameInputSignIN:   // if invalid name then again
                     LogInTo = "user";       /// login successful
                     break;
                 }
-                setcolor(lightred);
                 passNotCorrect();  // no need to place in else   :)
             }
             else
-            {
-                setcolor(lightred);
                 accountNotExists();
-            }
             setcolor(white);
         }
         else if (choice == "3")   //// sign up user
@@ -1039,13 +1023,17 @@ void transactionError()
 }
 void passNotCorrect()
 {
+    setcolor(lightred);
     cout << "\n\t\t\t\t\t\t\t\t\t\t\tInvalid Password" << endl;
+    setcolor(white);
     cout << "\t\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
     getch();
 }
 void accountNotExists()
 {
+    setcolor(lightred);
     cout << "\n\t\t\t\t\t\t\t\t\t\t\tAccount does'nt Exist" << endl;
+    setcolor(white);
     cout << "\t\t\t\t\t\t\t\t\t\t\tPress any key to continue...";
     getch();
 }
@@ -1347,6 +1335,23 @@ void accessDeniedError()
     setcolor(lightred);
     cout << "\n\n\t\t\t\t\t\t\t\t\t\t\tAccess Denied.............." << endl;
     setcolor(white);
+}
+string getUserEnteredName()
+{
+retakeNameInputSignIN:   // if invalid name then again
+    signInHeader();
+    string userEnteredName;
+    setcolor(lightcyan);
+    cout << "\t\t\t\t\t\t\t\t\t\t\tEnter your User Name: ";
+    cin >> userEnteredName;
+    bool nameValidation = nameCheck(userEnteredName);
+    if (!nameValidation)
+    {
+        invalidNameError();
+        goto retakeNameInputSignIN;
+    }
+    setcolor(white);
+    return userEnteredName;
 }
 //////////////////////////////////////////////////////////////////////////////////////   headers   end    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////// End of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
