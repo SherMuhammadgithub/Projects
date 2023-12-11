@@ -929,6 +929,12 @@ bool modifyInformation(string userNames[], string userPasswords[], int currentIn
         string newName;
         cout << "\n\n\t\t\t\t\t\t\t\t\t\tEnter new Name: ";
         cin >> newName;
+        bool nameValidation = nameCheck(newName);
+        if (!nameValidation)
+        {
+            invalidNameError();
+            return false;    // going back to the menu
+        }
         simulateProcessing();
         if(!userExist(userNames,newName, index, transferIndex))                    /// does'nt exist
         {
