@@ -81,7 +81,11 @@ string getFieldData(string , int );
 // xtra
 string getAdminPass();
 void accessDeniedError();
-
+string getUserEnteredName();
+string getNAME();
+void userAlreadyExists();
+void terminateProgram();
+void invalidChoiceError();
 
 
 ////////////////////////////////
@@ -141,6 +145,7 @@ mainPage:       ///// for logging out of user's
         else if (choice == "2")      /////sig in user
         {
             string userEnteredPassword, userEnteredName = getUserEnteredName();
+            setcolor(lightcyan);
             cout << "\t\t\t\t\t\t\t\t\t\t\tEnter your Password: ";
             userEnteredPassword = getAnonymousPass();
             simulateProcessing();
@@ -159,18 +164,7 @@ mainPage:       ///// for logging out of user's
         }
         else if (choice == "3")   //// sign up user
         {
-retakeNameInputSignUP:   // if invalid name then again
-            signUpHeader();
-            string name;
-            setcolor(lightcyan);
-            cout << "\t\t\t\t\t\t\t\t\t\t\tEnter your name: ";
-            cin >> name;
-            bool nameValidation = nameCheck(name);
-            if (!nameValidation)
-            {
-                invalidNameError();
-                goto retakeNameInputSignUP;
-            }
+            string name = getNAME();
             string pass;
             cout << "\t\t\t\t\t\t\t\t\t\t\tSet password: ";
             pass = getAnonymousPass();
@@ -178,30 +172,18 @@ retakeNameInputSignUP:   // if invalid name then again
             if (uniqueUser(userNames, index ,name))         /// User created
                 createUser(userNames, userPasswords, userIDs, index, name, pass);
             else
-            {
-                setcolor(red);
-                cout << "\n\n\t\t\t\t\t\t\t\t\t\t\tUser Already Exists....";
-            }
+                userAlreadyExists();
             setcolor(white);
             mainPressAnyKey();
         }
         else if (choice == "4")
         {
-            setcolor(red);
-            cout << "\t\t\t\t\t\t\t\t\t\t\tTerminating the program....";
-            setcolor(white);
-            simulateWithoutTelling();
+            terminateProgram();
             storeDataLocally(userNames, userPasswords, userIDs, userBalances, userInvestments, transactionsTypes, transactions, index);
-            system("cls");
             return 0;                         /// end program
         }
         else             /// for error cases
-        { 
-            setcolor(lightred); 
-            cout << "\t\t\t\t\t\t\t\t\t\t\tInvalid choice....";
-            setcolor(white);    
-            simulateWithoutTelling();
-        }
+            invalidChoiceError();
     }
     if (LogInTo == "admin")
     {
@@ -1125,7 +1107,9 @@ void createUser(string userNames[], string userPasswords[], string userIDs[], in
     userIDs[index] = "000"; 
     userIDs[index] += to_string(index+1);
     index++;  
+    setcolor(lightgreen);
     cout << endl << endl << "\t\t\t\t\t\t\t\t\t\t\tSuccessfully created new user" << endl;
+    setcolor(white);
 }
 void invalidNameError()
 {
@@ -1352,6 +1336,41 @@ retakeNameInputSignIN:   // if invalid name then again
     }
     setcolor(white);
     return userEnteredName;
+}
+string getNAME()
+{
+    retakeNameInputSignUP:   // if invalid name then again
+    signUpHeader();
+    string name;
+    setcolor(lightcyan);
+    cout << "\t\t\t\t\t\t\t\t\t\t\tEnter your name: ";
+    cin >> name;
+    bool nameValidation = nameCheck(name);
+    if (!nameValidation)
+    {
+        invalidNameError();
+        goto retakeNameInputSignUP;
+    }
+}
+void userAlreadyExists()
+{
+    setcolor(red);
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\t\tUser Already Exists....";
+}
+void terminateProgram()
+{
+    setcolor(red);
+    cout << "\t\t\t\t\t\t\t\t\t\t\tTerminating the program....";
+    setcolor(white);
+    simulateWithoutTelling();        
+    system("cls");
+}
+void invalidChoiceError()
+{
+    setcolor(lightred); 
+    cout << "\t\t\t\t\t\t\t\t\t\t\tInvalid choice....";
+    setcolor(white);   
+    simulateWithoutTelling(); 
 }
 //////////////////////////////////////////////////////////////////////////////////////   headers   end    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////// End of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
