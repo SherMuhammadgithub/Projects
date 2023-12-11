@@ -77,6 +77,14 @@ void invalidNameError();
 void storeDataLocally(string [], string [], string [], float [], float [], string [], float [], int );
 void loadData(string [], string [], string [], float [], float [], int &);
 string getFieldData(string , int );
+///////////////////////////////////////////////////////////////////////////////
+// xtra
+string getAdminPass();
+void accessDeniedError();
+
+
+
+////////////////////////////////
 /// colors
 string setcolor(unsigned short );
 int blue = 1, green = 2, cyan = 3, red = 4, brown = 6, lightwhite = 7, lightblue = 9, lightgreen = 10, lightcyan = 11, lightred = 12, yellow = 14, white = 15;
@@ -119,21 +127,15 @@ mainPage:       ///// for logging out of user's
         if (choice == "1")             /// admin login
         { 
             adminLoginHeader();
-            string userEnterAdminPass;
-            setcolor(lightcyan);    
-            cout << "\t\t\t\t\t\t\t\t\t\t\tEnter the Password: ";
-            userEnterAdminPass = getAnonymousPass();       /// pass in  '***' format
+            string userEnterAdminPass = getAdminPass();
             bool login =  adminLoginCheck(userEnterAdminPass, adminPassword);
-            setcolor(lightblue);
             simulateProcessing();
             if (login)
             {
                 LogInTo = "admin";
                 break;
             }
-            setcolor(lightred);
-            cout << "\n\n\t\t\t\t\t\t\t\t\t\t\tAccess Denied.............." << endl;
-            setcolor(white);
+            accessDeniedError();
             mainPressAnyKey();
         }
         else if (choice == "2")      /////sig in user
@@ -1146,7 +1148,9 @@ void invalidNameError()
 }
 void simulateProcessing()
 {
+    setcolor(lightblue);
     cout << "\n\n\t\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
+    setcolor(white); 
     Sleep(800);
 }
 void simulateWithoutTellingLONG()
@@ -1326,6 +1330,23 @@ string setcolor(unsigned short color)
     HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hcon, color);
     return "";
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// xtra functions
+string getAdminPass()
+{
+    string userEnterAdminPass;
+    setcolor(lightcyan);    
+    cout << "\t\t\t\t\t\t\t\t\t\t\tEnter the Password: ";
+    userEnterAdminPass = getAnonymousPass();       /// pass in  '***' format
+    setcolor(white);
+    return userEnterAdminPass;        
+}
+void accessDeniedError()
+{
+    setcolor(lightred);
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\t\tAccess Denied.............." << endl;
+    setcolor(white);
 }
 //////////////////////////////////////////////////////////////////////////////////////   headers   end    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////// End of Program ////////////////////////////////////////////////////////////////////////////////////////////////////////////
