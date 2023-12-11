@@ -341,15 +341,26 @@ retakeNameInputAdminSignUp:   // if invalid name then again
             }
             else if(userSelectedOption == "2")
             {
+retakeDepositInput:  // if invalid input then again
                 userHeader();
-                float deposit;
+                string deposit;
                 if (!blockTransactions)
                 {
                     cout << "\t\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Deposit: $";
                     cin >> deposit;
-                    bool depositStatus = depositMoney(userBalances, currentIndex, deposit);
+                    try
+                    {
+                        float temp = stof(deposit);
+                    }
+                    catch(invalid_argument)
+                    {
+                        cout << "\t\t\t\t\t\t\t\t\t\t\tInvalid Input...";
+                        simulateWithoutTellingLONG();
+                        goto retakeDepositInput;
+                    }
+                    bool depositStatus = depositMoney(userBalances, currentIndex, stof(deposit));
                     if (depositStatus == true)   // transaction successful then storeDataLocally the history
-                        storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, deposit);
+                        storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, stof(deposit));
                     else
                         transactionError();
                 }
@@ -1339,7 +1350,7 @@ retakeNameInputSignIN:   // if invalid name then again
 }
 string getNAME()
 {
-    retakeNameInputSignUP:   // if invalid name then again
+retakeNameInputSignUP:   // if invalid name then again
     signUpHeader();
     string name;
     setcolor(lightcyan);
@@ -1351,6 +1362,7 @@ string getNAME()
         invalidNameError();
         goto retakeNameInputSignUP;
     }
+    return name;
 }
 void userAlreadyExists()
 {
