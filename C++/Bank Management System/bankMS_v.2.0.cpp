@@ -70,12 +70,15 @@ void storeTransactionHistory(string [], float [], int &, float );
 void invest(float [], float [], int , float , float );
 void transferNow(string [], float [], int , int , float );
 void loader();
+bool nameCheck(string);
+void simulateWithoutTellingLONG();
+void invalidNameError();
 /// data storage and retrival
 void storeDataLocally(string [], string [], string [], float [], float [], string [], float [], int );
 void loadData(string [], string [], string [], float [], float [], int &);
 string getFieldData(string , int );
-string setcolor(unsigned short );
 /// colors
+string setcolor(unsigned short );
 int blue = 1, green = 2, cyan = 3, red = 4, brown = 6, lightwhite = 7, lightblue = 9, lightgreen = 10, lightcyan = 11, lightred = 12, yellow = 14, white = 15;
 //////////////////////////////////////////////////////////////////////////////////////   main function start    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
@@ -108,7 +111,7 @@ int main()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     string choice = "0";
     string LogInTo = "none"; 
-    loader(); 
+    // loader(); 
 mainPage:       ///// for logging out of user's
     while(choice != "4")
     {
@@ -135,11 +138,18 @@ mainPage:       ///// for logging out of user's
         }
         else if (choice == "2")      /////sig in user
         {
+retakeNameInputSignIN:   // if invalid name then again
             signInHeader();
             string userEnteredPassword, userEnteredName;
             setcolor(lightcyan);
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter your User Name: ";
             cin >> userEnteredName;
+            bool nameValidation = nameCheck(userEnteredName);
+            if (!nameValidation)
+            {
+                invalidNameError();
+                goto retakeNameInputSignIN;
+            }
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter your Password: ";
             userEnteredPassword = getAnonymousPass();
             setcolor(lightblue);
@@ -163,11 +173,18 @@ mainPage:       ///// for logging out of user's
         }
         else if (choice == "3")   //// sign up user
         {
+retakeNameInputSignUP:   // if invalid name then again
             signUpHeader();
             string name;
             setcolor(lightcyan);
             cout << "\t\t\t\t\t\t\t\t\t\t   Enter your name: ";
             cin >> name;
+            bool nameValidation = nameCheck(name);
+            if (!nameValidation)
+            {
+                invalidNameError();
+                goto retakeNameInputSignUP;
+            }
             string pass;
             cout << "\t\t\t\t\t\t\t\t\t\t   Set password: ";
             pass = getAnonymousPass();
@@ -208,16 +225,23 @@ mainPage:       ///// for logging out of user's
             adminSelectedOption = managerMenu();
             if (adminSelectedOption == "1")
             {
-                bool again = true;
-                while (again)        /// loop is for the admin if he want to add more then "1" user
+                bool addUserAgain = true;
+                while (addUserAgain)        /// loop is for the admin if he want to add more then "1" user
                 {
+retakeNameInputAdminSignUp:   // if invalid name then again
                     managerHeader();
                     string newUserName, newUserPass;
                     cout << "\t\t\t\t\t\t\t\t\t\t   Enter the Name: ";
                     cin >> newUserName;
+                    bool nameValidation = nameCheck(newUserName);
+                    if (!nameValidation)
+                    {
+                        invalidNameError();
+                        goto retakeNameInputAdminSignUp;
+                    }
                     cout << "\t\t\t\t\t\t\t\t\t\t   Set Password: ";
                     newUserPass =  getAnonymousPass();
-                    again = addNewUser(userNames, userPasswords, userIDs, index, newUserName, newUserPass);
+                    addUserAgain = addNewUser(userNames, userPasswords, userIDs, index, newUserName, newUserPass);
                 }
             }
             else if (adminSelectedOption == "2")
@@ -1054,6 +1078,21 @@ bool uniqueUser(string userNames[], int &index, string name)
 }
 ///////////////////////////////////////////////////////////////////////////////////////// input validation end  //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////// start of signUp/signIn //////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool nameCheck(string name)  ///username when signup
+{
+    bool found = true;
+	for (int i = 0; i < name.length(); i++)
+	{
+		if ((name[i] >= 'A' && name[i] <= 'Z') || (name[i] >= 'a' && name[i] <= 'z'))
+            continue;
+        else 
+        {
+            found = false;
+            break;
+        }
+	}
+	return found;
+}
 string getAnonymousPass()
 {
     char singleLetter;
@@ -1086,10 +1125,21 @@ void createUser(string userNames[], string userPasswords[], string userIDs[], in
     index++;  
     cout << endl << endl << "\t\t\t\t\t\t\t\t\t\t   Successfully created new user" << endl;
 }
+void invalidNameError()
+{
+    setcolor(lightred);
+    cout << "\t\t\t\t\t\t\t\t\t\t   Invalid Name....";
+    setcolor(white);
+    simulateWithoutTellingLONG();                    
+}
 void simulateProcessing()
 {
     cout << "\n\n\t\t\t\t\t\t\t\t\t\tProcessing please wait...";
     Sleep(800);
+}
+void simulateWithoutTellingLONG()
+{
+    Sleep(700);
 }
 void simulateWithoutTelling()
 {
@@ -1258,6 +1308,7 @@ void loader()
     }
     SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 }
+
 string setcolor(unsigned short color)
 {
     HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
