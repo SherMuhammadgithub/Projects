@@ -434,19 +434,30 @@ retakeTransferInput:  // if invalid input then again
             }
             else if (userSelectedOption == "5")
             {
+retakeInvestmentInput:  // if invalid input then again
                 userHeader();
-                float investment;
+                string investment;
                 if (!blockTransactions)
                 {
                     showBalance(userBalances, currentIndex);
                     goldHeader(goldRate);
                     cout << "\t\t\t\t\t\t\t\t\t\t\tEnter amount you want to invest in Gold: $";
                     cin >> investment;
-                    if (investment > 0)
+                    try
                     {
-                        bool investmentStatus = investGold(userNames, userInvestments, userBalances, currentIndex, index, goldRate, investment);             
+                        float temp = stof(investment);       /// temp storing the value to check if it is float or not
+                    }
+                    catch(invalid_argument)
+                    {
+                        cout << "\t\t\t\t\t\t\t\t\t\t\tInvalid Input...";
+                        simulateWithoutTellingLONG();
+                        goto retakeInvestmentInput;   
+                    }
+                    if (stof(investment) > 0)
+                    {
+                        bool investmentStatus = investGold(userNames, userInvestments, userBalances, currentIndex, index, goldRate, stof(investment));             
                         if (investmentStatus)
-                            storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, investment);
+                            storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, stof(investment));
                     }
                     else
                         transactionError();
