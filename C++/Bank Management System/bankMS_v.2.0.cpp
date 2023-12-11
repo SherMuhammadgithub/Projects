@@ -253,10 +253,10 @@ retakeNameInputAdminSignUp:   // if invalid name then again
             {   
                 managerHeader();
                 string assetName;
-                cout << "\t\t\t\t\t\t\t\t\tEnter the assest's name you want to add: ";
+                cout << "\t\t\t\t\t\t\t\t\t\t\tEnter the assest's name you want to add: ";
                 cin >> assetName;
                 string assetWorth;
-                cout << "\t\t\t\t\t\t\t\t\tEnter the assest's worth you have added in (***k) format: ";
+                cout << "\t\t\t\t\t\t\t\t\t\t\tEnter the assest's worth you have added in (***k) format: ";
                 cin >> assetWorth;
                 assetIndex = addAsset(bankAssets, bankAssetsWorth, assetIndex, assetName, assetWorth);  // increasing the asset index by value return
             }
@@ -264,7 +264,7 @@ retakeNameInputAdminSignUp:   // if invalid name then again
             {   
                 managerHeader();
                 int cashHoldings = liquidity(userBalances, index);
-                cout << "\t\t\t\t\t\t\t\t\tTotal Cash available in Liquid: " << cashHoldings << endl;
+                cout << "\t\t\t\t\t\t\t\t\t\t\tTotal Cash available in Liquid: " << cashHoldings << endl;
                 adminPressAnyKey();
             }
             else if (adminSelectedOption == "5")
@@ -277,7 +277,7 @@ retakeNameInputAdminSignUp:   // if invalid name then again
             else if (adminSelectedOption == "6")
             {   
                 managerHeader();
-                cout << "\t\t\t\t\t\t\t\t\tAsset's Name\t\t\tAsset's Worth($)\n";
+                cout << "\t\t\t\t\t\t\t\t\t\t\tAsset's Name\t\t\tAsset's Worth($)\n";
                 viewAssets(bankAssets, bankAssetsWorth, assetIndex);
                 adminPressAnyKey();
             }
@@ -312,7 +312,7 @@ retakeNameInputAdminSignUp:   // if invalid name then again
             {   
                 managerHeader();
                 string userEnteredAdminpass;
-                cout << "\t\t\t\t\t\t\t\t\tEnter your current Password: ";
+                cout << "\t\t\t\t\t\t\t\t\t\t\tEnter your current Password: ";
                 userEnteredAdminpass = getAnonymousPass();
                 adminPassword = resetAdminPassword(adminPassword, userEnteredAdminpass);
             }
@@ -323,11 +323,11 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                 viewRecordHeader();
                 viewRecords(userNames, userIDs, userBalances , index, del);
                 int deletionIndex;
-                cout << "\n\t\t\t\t\t\t\t\t\t\tEnter the Sr.No you want to remove: ";
+                cout << "\n\t\t\t\t\t\t\t\t\t\t\tEnter the Sr.No you want to remove: ";
                 cin >> deletionIndex;
                 if (deletionIndex >= index || deletionIndex < 0)
                 {
-                    cout << "\n\t\t\t\t\t\t\t\t\t\tInvalid Sr.No";
+                    cout << "\n\t\t\t\t\t\t\t\t\t\t\tInvalid Sr.No";
                     simulateWithoutTelling();
                     goto Again;
                 }                
@@ -335,9 +335,9 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                 {
                     bool deletion = deleteUser(userNames, userPasswords, userBalances, deletionIndex, index);
                     if (deletion)
-                        cout << "\n\t\t\t\t\t\t\t\t\t\tThe record was deleted successfully";
+                        cout << "\n\t\t\t\t\t\t\t\t\t\t\tThe record was deleted successfully";
                     else
-                        cout << "\n\t\t\t\t\t\t\t\t\t\tThe record was not deleted";
+                        cout << "\n\t\t\t\t\t\t\t\t\t\t\tThe record was not deleted";
                     del = 0;
                     viewRecordHeader();
                     viewRecords(userNames, userIDs, userBalances , index, del);
@@ -377,7 +377,7 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                 float deposit;
                 if (!blockTransactions)
                 {
-                    cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Deposit: $";
+                    cout << "\t\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Deposit: $";
                     cin >> deposit;
                     bool depositStatus = depositMoney(userBalances, currentIndex, deposit);
                     if (depositStatus == true)   // transaction successful then storeDataLocally the history
@@ -386,7 +386,7 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                         transactionError();
                 }
                 else
-                    cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
+                    cout << "\t\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
             else if (userSelectedOption == "3")
@@ -395,15 +395,15 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                 float withdraw;
                 if (!blockTransactions)
                 {
-                    cout << "\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
-                    cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to With-Draw: $";
+                    cout << "\t\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
+                    cout << "\t\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to With-Draw: $";
                     cin >> withdraw;
                     bool withdrawStatus = withdrawMoney(userBalances, currentIndex, withdraw);
                     if (withdrawStatus)
                         storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, withdraw);
                 }
                 else
-                    cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
+                    cout << "\t\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
             else if (userSelectedOption == "4")
@@ -413,12 +413,12 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                 if (!blockTransactions)
                 {
                     showBalance(userBalances, currentIndex);
-                    cout << "\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Transfer: $";
+                    cout << "\t\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Transfer: $";
                     cin >> transfer;
                     if (transfer > 0)
                     {
                         string receiverName;
-                        cout << "\t\t\t\t\t\t\t\t\t\tEnter name of the reciever: ";
+                        cout << "\t\t\t\t\t\t\t\t\t\t\tEnter name of the reciever: ";
                         cin >> receiverName;
                         bool transferStatus = transferMoney(userNames, userBalances, currentIndex, transferIndex, index, transfer, receiverName);            
                         if (transferStatus)
@@ -428,7 +428,7 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                         transactionError();
                 }
                 else
-                    cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
+                    cout << "\t\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
             else if (userSelectedOption == "5")
@@ -439,7 +439,7 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                 {
                     showBalance(userBalances, currentIndex);
                     goldHeader(goldRate);
-                    cout << "\t\t\t\t\t\t\t\t\t\tEnter amount you want to invest in Gold: $";
+                    cout << "\t\t\t\t\t\t\t\t\t\t\tEnter amount you want to invest in Gold: $";
                     cin >> investment;
                     if (investment > 0)
                     {
@@ -451,7 +451,7 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                         transactionError();
                 }   
                 else
-                    cout << "\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
+                    cout << "\t\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
                 userPressAnyKey();
             }
             else if (userSelectedOption == "6")
@@ -463,7 +463,7 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                     viewTransactions(transactionsTypes, transactions, transactionsIndex);
                 }
                 else
-                    cout << "\n\t\t\t\t\t\t\t\t\t\tNo Transactions for Now..";
+                    cout << "\n\t\t\t\t\t\t\t\t\t\t\tNo Transactions for Now..";
                 userPressAnyKey();
             }
             else if (userSelectedOption == "7")
@@ -471,35 +471,35 @@ retakeNameInputAdminSignUp:   // if invalid name then again
                 userHeader();
                 blockTransactions = blockOrUnblockTransactions(blockTransactions);
                 if(blockTransactions == true)
-                    cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Blocked.";
+                    cout << "\n\n\t\t\t\t\t\t\t\t\t\t\tYour Transactions have been Blocked.";
                 else
-                    cout << "\n\n\t\t\t\t\t\t\t\t\t\tYour Transactions have been Unblocked.";
+                    cout << "\n\n\t\t\t\t\t\t\t\t\t\t\tYour Transactions have been Unblocked.";
                 userPressAnyKey();
             }
             else if (userSelectedOption == "8")
             {
                 userHeader();   
                 string userCurrentPassword;
-                cout << "\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
+                cout << "\t\t\t\t\t\t\t\t\t\t\tEnter you're Password: ";
                 userCurrentPassword =  getAnonymousPass();
                 bool modified = modifyInformation(userNames, userPasswords, currentIndex, index, transferIndex, userCurrentPassword);
                 if (modified)
-                    cout << "\n\t\t\t\t\t\t\t\t\t\tName modified Successfully";
+                    cout << "\n\t\t\t\t\t\t\t\t\t\t\tName modified Successfully";
                 else
-                    cout << "\n\t\t\t\t\t\t\t\t\t\tName was not modified Successfully";
+                    cout << "\n\t\t\t\t\t\t\t\t\t\t\tName was not modified Successfully";
                 userPressAnyKey();
             }
             else if (userSelectedOption == "9")
             {
                 userHeader();
                 string userEnteredPassword;
-                cout << "\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
+                cout << "\t\t\t\t\t\t\t\t\t\t\tEnter Current Password: ";
                 userEnteredPassword = getAnonymousPass();
                 bool modificationOfPassword = changePassword(userPasswords, currentIndex, userEnteredPassword);
                 if (modificationOfPassword)
-                    cout << "\n\t\t\t\t\t\t\t\t\t\tPassword was changed successfully";
+                    cout << "\n\t\t\t\t\t\t\t\t\t\t\tPassword was changed successfully";
                 else
-                    cout << "\n\t\t\t\t\t\t\t\t\t\tPassword was not changed";
+                    cout << "\n\t\t\t\t\t\t\t\t\t\t\tPassword was not changed";
                 userPressAnyKey();
             }
             else if (userSelectedOption == "10")
@@ -665,7 +665,7 @@ string resetAdminPassword(string adminPassword, string pass)
 void viewAssets(string bankAssets[], string bankAssetsWorth[], int assetIndex)
 {
     for (int i = 0; i < assetIndex; i++)
-        cout << "\t\t\t\t\t\t\t\t\t " << setw(8) << bankAssets[i] << "\t\t\t     " << bankAssetsWorth[i] << endl;
+        cout << "\t\t\t\t\t\t\t\t\t\t\t" << setw(8) << bankAssets[i] << "\t\t\t     " << bankAssetsWorth[i] << endl;
 }
 int addAsset(string bankAssets[], string bankAssetsWorth[], int assetIndex, string newAsset, string assetWorth)
 {
@@ -705,6 +705,12 @@ bool modifyInfoAdmin(string userNames[], int index, int &transferIndex)
     string newName;
     cout << "\n\t\t\t\t\t\t\t\t\t\t\tEnter new Name: ";
     cin >> newName;
+    bool nameValidation = nameCheck(newName);
+    if (!nameValidation)
+    {
+        invalidNameError();
+        return modification;
+    }
     simulateProcessing();
     if(!userExist(userNames, newName, index, transferIndex))
     {
@@ -723,9 +729,9 @@ void viewRecords(string userNames[], string userIDs[], float userBalances[] ,int
 void viewRecordHeader()
 {
     managerHeader();
-    cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t    Sr No\t NAME \t    ID - No. \t Balance($)" << endl;
-    cout << "\t\t\t\t\t\t\t\t\t   #################################################" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t\t#################################################" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t\t Sr No\t NAME \t    ID - No. \t Balance($)" << endl;
+    cout << "\t\t\t\t\t\t\t\t\t\t\t#################################################" << endl;
     cout << endl;
 }
 bool addNewUser(string userNames[], string userPasswords[], string userIDs[], int &index, string name, string pass)
