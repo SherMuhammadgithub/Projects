@@ -350,7 +350,7 @@ retakeDepositInput:  // if invalid input then again
                     cin >> deposit;
                     try
                     {
-                        float temp = stof(deposit);
+                        float temp = stof(deposit);       /// temp storing the value to check if it is float or not
                     }
                     catch(invalid_argument)
                     {
@@ -370,16 +370,27 @@ retakeDepositInput:  // if invalid input then again
             }
             else if (userSelectedOption == "3")
             {
+retakeWithdrawInput:  // if invalid input then again
                 userHeader();
-                float withdraw;
+                string withdraw;
                 if (!blockTransactions)
                 {
                     cout << "\t\t\t\t\t\t\t\t\t\t\tYour Balance is: $" << userBalances[currentIndex] << endl << endl;
                     cout << "\t\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to With-Draw: $";
                     cin >> withdraw;
-                    bool withdrawStatus = withdrawMoney(userBalances, currentIndex, withdraw);
+                    try
+                    {
+                        float temp = stof(withdraw);       /// temp storing the value to check if it is float or not
+                    }
+                    catch(invalid_argument)
+                    {
+                        cout << "\t\t\t\t\t\t\t\t\t\t\tInvalid Input...";
+                        simulateWithoutTellingLONG();
+                        goto retakeWithdrawInput;
+                    }
+                    bool withdrawStatus = withdrawMoney(userBalances, currentIndex, stof(withdraw));
                     if (withdrawStatus)
-                        storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, withdraw);
+                        storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, stof(withdraw));
                 }
                 else
                     cout << "\t\t\t\t\t\t\t\t\t\t\tYour Transactions are Blocked..." << endl;
@@ -387,21 +398,32 @@ retakeDepositInput:  // if invalid input then again
             }
             else if (userSelectedOption == "4")
             {
+retakeTransferInput:  // if invalid input then again
                 userHeader();
-                float transfer;
+                string transfer;
                 if (!blockTransactions)
                 {
                     showBalance(userBalances, currentIndex);
                     cout << "\t\t\t\t\t\t\t\t\t\t\tEnter the amount that you want to Transfer: $";
                     cin >> transfer;
-                    if (transfer > 0)
+                    try
+                    {
+                        float temp = stof(transfer);       /// temp storing the value to check if it is float or not
+                    }
+                    catch(invalid_argument)
+                    {
+                        cout << "\t\t\t\t\t\t\t\t\t\t\tInvalid Input...";
+                        simulateWithoutTellingLONG();
+                        goto retakeTransferInput;
+                    }
+                    if (stof(transfer) > 0)
                     {
                         string receiverName;
                         cout << "\t\t\t\t\t\t\t\t\t\t\tEnter name of the reciever: ";
                         cin >> receiverName;
-                        bool transferStatus = transferMoney(userNames, userBalances, currentIndex, transferIndex, index, transfer, receiverName);            
+                        bool transferStatus = transferMoney(userNames, userBalances, currentIndex, transferIndex, index, stof(transfer), receiverName);            
                         if (transferStatus)
-                            storeTransactionHistory(transactionsTypes, transactions, transactionsIndex, transfer);
+                            storeTransactionHistory(transactionsTypes, transactions, transactionsIndex,stof(transfer));
                     }
                     else
                         transactionError();
