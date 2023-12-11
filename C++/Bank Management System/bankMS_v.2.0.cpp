@@ -653,12 +653,12 @@ string resetAdminPassword(string adminPassword, string pass)
     simulateProcessing();
     if (adminPassword == pass)
     { 
-        cout << "\n\t\t\t\t\t\t\t\t\tSet new Password: ";
+        cout << "\n\t\t\t\t\t\t\t\t\t\t\tSet new Password: ";
         newPass = getAnonymousPass();
-        cout << "\n\t\t\t\t\t\t\t\t\tPassword Successfully changed\n";
+        cout << "\n\t\t\t\t\t\t\t\t\t\t\tPassword Successfully changed\n";
     }
     else
-        cout << "\n\n\t\t\t\t\t\t\t\t\tIncorrect Password.";
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\t\tIncorrect Password.";
     adminPressAnyKey();
     return newPass;
 }
@@ -914,7 +914,7 @@ bool investGold(string userNames[],float userInvestments[], float userBalances[]
 void viewTransactions(string transactionsTypes[], float transactions[], int transactionsIndex)
 {
     for (int i = 0; i < transactionsIndex; i++ )
-        cout << "\t\t\t\t\t\t\t\t\t     " << transactionsTypes[i] << "\t\t\t" << transactions[i] << endl;
+        cout << "\t\t\t\t\t\t\t\t\t\t\t" << transactionsTypes[i] << "\t\t\t" << transactions[i] << endl;
 }
 bool blockOrUnblockTransactions(bool blockTransactions)
 {
