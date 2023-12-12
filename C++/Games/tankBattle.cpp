@@ -6,6 +6,7 @@ using namespace std;
 char getCharAtxy(short int x, short int y);
 void gotoxy(int x, int y);//
 string setcolor(unsigned short color);
+void hidecursor();
 int blue = 1, green = 2, cyan = 3, red = 4, brown = 6, lightwhite = 7, lightblue = 9, lightgreen = 10, lightcyan = 11, lightred = 12, yellow = 14, white = 15;
 int bonus1 = 0; 
 // enemy one
@@ -92,6 +93,7 @@ int main()
     header();
     
     score();
+    hidecursor();
 
     printEnemy1();
     // printEnemy2();
@@ -767,6 +769,14 @@ char getCharAtxy(short int x, short int y)
     coordBufSize.X = 1;
     coordBufSize.Y = 1;
     return ReadConsoleOutput(GetStdHandle(STD_OUTPUT_HANDLE), &ci, coordBufSize, xy, &rect) ? ci.Char.AsciiChar: ' ';
+}
+void hideCursor()
+{
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO info;
+    info.dwSize = 100;
+    info.bVisible = FALSE;
+    SetConsoleCursorInfo(consoleHandle, &info);
 }
 void gotoxy(int x, int y)
 {
